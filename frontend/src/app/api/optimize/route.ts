@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
+import { createClient } from '@/lib/supabase/server';
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY!,
@@ -7,6 +8,7 @@ const anthropic = new Anthropic({
 
 export async function POST(request: NextRequest) {
   try {
+    const supabase = await createClient();
     const { prompt } = await request.json();
 
     if (!prompt) {
@@ -16,6 +18,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Check if user is authenticated (for tracking usage)
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    // Call Claude API to optimize
     const message = await anthropic.messages.create({
       model: 'claude-sonnet-4-5-20250929',
       max_tokens: 4096,
@@ -41,6 +49,15 @@ Please provide ONLY the optimized prompt without any explanation or meta-comment
 
     const optimizedPrompt =
       message.content[0].type === 'text' ? message.content[0].text : prompt;
+
+    // Track usage if user is authenticated
+    if (user) {
+      await supabase.from('optimization_usage').insert([
+        {
+          user_id: user.id,
+        },
+      ]);
+    }
 
     return NextResponse.json({ optimizedPrompt });
   } catch (error) {

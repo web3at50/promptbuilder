@@ -1,0 +1,156 @@
+import { createClient } from '@/lib/supabase/server';
+import { redirect } from 'next/navigation';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { ArrowLeft, Calendar, FileText, Sparkles, Mail } from 'lucide-react';
+import Link from 'next/link';
+import { SignOutButton } from '@/components/SignOutButton';
+
+export default async function ProfilePage() {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect('/login');
+  }
+
+  // Get profile data
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('*')
+    .eq('id', user.id)
+    .single();
+
+  // Get prompts count
+  const { count: promptsCount } = await supabase
+    .from('prompts')
+    .select('*', { count: 'exact', head: true })
+    .eq('user_id', user.id);
+
+  // Get optimizations count
+  const { count: optimizationsCount } = await supabase
+    .from('optimization_usage')
+    .select('*', { count: 'exact', head: true })
+    .eq('user_id', user.id);
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
+      {/* Header */}
+      <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container mx-auto px-4 py-4">
+          <Link href="/">
+            <Button variant="ghost" className="gap-2">
+              <ArrowLeft className="h-4 w-4" />
+              Back to Library
+            </Button>
+          </Link>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="container mx-auto px-4 py-8 max-w-4xl">
+        <div className="space-y-6">
+          <div>
+            <h1 className="text-3xl font-bold">Profile & Settings</h1>
+            <p className="text-muted-foreground mt-1">
+              Manage your account and view your statistics
+            </p>
+          </div>
+
+          {/* Account Information */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Account Information</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center gap-3 py-3 border-b">
+                <Mail className="h-5 w-5 text-muted-foreground" />
+                <div className="flex-1">
+                  <p className="text-sm text-muted-foreground">Email Address</p>
+                  <p className="font-medium">{user.email}</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 py-3">
+                <Calendar className="h-5 w-5 text-muted-foreground" />
+                <div className="flex-1">
+                  <p className="text-sm text-muted-foreground">
+                    Member Since
+                  </p>
+                  <p className="font-medium">
+                    {profile?.created_at
+                      ? formatDate(profile.created_at)
+                      : 'N/A'}
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Statistics */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Your Statistics</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="flex items-center gap-4 p-4 rounded-lg bg-muted/50">
+                  <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
+                    <FileText className="h-6 w-6 text-primary" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">
+                      Total Prompts
+                    </p>
+                    <p className="text-2xl font-bold">{promptsCount || 0}</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-4 p-4 rounded-lg bg-muted/50">
+                  <div className="h-12 w-12 rounded-full bg-purple-500/10 flex items-center justify-center">
+                    <Sparkles className="h-6 w-6 text-purple-500" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">
+                      AI Optimizations
+                    </p>
+                    <p className="text-2xl font-bold">
+                      {optimizationsCount || 0}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Account Actions */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Account Actions</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <Link href="/reset-password">
+                <Button variant="outline" className="w-full justify-start">
+                  Change Password
+                </Button>
+              </Link>
+
+              <SignOutButton />
+            </CardContent>
+          </Card>
+        </div>
+      </main>
+    </div>
+  );
+}

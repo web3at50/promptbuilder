@@ -6,6 +6,7 @@ import { Prompt } from '@/types';
 import { PromptCard } from '@/components/PromptCard';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { UserMenu } from '@/components/UserMenu';
 import { Plus, Search, Sparkles } from 'lucide-react';
 
 export default function Home() {
@@ -97,10 +98,13 @@ export default function Home() {
               </div>
             </div>
 
-            <Button onClick={() => router.push('/new')} size="lg" className="gap-2">
-              <Plus className="h-5 w-5" />
-              New Prompt
-            </Button>
+            <div className="flex items-center gap-3">
+              <Button onClick={() => router.push('/new')} size="lg" className="gap-2">
+                <Plus className="h-5 w-5" />
+                New Prompt
+              </Button>
+              <UserMenu />
+            </div>
           </div>
         </div>
       </header>

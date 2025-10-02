@@ -4,17 +4,22 @@ A beautiful AI prompt library application to save, organize, and optimize your A
 
 ## Features
 
+- 🔐 **User Authentication** - Secure sign-up/sign-in with email/password or Google OAuth
 - 📝 **Create & Edit Prompts** - Save your AI prompts with a beautiful markdown editor
 - 🔍 **Search & Filter** - Quickly find prompts by title, content, or tags
 - ⭐ **Favorites** - Mark your most-used prompts as favorites
 - ✨ **AI Optimization** - Optimize your prompts using Claude Sonnet 4.5 API
+- 🎯 **Demo Mode** - Try 2 free optimizations before signing up
+- 👤 **User Profiles** - View your stats (prompts count, optimizations count)
+- 🔒 **Multi-Tenancy** - Each user's data is isolated and secure
 - 🎨 **Modern UI** - Beautiful dark theme with Tailwind CSS and shadcn/ui
 - 📱 **Responsive Design** - Works seamlessly on desktop and mobile
 
 ## Tech Stack
 
 - **Frontend**: Next.js 14 (App Router), TypeScript, Tailwind CSS, shadcn/ui
-- **Database**: Supabase (PostgreSQL)
+- **Authentication**: Supabase Auth (Email/Password + Google OAuth)
+- **Database**: Supabase (PostgreSQL with Row Level Security)
 - **AI**: Anthropic Claude Sonnet 4.5
 - **Deployment**: Vercel
 
@@ -74,29 +79,56 @@ cd frontend
 npm install
 ```
 
-### 4. Setup Database
+### 4. Configure Supabase Authentication
 
-Run the migration to create the `prompts` table in your Supabase project:
+**Enable Email Authentication:**
+1. Go to your Supabase Dashboard → Authentication → Providers
+2. Enable "Email" provider
+3. Enable "Confirm email" (recommended for production)
+
+**Enable Google OAuth (Optional but Recommended):**
+1. Create a Google Cloud project at [console.cloud.google.com](https://console.cloud.google.com)
+2. Enable Google OAuth API
+3. Create OAuth 2.0 credentials
+4. Add authorized redirect URI: `https://[your-project-ref].supabase.co/auth/v1/callback`
+5. Copy Client ID and Client Secret
+6. In Supabase Dashboard → Authentication → Providers → Google:
+   - Enable Google provider
+   - Paste Client ID and Secret
+   - Save
+
+### 5. Run Database Migrations
+
+Run the migrations to create all required tables:
 
 ```bash
-# Using Supabase CLI
+# Using Supabase CLI (recommended)
 supabase db push
 
-# Or manually execute the SQL in supabase/migrations/001_create_prompts_table_20251001.sql
+# Or manually execute the SQL files in order:
+# 1. supabase/migrations/001_create_prompts_table_20251001.sql
+# 2. supabase/migrations/002_add_auth_and_multitenancy.sql
 ```
 
-The migration creates:
-- `prompts` table with columns: id, title, content, tags, favorite, created_at, updated_at
-- Indexes for performance
-- Row Level Security policies (open access since no auth)
+The migrations create:
+- `prompts` table with user_id for multi-tenancy
+- `profiles` table for user information
+- `optimization_usage` table for tracking AI usage
+- Row Level Security policies (user-scoped access)
+- Automatic profile creation trigger
 
-### 5. Run Development Server
+### 6. Run Development Server
 
 ```bash
 npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+**First Time Setup:**
+1. Click "Sign Up" to create an account
+2. Verify your email (if email confirmation is enabled)
+3. Sign in and start creating prompts!
 
 ## Usage
 

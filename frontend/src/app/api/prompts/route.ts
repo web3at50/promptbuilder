@@ -1,12 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/lib/supabase/server';
 
-// GET all prompts
+// GET all prompts (user-scoped)
 export async function GET() {
   try {
+    const supabase = await createClient();
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const { data, error } = await supabase
       .from('prompts')
       .select('*')
+      .eq('user_id', user.id)
       .order('created_at', { ascending: false });
 
     if (error) throw error;
@@ -24,6 +35,16 @@ export async function GET() {
 // POST create new prompt
 export async function POST(request: NextRequest) {
   try {
+    const supabase = await createClient();
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const body = await request.json();
     const { title, content, tags = [], favorite = false } = body;
 
@@ -42,6 +63,7 @@ export async function POST(request: NextRequest) {
           content,
           tags,
           favorite,
+          user_id: user.id,
         },
       ])
       .select()
