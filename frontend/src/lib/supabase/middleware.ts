@@ -37,11 +37,11 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // Protected routes - only protect specific paths, not all paths starting with '/'
+  // Protected routes - home page is now public for demo mode
   const protectedPaths = ['/new', '/edit', '/profile'];
-  const isProtectedPath =
-    request.nextUrl.pathname === '/' || // Home page
-    protectedPaths.some((path) => request.nextUrl.pathname.startsWith(path));
+  const isProtectedPath = protectedPaths.some((path) =>
+    request.nextUrl.pathname.startsWith(path)
+  );
 
   // Redirect to login if accessing protected route without auth
   if (!user && isProtectedPath && !request.nextUrl.pathname.startsWith('/login')) {

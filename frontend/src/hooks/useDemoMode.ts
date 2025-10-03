@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 
 const DEMO_COUNT_KEY = 'demo_optimization_count';
-const MAX_DEMO_OPTIMIZATIONS = 2;
+const MAX_DEMO_OPTIMIZATIONS = 3;
 
 export function useDemoMode() {
   const [count, setCount] = useState(0);

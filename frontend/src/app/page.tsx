@@ -2,11 +2,13 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { createClient } from '@/lib/supabase/client';
 import { Prompt } from '@/types';
 import { PromptCard } from '@/components/PromptCard';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { UserMenu } from '@/components/UserMenu';
+import { PublicOptimizer } from '@/components/PublicOptimizer';
 import { Plus, Search, Sparkles } from 'lucide-react';
 
 export default function Home() {
@@ -14,10 +16,35 @@ export default function Home() {
   const [prompts, setPrompts] = useState<Prompt[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [checkingAuth, setCheckingAuth] = useState(true);
 
   useEffect(() => {
-    fetchPrompts();
+    checkAuth();
   }, []);
+
+  const checkAuth = async () => {
+    try {
+      const supabase = createClient();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      setIsAuthenticated(!!user);
+
+      if (user) {
+        // Only fetch prompts if authenticated
+        fetchPrompts();
+      } else {
+        setLoading(false);
+      }
+    } catch (error) {
+      console.error('Error checking auth:', error);
+      setIsAuthenticated(false);
+      setLoading(false);
+    } finally {
+      setCheckingAuth(false);
+    }
+  };
 
   const fetchPrompts = async () => {
     try {
@@ -80,6 +107,51 @@ export default function Home() {
   const favoritePrompts = filteredPrompts.filter((p) => p.favorite);
   const regularPrompts = filteredPrompts.filter((p) => !p.favorite);
 
+  // Show loading while checking auth
+  if (checkingAuth) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center space-y-2">
+          <div className="h-8 w-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto" />
+          <p className="text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show public optimizer for unauthenticated users
+  if (!isAuthenticated) {
+    return (
+      <div>
+        {/* Header for unauthenticated users */}
+        <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-40">
+          <div className="container mx-auto px-4 py-6">
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <h1 className="text-2xl font-bold">Prompt Library</h1>
+                <p className="text-sm text-muted-foreground">
+                  Optimize your AI prompts with Claude
+                </p>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <Button variant="outline" onClick={() => router.push('/login')}>
+                  Sign In
+                </Button>
+                <Button onClick={() => router.push('/signup')}>
+                  Sign Up
+                </Button>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <PublicOptimizer />
+      </div>
+    );
+  }
+
+  // Show library for authenticated users
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
       {/* Header */}

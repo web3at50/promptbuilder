@@ -17,18 +17,20 @@ export function DemoBanner({ remainingOptimizations }: DemoBannerProps) {
   }
 
   return (
-    <div className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 border-b border-purple-500/20">
-      <div className="container mx-auto px-4 py-3">
+    <div className="bg-gradient-to-r from-purple-500/20 via-pink-500/20 to-orange-500/20 border-b border-purple-500/30 sticky top-0 z-50 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <Sparkles className="h-5 w-5 text-purple-500" />
-            <p className="text-sm">
-              <strong>{remainingOptimizations}</strong> free optimization
-              {remainingOptimizations !== 1 ? 's' : ''} remaining.{' '}
-              <Link href="/signup" className="underline hover:no-underline">
-                Create an account
+            <div className="h-8 w-8 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center shrink-0">
+              <Sparkles className="h-5 w-5 text-white" />
+            </div>
+            <p className="text-sm font-medium">
+              🎁 <strong className="text-primary">{remainingOptimizations}</strong> free optimization
+              {remainingOptimizations !== 1 ? 's' : ''} remaining •{' '}
+              <Link href="/signup" className="underline hover:no-underline text-primary font-semibold">
+                Create a free account
               </Link>{' '}
-              to save prompts and get unlimited optimizations.
+              for unlimited AI optimizations and prompt saving
             </p>
           </div>
           <Button
