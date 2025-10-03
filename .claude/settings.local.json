@@ -10,7 +10,14 @@
       "Bash(npm run build:*)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(npm run dev:*)",
+      "Bash(curl -s \"https://awhrudcamngnsoigqzzx.supabase.co/auth/v1/health\")",
+      "mcp__supabase__list_tables",
+      "mcp__supabase__execute_sql",
+      "Bash(rm:*)",
+      "mcp__supabase__get_logs",
+      "mcp__supabase__list_migrations"
     ],
     "deny": [],
     "ask": []
