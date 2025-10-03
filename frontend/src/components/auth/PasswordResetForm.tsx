@@ -43,11 +43,11 @@ export function PasswordResetForm() {
         <CheckCircle2 className="h-16 w-16 text-green-500 mx-auto" />
         <h3 className="text-xl font-semibold">Check your email!</h3>
         <p className="text-muted-foreground">
-          We've sent you a password reset link to <strong>{email}</strong>.
+          We&apos;ve sent you a password reset link to <strong>{email}</strong>.
           Click the link to reset your password.
         </p>
         <p className="text-sm text-muted-foreground">
-          Didn't receive the email? Check your spam folder.
+          Didn&apos;t receive the email? Check your spam folder.
         </p>
       </div>
     );
@@ -56,7 +56,7 @@ export function PasswordResetForm() {
   return (
     <form onSubmit={handlePasswordReset} className="space-y-4">
       <p className="text-sm text-muted-foreground">
-        Enter your email address and we'll send you a link to reset your
+        Enter your email address and we&apos;ll send you a link to reset your
         password.
       </p>
 

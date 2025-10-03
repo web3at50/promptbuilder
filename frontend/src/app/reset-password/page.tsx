@@ -23,7 +23,7 @@ export default function ResetPasswordPage() {
           <CardHeader>
             <CardTitle>Forgot password?</CardTitle>
             <CardDescription>
-              No worries, we'll send you reset instructions
+              No worries, we&apos;ll send you reset instructions
             </CardDescription>
           </CardHeader>
           <CardContent>

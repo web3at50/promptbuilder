@@ -45,11 +45,11 @@ export function SignUpForm() {
         <CheckCircle2 className="h-16 w-16 text-green-500 mx-auto" />
         <h3 className="text-xl font-semibold">Check your email!</h3>
         <p className="text-muted-foreground">
-          We've sent you a verification link to <strong>{email}</strong>.
+          We&apos;ve sent you a verification link to <strong>{email}</strong>.
           Click the link to verify your account and sign in.
         </p>
         <p className="text-sm text-muted-foreground">
-          Didn't receive the email? Check your spam folder.
+          Didn&apos;t receive the email? Check your spam folder.
         </p>
       </div>
     );
