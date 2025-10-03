@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Prompt Library | Organize & Optimize Your AI Prompts",
-  description: "A beautiful prompt library to save, organize, and optimize your AI prompts with Claude.",
+  title: "Prompt Library | Organise & Optimise Your AI Prompts",
+  description: "A beautiful prompt library to save, organise, and optimise your AI prompts with Claude and ChatGPT.",
 };
 
 export default function RootLayout({

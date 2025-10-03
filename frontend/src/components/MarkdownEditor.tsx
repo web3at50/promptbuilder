@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card } from '@/components/ui/card';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { Loader2, Sparkles } from 'lucide-react';
+import { Loader2, Wand2 } from 'lucide-react';
 
 interface MarkdownEditorProps {
   value: string;
@@ -21,27 +21,31 @@ export function MarkdownEditor({
   placeholder = 'Write your prompt here...',
 }: MarkdownEditorProps) {
   const [isOptimizing, setIsOptimizing] = useState(false);
+  const [optimizingWith, setOptimizingWith] = useState<'claude' | 'openai' | null>(null);
 
-  const handleOptimize = async () => {
+  const handleOptimize = async (provider: 'claude' | 'openai') => {
     if (!value.trim()) return;
 
     setIsOptimizing(true);
+    setOptimizingWith(provider);
     try {
-      const response = await fetch('/api/optimize', {
+      const endpoint = provider === 'claude' ? '/api/optimize' : '/api/optimize-openai';
+      const response = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ prompt: value }),
       });
 
-      if (!response.ok) throw new Error('Failed to optimize');
+      if (!response.ok) throw new Error('Failed to optimise');
 
       const { optimizedPrompt } = await response.json();
       onChange(optimizedPrompt);
     } catch (error) {
-      console.error('Error optimizing prompt:', error);
-      alert('Failed to optimize prompt. Please try again.');
+      console.error('Error optimising prompt:', error);
+      alert('Failed to optimise prompt. Please try again.');
     } finally {
       setIsOptimizing(false);
+      setOptimizingWith(null);
     }
   };
 
@@ -51,25 +55,46 @@ export function MarkdownEditor({
         <div className="text-sm text-muted-foreground">
           {value.length} characters · {value.split(/\s+/).filter(Boolean).length} words
         </div>
-        <Button
-          onClick={handleOptimize}
-          disabled={isOptimizing || !value.trim()}
-          variant="secondary"
-          size="sm"
-          className="gap-2"
-        >
-          {isOptimizing ? (
-            <>
-              <Loader2 className="h-4 w-4 animate-spin" />
-              Optimizing...
-            </>
-          ) : (
-            <>
-              <Sparkles className="h-4 w-4" />
-              Optimize with Claude
-            </>
-          )}
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            onClick={() => handleOptimize('claude')}
+            disabled={isOptimizing || !value.trim()}
+            variant="secondary"
+            size="sm"
+            className="gap-2"
+          >
+            {isOptimizing && optimizingWith === 'claude' ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Optimising...
+              </>
+            ) : (
+              <>
+                <Wand2 className="h-4 w-4" />
+                Optimise with Claude
+              </>
+            )}
+          </Button>
+          <Button
+            onClick={() => handleOptimize('openai')}
+            disabled={isOptimizing || !value.trim()}
+            variant="secondary"
+            size="sm"
+            className="gap-2"
+          >
+            {isOptimizing && optimizingWith === 'openai' ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Optimising...
+              </>
+            ) : (
+              <>
+                <Wand2 className="h-4 w-4" />
+                Optimise with ChatGPT
+              </>
+            )}
+          </Button>
+        </div>
       </div>
 
       <Tabs defaultValue="edit" className="w-full">

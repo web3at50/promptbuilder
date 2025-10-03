@@ -1,6 +1,6 @@
 # Prompt Library
 
-A beautiful AI prompt library application to save, organize, and optimize your AI prompts with Claude Sonnet 4.5.
+A beautiful AI prompt library application to save, organise, and optimise your AI prompts with Claude Sonnet 4.5 and ChatGPT.
 
 ## Features
 
@@ -8,11 +8,11 @@ A beautiful AI prompt library application to save, organize, and optimize your A
 - 📝 **Create & Edit Prompts** - Save your AI prompts with a beautiful markdown editor
 - 🔍 **Search & Filter** - Quickly find prompts by title, content, or tags
 - ⭐ **Favorites** - Mark your most-used prompts as favorites
-- ✨ **AI Optimization** - Optimize your prompts using Claude Sonnet 4.5 API
-- 🎯 **Demo Mode** - Try 2 free optimizations before signing up
-- 👤 **User Profiles** - View your stats (prompts count, optimizations count)
+- ✨ **AI Optimisation** - Optimise your prompts using Claude Sonnet 4.5 or ChatGPT (GPT-4o)
+- 🎯 **Demo Mode** - Try 3 free optimisations before signing up
+- 👤 **User Profiles** - View your stats (prompts count, optimisations count)
 - 🔒 **Multi-Tenancy** - Each user's data is isolated and secure
-- 🎨 **Modern UI** - Beautiful dark theme with Tailwind CSS and shadcn/ui
+- 🎨 **Modern UI** - Clean monochrome theme with Tailwind CSS and shadcn/ui
 - 📱 **Responsive Design** - Works seamlessly on desktop and mobile
 
 ## Tech Stack
@@ -20,7 +20,7 @@ A beautiful AI prompt library application to save, organize, and optimize your A
 - **Frontend**: Next.js 14 (App Router), TypeScript, Tailwind CSS, shadcn/ui
 - **Authentication**: Supabase Auth (Email/Password + Google OAuth)
 - **Database**: Supabase (PostgreSQL with Row Level Security)
-- **AI**: Anthropic Claude Sonnet 4.5
+- **AI**: Anthropic Claude Sonnet 4.5 & OpenAI GPT-4o
 - **Deployment**: Vercel
 
 ## Project Structure
@@ -51,6 +51,7 @@ promptbuilder/
 - Node.js 18+ installed
 - A Supabase account and project
 - An Anthropic API key
+- An OpenAI API key
 
 ### 1. Clone the Repository
 
@@ -68,8 +69,9 @@ Create a `.env.local` file in the `frontend/` directory:
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url_here
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key_here
 
-# Anthropic API Configuration
+# AI API Configuration
 ANTHROPIC_API_KEY=your_anthropic_api_key_here
+OPENAI_API_KEY=your_openai_api_key_here
 ```
 
 ### 3. Install Dependencies
@@ -139,13 +141,13 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 3. Add optional tags by typing and pressing Enter
 4. Click "Save Prompt"
 
-### Optimizing a Prompt
+### Optimising a Prompt
 
 1. Create or edit a prompt
 2. Write your initial prompt in the editor
-3. Click "Optimize with Claude" button
-4. Claude will analyze and improve your prompt
-5. Review and save the optimized version
+3. Click "Optimise with Claude" or "Optimise with ChatGPT" button
+4. The AI will analyse and improve your prompt
+5. Review and save the optimised version
 
 ### Searching Prompts
 
@@ -176,7 +178,8 @@ Vercel will automatically detect Next.js and configure the build settings.
 - `GET /api/prompts/[id]` - Fetch a single prompt
 - `PUT /api/prompts/[id]` - Update a prompt
 - `DELETE /api/prompts/[id]` - Delete a prompt
-- `POST /api/optimize` - Optimize a prompt with Claude
+- `POST /api/optimize` - Optimise a prompt with Claude
+- `POST /api/optimize-openai` - Optimise a prompt with ChatGPT
 
 ## Contributing
 

@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import Anthropic from '@anthropic-ai/sdk';
+import OpenAI from 'openai';
 import { createClient } from '@/lib/supabase/server';
 
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY!,
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY!,
 });
 
 export async function POST(request: NextRequest) {
@@ -23,10 +23,9 @@ export async function POST(request: NextRequest) {
       data: { user },
     } = await supabase.auth.getUser();
 
-    // Call Claude API to optimise
-    const message = await anthropic.messages.create({
-      model: 'claude-sonnet-4-5-20250929',
-      max_tokens: 4096,
+    // Call OpenAI API to optimise
+    const completion = await openai.chat.completions.create({
+      model: 'gpt-4o',
       messages: [
         {
           role: 'user',
@@ -47,8 +46,7 @@ Please provide ONLY the optimised prompt without any explanation or meta-comment
       ],
     });
 
-    const optimizedPrompt =
-      message.content[0].type === 'text' ? message.content[0].text : prompt;
+    const optimizedPrompt = completion.choices[0]?.message?.content || prompt;
 
     // Track usage if user is authenticated
     if (user) {
@@ -61,7 +59,7 @@ Please provide ONLY the optimised prompt without any explanation or meta-comment
 
     return NextResponse.json({ optimizedPrompt });
   } catch (error) {
-    console.error('Error optimising prompt:', error);
+    console.error('Error optimising prompt with OpenAI:', error);
     return NextResponse.json(
       { error: 'Failed to optimise prompt' },
       { status: 500 }

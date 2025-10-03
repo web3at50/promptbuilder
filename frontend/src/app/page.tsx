@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { UserMenu } from '@/components/UserMenu';
 import { PublicOptimizer } from '@/components/PublicOptimizer';
-import { Plus, Search, Sparkles } from 'lucide-react';
+import { Plus, Search, Wand2 } from 'lucide-react';
 
 export default function Home() {
   const router = useRouter();
@@ -130,7 +130,7 @@ export default function Home() {
               <div>
                 <h1 className="text-2xl font-bold">Prompt Library</h1>
                 <p className="text-sm text-muted-foreground">
-                  Optimize your AI prompts with Claude
+                  Optimise your AI prompts
                 </p>
               </div>
 
@@ -161,7 +161,7 @@ export default function Home() {
             <div>
               <h1 className="text-2xl font-bold">Prompt Library</h1>
               <p className="text-sm text-muted-foreground">
-                Organize & optimize your AI prompts
+                Organise & optimise your AI prompts
               </p>
             </div>
 
@@ -215,7 +215,7 @@ export default function Home() {
               <div className="text-center mb-12">
                 <h2 className="text-3xl font-bold mb-3">Welcome to Prompt Library</h2>
                 <p className="text-lg text-muted-foreground">
-                  Save, organize, and optimize your AI prompts in one place
+                  Save, organise, and optimise your AI prompts in one place
                 </p>
               </div>
 
@@ -238,14 +238,14 @@ export default function Home() {
                 {/* Optimize a Prompt */}
                 <div className="flex flex-col p-6 border rounded-lg bg-card hover:bg-accent/50 transition-colors cursor-pointer" onClick={() => router.push('/new')}>
                   <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
-                    <Sparkles className="h-6 w-6 text-primary" />
+                    <Wand2 className="h-6 w-6 text-primary" />
                   </div>
-                  <h3 className="text-xl font-semibold mb-2">Optimize a Prompt</h3>
+                  <h3 className="text-xl font-semibold mb-2">Optimise a Prompt</h3>
                   <p className="text-muted-foreground mb-4 flex-1">
-                    Use Claude AI to improve and refine your prompts for better results
+                    Use Claude or ChatGPT to improve and refine your prompts for better results
                   </p>
                   <Button variant="outline" className="w-full gap-2" onClick={(e) => { e.stopPropagation(); router.push('/new'); }}>
-                    <Sparkles className="h-4 w-4" />
+                    <Wand2 className="h-4 w-4" />
                     Get Started
                   </Button>
                 </div>
@@ -268,7 +268,7 @@ export default function Home() {
 
               <div className="mt-12 p-6 border rounded-lg bg-muted/30 text-center">
                 <p className="text-muted-foreground">
-                  💡 <strong>Tip:</strong> Create your first prompt, then use the optimize feature to enhance it with Claude AI
+                  💡 <strong>Tip:</strong> Create your first prompt, then use the optimise feature to enhance it with Claude or ChatGPT
                 </p>
               </div>
             </div>

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Sparkles, Copy, Check, Loader2 } from 'lucide-react';
+import { Wand2, Copy, Check, Loader2 } from 'lucide-react';
 import { useDemoMode } from '@/hooks/useDemoMode';
 import { DemoBanner } from '@/components/DemoBanner';
 
@@ -12,6 +12,7 @@ export function PublicOptimizer() {
   const [prompt, setPrompt] = useState('');
   const [optimizedPrompt, setOptimizedPrompt] = useState('');
   const [loading, setLoading] = useState(false);
+  const [optimizingWith, setOptimizingWith] = useState<'claude' | 'openai' | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [showComparison, setShowComparison] = useState(false);
@@ -25,39 +26,42 @@ export function PublicOptimizer() {
     setShowSignupPrompt,
   } = useDemoMode();
 
-  const handleOptimize = async () => {
+  const handleOptimize = async (provider: 'claude' | 'openai') => {
     if (!canOptimize) {
       setShowSignupPrompt(true);
       return;
     }
 
     if (!prompt.trim()) {
-      setError('Please enter a prompt to optimize');
+      setError('Please enter a prompt to optimise');
       return;
     }
 
     setLoading(true);
+    setOptimizingWith(provider);
     setError(null);
     setOptimizedPrompt('');
 
     try {
-      const response = await fetch('/api/optimize', {
+      const endpoint = provider === 'claude' ? '/api/optimize' : '/api/optimize-openai';
+      const response = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ prompt }),
       });
 
-      if (!response.ok) throw new Error('Failed to optimize prompt');
+      if (!response.ok) throw new Error('Failed to optimise prompt');
 
       const data = await response.json();
       setOptimizedPrompt(data.optimizedPrompt);
       setShowComparison(true);
       recordOptimization();
     } catch (err) {
-      setError('Failed to optimize prompt. Please try again.');
+      setError('Failed to optimise prompt. Please try again.');
       console.error(err);
     } finally {
       setLoading(false);
+      setOptimizingWith(null);
     }
   };
 
@@ -86,14 +90,14 @@ export function PublicOptimizer() {
       {/* Hero Section */}
       <div className="container mx-auto px-4 py-16">
         <div className="max-w-4xl mx-auto text-center mb-12">
-          <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent">
-            Optimize Your AI Prompts with Claude
+          <h1 className="text-5xl font-bold mb-4">
+            Optimise Your AI Prompts
           </h1>
           <p className="text-xl text-muted-foreground mb-2">
-            Get better AI results with professionally optimized prompts
+            Get better AI results with professionally optimised prompts using Claude or ChatGPT
           </p>
           <p className="text-sm text-muted-foreground">
-            ✨ Try it free • No account needed • {remainingOptimizations} {remainingOptimizations === 1 ? 'optimization' : 'optimizations'} remaining
+            ✨ Try it free • No account needed • {remainingOptimizations} {remainingOptimizations === 1 ? 'optimisation' : 'optimisations'} remaining
           </p>
         </div>
 
@@ -102,11 +106,11 @@ export function PublicOptimizer() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Sparkles className="h-5 w-5 text-primary" />
+                <Wand2 className="h-5 w-5 text-primary" />
                 Enter Your Prompt
               </CardTitle>
               <CardDescription>
-                Paste any AI prompt and we&apos;ll optimize it for better results
+                Paste any AI prompt and we&apos;ll optimise it for better results
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -134,24 +138,45 @@ export function PublicOptimizer() {
                 </div>
               )}
 
-              <Button
-                onClick={handleOptimize}
-                disabled={loading || !prompt.trim() || !canOptimize}
-                size="lg"
-                className="w-full gap-2"
-              >
-                {loading ? (
-                  <>
-                    <Loader2 className="h-5 w-5 animate-spin" />
-                    Optimizing with Claude AI...
-                  </>
-                ) : (
-                  <>
-                    <Sparkles className="h-5 w-5" />
-                    Optimize with AI
-                  </>
-                )}
-              </Button>
+              <div className="grid md:grid-cols-2 gap-3">
+                <Button
+                  onClick={() => handleOptimize('claude')}
+                  disabled={loading || !prompt.trim() || !canOptimize}
+                  size="lg"
+                  className="gap-2"
+                >
+                  {loading && optimizingWith === 'claude' ? (
+                    <>
+                      <Loader2 className="h-5 w-5 animate-spin" />
+                      Optimising...
+                    </>
+                  ) : (
+                    <>
+                      <Wand2 className="h-5 w-5" />
+                      Optimise with Claude
+                    </>
+                  )}
+                </Button>
+                <Button
+                  onClick={() => handleOptimize('openai')}
+                  disabled={loading || !prompt.trim() || !canOptimize}
+                  size="lg"
+                  variant="outline"
+                  className="gap-2"
+                >
+                  {loading && optimizingWith === 'openai' ? (
+                    <>
+                      <Loader2 className="h-5 w-5 animate-spin" />
+                      Optimising...
+                    </>
+                  ) : (
+                    <>
+                      <Wand2 className="h-5 w-5" />
+                      Optimise with ChatGPT
+                    </>
+                  )}
+                </Button>
+              </div>
             </CardContent>
           </Card>
 
@@ -162,7 +187,7 @@ export function PublicOptimizer() {
                 <div className="flex items-center justify-between">
                   <CardTitle className="flex items-center gap-2">
                     <Check className="h-5 w-5 text-green-500" />
-                    Optimized Result
+                    Optimised Result
                   </CardTitle>
                   <Button
                     variant="outline"
@@ -189,7 +214,7 @@ export function PublicOptimizer() {
                     </div>
                     <div className="space-y-2">
                       <h4 className="text-sm font-medium text-primary">
-                        ✨ Optimized
+                        ✨ Optimised
                       </h4>
                       <div className="p-4 bg-primary/5 border border-primary/20 rounded-lg text-sm whitespace-pre-wrap">
                         {optimizedPrompt}
@@ -218,7 +243,7 @@ export function PublicOptimizer() {
                     ) : (
                       <>
                         <Copy className="h-4 w-4" />
-                        Copy Optimized Prompt
+                        Copy Optimised Prompt
                       </>
                     )}
                   </Button>
@@ -229,14 +254,14 @@ export function PublicOptimizer() {
 
           {/* CTA after optimization */}
           {optimizedPrompt && (
-            <Card className="bg-gradient-to-r from-primary/10 via-purple-500/10 to-pink-500/10 border-primary/20">
+            <Card className="bg-muted/50 border-border">
               <CardContent className="pt-6">
                 <div className="text-center space-y-4">
                   <h3 className="text-xl font-semibold">
                     💾 Want to save this prompt?
                   </h3>
                   <p className="text-muted-foreground">
-                    Create a free account to save unlimited prompts, organize with tags, and access from anywhere
+                    Create a free account to save unlimited prompts, organise with tags, and access from anywhere
                   </p>
                   <div className="flex gap-3 justify-center flex-wrap">
                     <Button size="lg" onClick={() => window.location.href = '/signup'}>
@@ -253,26 +278,26 @@ export function PublicOptimizer() {
 
           {/* Limit reached message */}
           {!canOptimize && !showSignupPrompt && (
-            <Card className="bg-gradient-to-r from-orange-500/10 to-red-500/10 border-orange-500/20">
+            <Card className="bg-muted/50 border-border">
               <CardContent className="pt-6">
                 <div className="text-center space-y-4">
                   <h3 className="text-2xl font-semibold">
-                    🎉 You&apos;ve used all 3 free optimizations!
+                    🎉 You&apos;ve used all 3 free optimisations!
                   </h3>
                   <p className="text-muted-foreground max-w-2xl mx-auto">
-                    Create a free account to get unlimited AI optimizations, save your prompts to a personal library, and access them from anywhere.
+                    Create a free account to get unlimited AI optimisations, save your prompts to a personal library, and access them from anywhere.
                   </p>
                   <div className="grid md:grid-cols-3 gap-4 max-w-3xl mx-auto text-left">
                     <div className="p-4 bg-background rounded-lg">
                       <div className="text-2xl mb-2">🚀</div>
-                      <h4 className="font-semibold mb-1">Unlimited Optimizations</h4>
+                      <h4 className="font-semibold mb-1">Unlimited Optimisations</h4>
                       <p className="text-sm text-muted-foreground">
-                        Optimize as many prompts as you want with Claude AI
+                        Optimise as many prompts as you want with Claude or ChatGPT
                       </p>
                     </div>
                     <div className="p-4 bg-background rounded-lg">
                       <div className="text-2xl mb-2">💾</div>
-                      <h4 className="font-semibold mb-1">Save & Organize</h4>
+                      <h4 className="font-semibold mb-1">Save & Organise</h4>
                       <p className="text-sm text-muted-foreground">
                         Build your personal prompt library with tags and search
                       </p>
