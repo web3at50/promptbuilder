@@ -86,16 +86,11 @@ export default function Home() {
       <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
         <div className="container mx-auto px-4 py-6">
           <div className="flex items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-lg bg-primary flex items-center justify-center">
-                <Sparkles className="h-6 w-6 text-primary-foreground" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold">Prompt Library</h1>
-                <p className="text-sm text-muted-foreground">
-                  Organize & optimize your AI prompts
-                </p>
-              </div>
+            <div>
+              <h1 className="text-2xl font-bold">Prompt Library</h1>
+              <p className="text-sm text-muted-foreground">
+                Organize & optimize your AI prompts
+              </p>
             </div>
 
             <div className="flex items-center gap-3">
@@ -133,25 +128,79 @@ export default function Home() {
             </div>
           </div>
         ) : filteredPrompts.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-20 text-center">
-            <div className="h-20 w-20 rounded-full bg-muted flex items-center justify-center mb-4">
-              <Sparkles className="h-10 w-10 text-muted-foreground" />
+          searchQuery ? (
+            <div className="flex flex-col items-center justify-center py-20 text-center">
+              <div className="h-20 w-20 rounded-full bg-muted flex items-center justify-center mb-4">
+                <Search className="h-10 w-10 text-muted-foreground" />
+              </div>
+              <h2 className="text-2xl font-semibold mb-2">No prompts found</h2>
+              <p className="text-muted-foreground mb-6 max-w-md">
+                Try adjusting your search query
+              </p>
             </div>
-            <h2 className="text-2xl font-semibold mb-2">
-              {searchQuery ? 'No prompts found' : 'No prompts yet'}
-            </h2>
-            <p className="text-muted-foreground mb-6 max-w-md">
-              {searchQuery
-                ? 'Try adjusting your search query'
-                : 'Get started by creating your first AI prompt'}
-            </p>
-            {!searchQuery && (
-              <Button onClick={() => router.push('/new')} size="lg" className="gap-2">
-                <Plus className="h-5 w-5" />
-                Create Your First Prompt
-              </Button>
-            )}
-          </div>
+          ) : (
+            <div className="max-w-4xl mx-auto py-12">
+              <div className="text-center mb-12">
+                <h2 className="text-3xl font-bold mb-3">Welcome to Prompt Library</h2>
+                <p className="text-lg text-muted-foreground">
+                  Save, organize, and optimize your AI prompts in one place
+                </p>
+              </div>
+
+              <div className="grid md:grid-cols-3 gap-6">
+                {/* Create a Prompt */}
+                <div className="flex flex-col p-6 border rounded-lg bg-card hover:bg-accent/50 transition-colors cursor-pointer" onClick={() => router.push('/new')}>
+                  <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
+                    <Plus className="h-6 w-6 text-primary" />
+                  </div>
+                  <h3 className="text-xl font-semibold mb-2">Create a Prompt</h3>
+                  <p className="text-muted-foreground mb-4 flex-1">
+                    Start building your library by creating your first AI prompt
+                  </p>
+                  <Button className="w-full gap-2" onClick={(e) => { e.stopPropagation(); router.push('/new'); }}>
+                    <Plus className="h-4 w-4" />
+                    New Prompt
+                  </Button>
+                </div>
+
+                {/* Optimize a Prompt */}
+                <div className="flex flex-col p-6 border rounded-lg bg-card hover:bg-accent/50 transition-colors cursor-pointer" onClick={() => router.push('/new')}>
+                  <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
+                    <Sparkles className="h-6 w-6 text-primary" />
+                  </div>
+                  <h3 className="text-xl font-semibold mb-2">Optimize a Prompt</h3>
+                  <p className="text-muted-foreground mb-4 flex-1">
+                    Use Claude AI to improve and refine your prompts for better results
+                  </p>
+                  <Button variant="outline" className="w-full gap-2" onClick={(e) => { e.stopPropagation(); router.push('/new'); }}>
+                    <Sparkles className="h-4 w-4" />
+                    Get Started
+                  </Button>
+                </div>
+
+                {/* Search Prompts */}
+                <div className="flex flex-col p-6 border rounded-lg bg-card hover:bg-accent/50 transition-colors opacity-60">
+                  <div className="h-12 w-12 rounded-lg bg-muted flex items-center justify-center mb-4">
+                    <Search className="h-6 w-6 text-muted-foreground" />
+                  </div>
+                  <h3 className="text-xl font-semibold mb-2">Search Prompts</h3>
+                  <p className="text-muted-foreground mb-4 flex-1">
+                    Quickly find any prompt by searching title, content, or tags
+                  </p>
+                  <Button variant="outline" className="w-full gap-2" disabled>
+                    <Search className="h-4 w-4" />
+                    Create prompts first
+                  </Button>
+                </div>
+              </div>
+
+              <div className="mt-12 p-6 border rounded-lg bg-muted/30 text-center">
+                <p className="text-muted-foreground">
+                  💡 <strong>Tip:</strong> Create your first prompt, then use the optimize feature to enhance it with Claude AI
+                </p>
+              </div>
+            </div>
+          )
         ) : (
           <div className="space-y-12">
             {/* Favorites Section */}

@@ -9,11 +9,8 @@ export default function SignUpPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 flex items-center justify-center p-4">
       <div className="w-full max-w-md space-y-6">
-        {/* Logo/Brand */}
+        {/* Brand */}
         <div className="flex flex-col items-center gap-2 text-center">
-          <div className="h-12 w-12 rounded-lg bg-primary flex items-center justify-center">
-            <Sparkles className="h-7 w-7 text-primary-foreground" />
-          </div>
           <h1 className="text-2xl font-bold">Prompt Library</h1>
           <p className="text-sm text-muted-foreground">
             Create an account to save and optimize your prompts
