@@ -8,8 +8,7 @@ import { PromptCard } from '@/components/PromptCard';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { UserMenu } from '@/components/UserMenu';
-import { PublicOptimizer } from '@/components/PublicOptimizer';
-import { Plus, Search, Wand2 } from 'lucide-react';
+import { Plus, Search, Wand2, Sparkles, Save, Zap } from 'lucide-react';
 
 export default function Home() {
   const router = useRouter();
@@ -119,10 +118,10 @@ export default function Home() {
     );
   }
 
-  // Show public optimizer for unauthenticated users
+  // Show explainer page for unauthenticated users
   if (!isAuthenticated) {
     return (
-      <div>
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
         {/* Header for unauthenticated users */}
         <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-40">
           <div className="container mx-auto px-4 py-6">
@@ -130,7 +129,7 @@ export default function Home() {
               <div>
                 <h1 className="text-2xl font-bold">Prompt Library</h1>
                 <p className="text-sm text-muted-foreground">
-                  Optimise your AI prompts
+                  Create, optimise, and save your AI prompts
                 </p>
               </div>
 
@@ -146,7 +145,134 @@ export default function Home() {
           </div>
         </header>
 
-        <PublicOptimizer />
+        {/* Explainer Page Content */}
+        <main className="container mx-auto px-4 py-16">
+          {/* Hero Section */}
+          <div className="max-w-4xl mx-auto text-center mb-16">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary font-medium mb-6">
+              <Sparkles className="h-4 w-4" />
+              <span>Free to use with sign up</span>
+            </div>
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+              Your Personal Prompt Library
+            </h2>
+            <p className="text-xl text-muted-foreground mb-8">
+              Create, optimise, and organise your AI prompts in one place.
+              Get better results from Claude, ChatGPT, and other language models.
+            </p>
+            <div className="flex items-center justify-center gap-4">
+              <Button size="lg" onClick={() => router.push('/signup')} className="gap-2">
+                <Plus className="h-5 w-5" />
+                Get Started Free
+              </Button>
+              <Button size="lg" variant="outline" onClick={() => router.push('/login')}>
+                Sign In
+              </Button>
+            </div>
+          </div>
+
+          {/* Features Grid */}
+          <div className="max-w-5xl mx-auto grid md:grid-cols-3 gap-8 mb-16">
+            {/* Feature 1: Create & Save */}
+            <div className="flex flex-col p-8 border rounded-lg bg-card">
+              <div className="h-14 w-14 rounded-lg bg-primary/10 flex items-center justify-center mb-6">
+                <Save className="h-7 w-7 text-primary" />
+              </div>
+              <h3 className="text-2xl font-semibold mb-3">Create & Save</h3>
+              <p className="text-muted-foreground leading-relaxed">
+                Build a library of your best prompts. Organize them with tags,
+                mark favorites, and search through your collection instantly.
+              </p>
+            </div>
+
+            {/* Feature 2: AI Optimization */}
+            <div className="flex flex-col p-8 border rounded-lg bg-card">
+              <div className="h-14 w-14 rounded-lg bg-primary/10 flex items-center justify-center mb-6">
+                <Wand2 className="h-7 w-7 text-primary" />
+              </div>
+              <h3 className="text-2xl font-semibold mb-3">AI Optimization</h3>
+              <p className="text-muted-foreground leading-relaxed">
+                Improve your prompts with Claude or OpenAI. Get expert suggestions
+                to make your prompts clearer, more effective, and better structured.
+              </p>
+            </div>
+
+            {/* Feature 3: Multi-Model Support */}
+            <div className="flex flex-col p-8 border rounded-lg bg-card">
+              <div className="h-14 w-14 rounded-lg bg-primary/10 flex items-center justify-center mb-6">
+                <Zap className="h-7 w-7 text-primary" />
+              </div>
+              <h3 className="text-2xl font-semibold mb-3">Multi-Model Support</h3>
+              <p className="text-muted-foreground leading-relaxed">
+                Optimize with Claude and OpenAI, with support for more AI models
+                coming soon. Choose the best model for your use case.
+              </p>
+            </div>
+          </div>
+
+          {/* How It Works Section */}
+          <div className="max-w-3xl mx-auto mb-16">
+            <h3 className="text-3xl font-bold text-center mb-12">How It Works</h3>
+            <div className="space-y-6">
+              <div className="flex gap-4 items-start">
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-semibold">
+                  1
+                </div>
+                <div>
+                  <h4 className="font-semibold text-lg mb-1">Sign up for free</h4>
+                  <p className="text-muted-foreground">
+                    Create your account in seconds. No credit card required.
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-4 items-start">
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-semibold">
+                  2
+                </div>
+                <div>
+                  <h4 className="font-semibold text-lg mb-1">Create your prompts</h4>
+                  <p className="text-muted-foreground">
+                    Write and save your prompts with titles, tags, and descriptions.
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-4 items-start">
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-semibold">
+                  3
+                </div>
+                <div>
+                  <h4 className="font-semibold text-lg mb-1">Optimize with AI</h4>
+                  <p className="text-muted-foreground">
+                    Use Claude or OpenAI to refine and improve your prompts for better results.
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-4 items-start">
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-semibold">
+                  4
+                </div>
+                <div>
+                  <h4 className="font-semibold text-lg mb-1">Build your library</h4>
+                  <p className="text-muted-foreground">
+                    Organize, search, and manage all your prompts in one place.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* CTA Section */}
+          <div className="max-w-2xl mx-auto text-center p-8 border rounded-lg bg-card">
+            <h3 className="text-2xl font-bold mb-4">Ready to get started?</h3>
+            <p className="text-muted-foreground mb-6">
+              Sign up now and start building your prompt library. Completely free to use.
+            </p>
+            <Button size="lg" onClick={() => router.push('/signup')} className="gap-2">
+              <Plus className="h-5 w-5" />
+              Create Your Free Account
+            </Button>
+          </div>
+        </main>
       </div>
     );
   }

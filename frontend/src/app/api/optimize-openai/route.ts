@@ -18,10 +18,17 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check if user is authenticated (for tracking usage)
+    // Check if user is authenticated - require authentication
     const {
       data: { user },
     } = await supabase.auth.getUser();
+
+    if (!user) {
+      return NextResponse.json(
+        { error: 'Authentication required' },
+        { status: 401 }
+      );
+    }
 
     // Call OpenAI API to optimise
     const completion = await openai.chat.completions.create({
@@ -48,14 +55,12 @@ Please provide ONLY the optimised prompt without any explanation or meta-comment
 
     const optimizedPrompt = completion.choices[0]?.message?.content || prompt;
 
-    // Track usage if user is authenticated
-    if (user) {
-      await supabase.from('optimization_usage').insert([
-        {
-          user_id: user.id,
-        },
-      ]);
-    }
+    // Track usage
+    await supabase.from('optimization_usage').insert([
+      {
+        user_id: user.id,
+      },
+    ]);
 
     return NextResponse.json({ optimizedPrompt });
   } catch (error) {

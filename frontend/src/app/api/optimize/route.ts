@@ -18,10 +18,17 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check if user is authenticated (for tracking usage)
+    // Check if user is authenticated - require authentication
     const {
       data: { user },
     } = await supabase.auth.getUser();
+
+    if (!user) {
+      return NextResponse.json(
+        { error: 'Authentication required' },
+        { status: 401 }
+      );
+    }
 
     // Call Claude API to optimise
     const message = await anthropic.messages.create({
@@ -50,14 +57,12 @@ Please provide ONLY the optimised prompt without any explanation or meta-comment
     const optimizedPrompt =
       message.content[0].type === 'text' ? message.content[0].text : prompt;
 
-    // Track usage if user is authenticated
-    if (user) {
-      await supabase.from('optimization_usage').insert([
-        {
-          user_id: user.id,
-        },
-      ]);
-    }
+    // Track usage
+    await supabase.from('optimization_usage').insert([
+      {
+        user_id: user.id,
+      },
+    ]);
 
     return NextResponse.json({ optimizedPrompt });
   } catch (error) {
