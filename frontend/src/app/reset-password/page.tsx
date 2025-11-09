@@ -3,10 +3,14 @@ import { PasswordResetForm } from '@/components/auth/PasswordResetForm';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { Sparkles, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { ThemeToggle } from '@/components/theme-toggle';
 
 export default function ResetPasswordPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 flex items-center justify-center p-4">
+      <div className="absolute top-4 right-4">
+        <ThemeToggle />
+      </div>
       <div className="w-full max-w-md space-y-6">
         {/* Logo/Brand */}
         <div className="flex flex-col items-center gap-2 text-center">

@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft, Calendar, FileText, Sparkles, Mail } from 'lucide-react';
 import Link from 'next/link';
 import { SignOutButton } from '@/components/SignOutButton';
+import { ThemeToggle } from '@/components/theme-toggle';
 
 export default async function ProfilePage() {
   const supabase = await createClient();
@@ -49,12 +50,15 @@ export default async function ProfilePage() {
       {/* Header */}
       <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto px-4 py-4">
-          <Link href="/">
-            <Button variant="ghost" className="gap-2">
-              <ArrowLeft className="h-4 w-4" />
-              Back to Library
-            </Button>
-          </Link>
+          <div className="flex items-center justify-between gap-4">
+            <Link href="/">
+              <Button variant="ghost" className="gap-2">
+                <ArrowLeft className="h-4 w-4" />
+                Back to Library
+              </Button>
+            </Link>
+            <ThemeToggle />
+          </div>
         </div>
       </header>
 

@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { MarkdownEditor } from '@/components/MarkdownEditor';
 import { Badge } from '@/components/ui/badge';
+import { ThemeToggle } from '@/components/theme-toggle';
 import { ArrowLeft, Save, X, Star } from 'lucide-react';
 import { Prompt } from '@/types';
 
@@ -120,6 +121,7 @@ export default function EditPromptPage({
             </Button>
 
             <div className="flex gap-2">
+              <ThemeToggle />
               <Button
                 variant="outline"
                 onClick={() => setFavorite(!favorite)}

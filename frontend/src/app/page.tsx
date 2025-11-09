@@ -8,6 +8,7 @@ import { PromptCard } from '@/components/PromptCard';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { UserMenu } from '@/components/UserMenu';
+import { ThemeToggle } from '@/components/theme-toggle';
 import { Plus, Search, Wand2, Sparkles, Save, Zap } from 'lucide-react';
 
 export default function Home() {
@@ -134,6 +135,7 @@ export default function Home() {
               </div>
 
               <div className="flex items-center gap-3">
+                <ThemeToggle />
                 <Button variant="outline" onClick={() => router.push('/login')}>
                   Sign In
                 </Button>
@@ -292,6 +294,7 @@ export default function Home() {
             </div>
 
             <div className="flex items-center gap-3">
+              <ThemeToggle />
               <Button onClick={() => router.push('/new')} size="lg" className="gap-2">
                 <Plus className="h-5 w-5" />
                 New Prompt

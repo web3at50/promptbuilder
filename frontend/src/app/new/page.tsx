@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { MarkdownEditor } from '@/components/MarkdownEditor';
 import { Badge } from '@/components/ui/badge';
+import { ThemeToggle } from '@/components/theme-toggle';
 import { ArrowLeft, Save, X } from 'lucide-react';
 
 export default function NewPromptPage() {
@@ -71,14 +72,17 @@ export default function NewPromptPage() {
               Back to Library
             </Button>
 
-            <Button
-              onClick={handleSave}
-              disabled={saving || !title.trim() || !content.trim()}
-              className="gap-2"
-            >
-              <Save className="h-4 w-4" />
-              {saving ? 'Saving...' : 'Save Prompt'}
-            </Button>
+            <div className="flex items-center gap-3">
+              <ThemeToggle />
+              <Button
+                onClick={handleSave}
+                disabled={saving || !title.trim() || !content.trim()}
+                className="gap-2"
+              >
+                <Save className="h-4 w-4" />
+                {saving ? 'Saving...' : 'Save Prompt'}
+              </Button>
+            </div>
           </div>
         </div>
       </header>
