@@ -65,8 +65,8 @@ export type Profile = {
   first_name: string | null;
   last_name: string | null;
   avatar_url: string | null;
-  clerk_metadata: Record<string, any>;
-  preferences: Record<string, any>;
+  clerk_metadata: Record<string, unknown>;
+  preferences: Record<string, unknown>;
   subscription_tier: 'free' | 'pro' | 'enterprise';
   created_at: string;
   updated_at: string;

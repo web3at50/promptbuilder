@@ -49,7 +49,12 @@ export async function POST(request: NextRequest) {
 
       if (existingPrompt) {
         // Only store original_prompt if this is the first optimization
-        const updates: any = {
+        const updates: {
+          optimization_count: number;
+          last_optimized_at: string;
+          optimized_with: string;
+          original_prompt?: string;
+        } = {
           optimization_count: (existingPrompt.optimization_count || 0) + 1,
           last_optimized_at: new Date().toISOString(),
           optimized_with: MODEL,

@@ -5,7 +5,7 @@
  */
 
 import { SupabaseClient } from '@supabase/supabase-js';
-import { calculateCost, getProviderFromModel } from './pricing';
+import { calculateCost } from './pricing';
 
 export type AIProvider = 'anthropic' | 'openai';
 export type OperationType = 'optimize' | 'generate' | 'analyze' | 'chat';
