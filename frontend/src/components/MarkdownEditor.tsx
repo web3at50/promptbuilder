@@ -14,6 +14,7 @@ interface MarkdownEditorProps {
   onChange: (value: string) => void;
   placeholder?: string;
   promptId?: string;
+  onBeforeOptimize?: () => Promise<string | undefined>;
 }
 
 export function MarkdownEditor({
@@ -21,6 +22,7 @@ export function MarkdownEditor({
   onChange,
   placeholder = 'Write your prompt here...',
   promptId,
+  onBeforeOptimize,
 }: MarkdownEditorProps) {
   const [isOptimizing, setIsOptimizing] = useState(false);
   const [optimizingWith, setOptimizingWith] = useState<'claude' | 'openai' | null>(null);
@@ -30,7 +32,20 @@ export function MarkdownEditor({
 
     console.log('[MarkdownEditor] handleOptimize called with promptId:', promptId);
 
-    if (!promptId) {
+    // If no promptId and onBeforeOptimize callback exists, try to auto-save first
+    let finalPromptId = promptId;
+    if (!finalPromptId && onBeforeOptimize) {
+      console.log('[MarkdownEditor] No promptId - calling onBeforeOptimize to auto-save...');
+      const savedId = await onBeforeOptimize();
+      if (!savedId) {
+        console.log('[MarkdownEditor] Auto-save failed or was cancelled');
+        return; // Don't proceed if auto-save failed
+      }
+      finalPromptId = savedId;
+      console.log('[MarkdownEditor] Auto-save successful, using promptId:', finalPromptId);
+    }
+
+    if (!finalPromptId) {
       console.warn('[MarkdownEditor] WARNING: promptId is undefined/null - optimization tracking will not work!');
     }
 
@@ -38,7 +53,7 @@ export function MarkdownEditor({
     setOptimizingWith(provider);
     try {
       const endpoint = provider === 'claude' ? '/api/optimize' : '/api/optimize-openai';
-      const requestBody = { prompt: value, promptId };
+      const requestBody = { prompt: value, promptId: finalPromptId };
       console.log('[MarkdownEditor] Sending request to', endpoint, 'with body:', requestBody);
 
       const response = await fetch(endpoint, {

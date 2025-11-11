@@ -17,6 +17,7 @@ export default function NewPromptPage() {
   const [tagInput, setTagInput] = useState('');
   const [tags, setTags] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
+  const [promptId, setPromptId] = useState<string | null>(null);
 
   const handleAddTag = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && tagInput.trim()) {
@@ -32,13 +33,18 @@ export default function NewPromptPage() {
     setTags(tags.filter((tag) => tag !== tagToRemove));
   };
 
-  const handleSave = async () => {
+  const handleAutoSave = async (): Promise<string | undefined> => {
+    // If already saved, return existing promptId
+    if (promptId) return promptId;
+
+    // Require title before auto-saving
     if (!title.trim() || !content.trim()) {
-      alert('Please provide both a title and content for your prompt.');
-      return;
+      alert('Please provide a title and content before optimizing.');
+      return undefined;
     }
 
-    setSaving(true);
+    console.log('[New Page] Auto-saving prompt before optimization...');
+
     try {
       const response = await fetch('/api/prompts', {
         method: 'POST',
@@ -48,10 +54,50 @@ export default function NewPromptPage() {
 
       if (!response.ok) throw new Error('Failed to create prompt');
 
+      const savedPrompt = await response.json();
+      setPromptId(savedPrompt.id);
+      console.log('[New Page] Auto-saved prompt with ID:', savedPrompt.id);
+
+      return savedPrompt.id;
+    } catch (error) {
+      console.error('Error auto-saving prompt:', error);
+      alert('Failed to save prompt. Please try again.');
+      return undefined;
+    }
+  };
+
+  const handleSave = async () => {
+    if (!title.trim() || !content.trim()) {
+      alert('Please provide both a title and content for your prompt.');
+      return;
+    }
+
+    setSaving(true);
+    try {
+      // If prompt was auto-saved during optimization, update it
+      if (promptId) {
+        const response = await fetch(`/api/prompts/${promptId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ title, content, tags }),
+        });
+
+        if (!response.ok) throw new Error('Failed to update prompt');
+      } else {
+        // Otherwise create a new prompt
+        const response = await fetch('/api/prompts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ title, content, tags }),
+        });
+
+        if (!response.ok) throw new Error('Failed to create prompt');
+      }
+
       router.push('/');
     } catch (error) {
-      console.error('Error creating prompt:', error);
-      alert('Failed to create prompt. Please try again.');
+      console.error('Error saving prompt:', error);
+      alert('Failed to save prompt. Please try again.');
     } finally {
       setSaving(false);
     }
@@ -144,6 +190,8 @@ export default function NewPromptPage() {
                 value={content}
                 onChange={setContent}
                 placeholder="Write your prompt here... You can use markdown formatting!"
+                promptId={promptId || undefined}
+                onBeforeOptimize={handleAutoSave}
               />
             </div>
           </CardContent>
