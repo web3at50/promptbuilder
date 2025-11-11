@@ -50,7 +50,7 @@ export interface AnthropicMessageResponse {
 export interface OpenAICompletionResponse {
   id: string;
   model: string;
-  usage: {
+  usage?: {
     prompt_tokens: number;
     completion_tokens: number;
     total_tokens: number;
@@ -159,9 +159,9 @@ export function createOpenAIUsageLog(
   promptId?: string,
   operationType: OperationType = 'optimize'
 ): UsageLogData {
-  const inputTokens = response.usage.prompt_tokens;
-  const outputTokens = response.usage.completion_tokens;
-  const totalTokens = response.usage.total_tokens;
+  const inputTokens = response.usage?.prompt_tokens || 0;
+  const outputTokens = response.usage?.completion_tokens || 0;
+  const totalTokens = response.usage?.total_tokens || 0;
   const cost = calculateCost(response.model, inputTokens, outputTokens);
 
   return {
