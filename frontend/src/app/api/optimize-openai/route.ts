@@ -9,11 +9,10 @@ import {
   startTimer,
 } from '@/lib/usage-logger';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY!,
-});
-
 export async function POST(request: NextRequest) {
+  const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY || '',
+  });
   const MODEL = 'gpt-4o';
   const timer = startTimer();
   let supabase: Awaited<ReturnType<typeof createClerkSupabaseClient>> | undefined;

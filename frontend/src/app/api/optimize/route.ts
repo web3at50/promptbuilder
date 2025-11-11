@@ -9,11 +9,10 @@ import {
   startTimer,
 } from '@/lib/usage-logger';
 
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY!,
-});
-
 export async function POST(request: NextRequest) {
+  const anthropic = new Anthropic({
+    apiKey: process.env.ANTHROPIC_API_KEY || '',
+  });
   const MODEL = 'claude-sonnet-4-5-20250929';
   const timer = startTimer();
   let supabase: Awaited<ReturnType<typeof createClerkSupabaseClient>> | undefined;

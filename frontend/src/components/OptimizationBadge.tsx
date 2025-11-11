@@ -1,7 +1,7 @@
 'use client';
 
 import { Badge } from '@/components/ui/badge';
-import { Sparkles, Calendar, Hash, DollarSign, Zap, Brain } from 'lucide-react';
+import { Sparkles, Calendar, Hash, DollarSign, Brain } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 
 interface OptimizationBadgeProps {
@@ -89,7 +89,7 @@ export function DetailedOptimizationStats({
     return (
       <div className="p-4 bg-muted/50 rounded-lg border border-dashed">
         <p className="text-sm text-muted-foreground text-center">
-          This prompt hasn't been optimized yet. Click the optimize buttons below to improve it with AI.
+          This prompt hasn&apos;t been optimized yet. Click the optimize buttons below to improve it with AI.
         </p>
       </div>
     );

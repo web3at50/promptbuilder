@@ -8,7 +8,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { MarkdownEditor } from '@/components/MarkdownEditor';
 import { Badge } from '@/components/ui/badge';
 import { ThemeToggle } from '@/components/theme-toggle';
-import { ArrowLeft, Save, X, Star, Eye, GitCompare, RotateCcw } from 'lucide-react';
+import { ArrowLeft, Save, X, Star, Eye, GitCompare } from 'lucide-react';
 import { Prompt } from '@/types';
 import { OriginalPromptModal } from '@/components/OriginalPromptModal';
 import { BeforeAfterModal } from '@/components/BeforeAfterModal';
