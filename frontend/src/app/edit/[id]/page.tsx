@@ -8,8 +8,11 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { MarkdownEditor } from '@/components/MarkdownEditor';
 import { Badge } from '@/components/ui/badge';
 import { ThemeToggle } from '@/components/theme-toggle';
-import { ArrowLeft, Save, X, Star } from 'lucide-react';
+import { ArrowLeft, Save, X, Star, Eye, GitCompare, RotateCcw } from 'lucide-react';
 import { Prompt } from '@/types';
+import { OriginalPromptModal } from '@/components/OriginalPromptModal';
+import { BeforeAfterModal } from '@/components/BeforeAfterModal';
+import { DetailedOptimizationStats } from '@/components/OptimizationBadge';
 
 export default function EditPromptPage({
   params,
@@ -25,6 +28,11 @@ export default function EditPromptPage({
   const [favorite, setFavorite] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+
+  // Optimization tracking fields
+  const [promptData, setPromptData] = useState<Prompt | null>(null);
+  const [showOriginalModal, setShowOriginalModal] = useState(false);
+  const [showCompareModal, setShowCompareModal] = useState(false);
 
   useEffect(() => {
     const loadPrompt = async () => {
@@ -43,6 +51,7 @@ export default function EditPromptPage({
       if (!response.ok) throw new Error('Failed to fetch prompt');
 
       const prompt: Prompt = await response.json();
+      setPromptData(prompt);
       setTitle(prompt.title);
       setContent(prompt.content);
       setTags(prompt.tags);
@@ -53,6 +62,12 @@ export default function EditPromptPage({
       router.push('/');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleRestoreOriginal = () => {
+    if (promptData?.original_prompt) {
+      setContent(promptData.original_prompt);
     }
   };
 
@@ -191,6 +206,42 @@ export default function EditPromptPage({
               />
             </div>
 
+            {/* Optimization Stats and Actions */}
+            {promptData && promptData.optimization_count > 0 && (
+              <div className="space-y-3">
+                <DetailedOptimizationStats
+                  optimizationCount={promptData.optimization_count}
+                  optimizedWith={promptData.optimized_with}
+                  lastOptimizedAt={promptData.last_optimized_at}
+                />
+
+                <div className="flex flex-wrap gap-2">
+                  {promptData.original_prompt && (
+                    <>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setShowOriginalModal(true)}
+                        className="gap-2"
+                      >
+                        <Eye className="h-4 w-4" />
+                        View Original
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setShowCompareModal(true)}
+                        className="gap-2"
+                      >
+                        <GitCompare className="h-4 w-4" />
+                        Compare Before & After
+                      </Button>
+                    </>
+                  )}
+                </div>
+              </div>
+            )}
+
             {/* Tags Input */}
             <div className="space-y-2">
               <label htmlFor="tags" className="text-sm font-medium">
@@ -236,6 +287,28 @@ export default function EditPromptPage({
           </CardContent>
         </Card>
       </main>
+
+      {/* Modals */}
+      {promptData?.original_prompt && (
+        <>
+          <OriginalPromptModal
+            isOpen={showOriginalModal}
+            onClose={() => setShowOriginalModal(false)}
+            originalPrompt={promptData.original_prompt}
+            currentPrompt={content}
+            createdAt={promptData.created_at}
+            onRestore={handleRestoreOriginal}
+          />
+          <BeforeAfterModal
+            isOpen={showCompareModal}
+            onClose={() => setShowCompareModal(false)}
+            originalPrompt={promptData.original_prompt}
+            currentPrompt={content}
+            optimizationCount={promptData.optimization_count}
+            optimizedWith={promptData.optimized_with}
+          />
+        </>
+      )}
     </div>
   );
 }

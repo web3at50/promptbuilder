@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Prompt } from '@/types';
 import { Pencil, Trash2, Star } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
+import { OptimizationBadge } from '@/components/OptimizationBadge';
 
 interface PromptCardProps {
   prompt: Prompt;
@@ -53,6 +54,15 @@ export function PromptCard({
               </Badge>
             ))}
           </div>
+        )}
+
+        {/* Optimization Badge */}
+        {prompt.optimization_count > 0 && (
+          <OptimizationBadge
+            optimizationCount={prompt.optimization_count}
+            optimizedWith={prompt.optimized_with}
+            lastOptimizedAt={prompt.last_optimized_at}
+          />
         )}
       </CardHeader>
 
