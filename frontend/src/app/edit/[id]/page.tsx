@@ -69,6 +69,30 @@ export default function EditPromptPage({
     setTags(tags.filter((tag) => tag !== tagToRemove));
   };
 
+  const handleToggleFavorite = async () => {
+    if (!promptId) return;
+
+    const newFavoriteState = !favorite;
+    setFavorite(newFavoriteState);
+
+    try {
+      const response = await fetch(`/api/prompts/${promptId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ favorite: newFavoriteState }),
+      });
+
+      if (!response.ok) {
+        // Revert on failure
+        setFavorite(!newFavoriteState);
+        throw new Error('Failed to update favorite status');
+      }
+    } catch (error) {
+      console.error('Error toggling favorite:', error);
+      alert('Failed to update favorite status. Please try again.');
+    }
+  };
+
   const handleSave = async () => {
     if (!title.trim() || !content.trim() || !promptId) {
       alert('Please provide both a title and content for your prompt.');
@@ -124,7 +148,7 @@ export default function EditPromptPage({
               <ThemeToggle />
               <Button
                 variant="outline"
-                onClick={() => setFavorite(!favorite)}
+                onClick={handleToggleFavorite}
                 className="gap-2"
               >
                 <Star

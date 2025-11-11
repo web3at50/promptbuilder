@@ -2,12 +2,22 @@ import { NextRequest, NextResponse } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
 import { auth } from '@clerk/nextjs/server';
 import { createClerkSupabaseClient } from '@/lib/clerk-supabase';
+import {
+  createAnthropicUsageLog,
+  createErrorUsageLog,
+  logAIUsage,
+  startTimer,
+} from '@/lib/usage-logger';
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY!,
 });
 
 export async function POST(request: NextRequest) {
+  const MODEL = 'claude-sonnet-4-5-20250929';
+  const timer = startTimer();
+  let supabase: Awaited<ReturnType<typeof createClerkSupabaseClient>>;
+
   try {
     const { userId } = await auth();
 
@@ -18,7 +28,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { prompt } = await request.json();
+    const { prompt, promptId } = await request.json();
 
     if (!prompt) {
       return NextResponse.json(
@@ -27,9 +37,39 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Call Claude API to optimise
+    supabase = await createClerkSupabaseClient();
+
+    // If promptId provided, store original prompt and update metadata
+    if (promptId) {
+      const { data: existingPrompt } = await supabase
+        .from('prompts')
+        .select('content, original_prompt, optimization_count')
+        .eq('id', promptId)
+        .single();
+
+      if (existingPrompt) {
+        // Only store original_prompt if this is the first optimization
+        const updates: any = {
+          optimization_count: (existingPrompt.optimization_count || 0) + 1,
+          last_optimized_at: new Date().toISOString(),
+          optimized_with: MODEL,
+        };
+
+        if (!existingPrompt.original_prompt) {
+          updates.original_prompt = existingPrompt.content;
+        }
+
+        await supabase
+          .from('prompts')
+          .update(updates)
+          .eq('id', promptId);
+      }
+    }
+
+    // Call Claude API to optimize - start measuring latency
+    const apiTimer = startTimer();
     const message = await anthropic.messages.create({
-      model: 'claude-sonnet-4-5-20250929',
+      model: MODEL,
       max_tokens: 4096,
       messages: [
         {
@@ -50,21 +90,53 @@ Please provide ONLY the optimised prompt without any explanation or meta-comment
         },
       ],
     });
+    const latencyMs = apiTimer.stop();
 
     const optimizedPrompt =
       message.content[0].type === 'text' ? message.content[0].text : prompt;
 
-    // Track usage
-    const supabase = await createClerkSupabaseClient();
-    await supabase.from('optimization_usage').insert([
-      {
-        user_id: userId,
-      },
-    ]);
+    // Log comprehensive usage data to ai_usage_logs
+    const usageLog = createAnthropicUsageLog(
+      userId,
+      message,
+      latencyMs,
+      promptId
+    );
+    await logAIUsage(supabase, usageLog);
 
-    return NextResponse.json({ optimizedPrompt });
+    return NextResponse.json({
+      optimizedPrompt,
+      usage: {
+        inputTokens: message.usage.input_tokens,
+        outputTokens: message.usage.output_tokens,
+        totalTokens: message.usage.input_tokens + message.usage.output_tokens,
+        costUsd: usageLog.cost_usd,
+        latencyMs,
+      },
+    });
   } catch (error) {
+    const latencyMs = timer.stop();
     console.error('Error optimising prompt:', error);
+
+    // Log error to ai_usage_logs if we have supabase connection
+    if (supabase) {
+      try {
+        const { userId } = await auth();
+        if (userId) {
+          const errorLog = createErrorUsageLog(
+            userId,
+            'anthropic',
+            MODEL,
+            error instanceof Error ? error.message : 'Unknown error',
+            latencyMs
+          );
+          await logAIUsage(supabase, errorLog);
+        }
+      } catch (logError) {
+        console.error('Failed to log error:', logError);
+      }
+    }
+
     return NextResponse.json(
       { error: 'Failed to optimise prompt' },
       { status: 500 }
