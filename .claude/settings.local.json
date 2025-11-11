@@ -20,7 +20,9 @@
       "mcp__supabase__list_migrations",
       "Bash(git fetch:*)",
       "Bash(git checkout:*)",
-      "Bash(git merge:*)"
+      "Bash(git merge:*)",
+      "Bash(mcp list:*)",
+      "Bash(npx supabase --version)"
     ],
     "deny": [],
     "ask": []
