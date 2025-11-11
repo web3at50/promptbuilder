@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
-import { createClient } from '@/lib/supabase/server';
+import { auth } from '@clerk/nextjs/server';
+import { createClerkSupabaseClient } from '@/lib/clerk-supabase';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY!,
@@ -8,25 +9,21 @@ const openai = new OpenAI({
 
 export async function POST(request: NextRequest) {
   try {
-    const supabase = await createClient();
+    const { userId } = await auth();
+
+    if (!userId) {
+      return NextResponse.json(
+        { error: 'Authentication required' },
+        { status: 401 }
+      );
+    }
+
     const { prompt } = await request.json();
 
     if (!prompt) {
       return NextResponse.json(
         { error: 'Prompt is required' },
         { status: 400 }
-      );
-    }
-
-    // Check if user is authenticated - require authentication
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (!user) {
-      return NextResponse.json(
-        { error: 'Authentication required' },
-        { status: 401 }
       );
     }
 
@@ -56,9 +53,10 @@ Please provide ONLY the optimised prompt without any explanation or meta-comment
     const optimizedPrompt = completion.choices[0]?.message?.content || prompt;
 
     // Track usage
+    const supabase = await createClerkSupabaseClient();
     await supabase.from('optimization_usage').insert([
       {
-        user_id: user.id,
+        user_id: userId,
       },
     ]);
 

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { createClient } from '@/lib/supabase/client';
+import { useUser } from '@clerk/nextjs';
 import { Prompt } from '@/types';
 import { PromptCard } from '@/components/PromptCard';
 import { Button } from '@/components/ui/button';
@@ -13,38 +13,19 @@ import { Plus, Search, Wand2, Sparkles, Save, Zap } from 'lucide-react';
 
 export default function Home() {
   const router = useRouter();
+  const { user, isLoaded } = useUser();
   const [prompts, setPrompts] = useState<Prompt[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [checkingAuth, setCheckingAuth] = useState(true);
 
   useEffect(() => {
-    checkAuth();
-  }, []);
-
-  const checkAuth = async () => {
-    try {
-      const supabase = createClient();
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      setIsAuthenticated(!!user);
-
-      if (user) {
-        // Only fetch prompts if authenticated
-        fetchPrompts();
-      } else {
-        setLoading(false);
-      }
-    } catch (error) {
-      console.error('Error checking auth:', error);
-      setIsAuthenticated(false);
+    if (isLoaded && user) {
+      // Only fetch prompts if authenticated
+      fetchPrompts();
+    } else if (isLoaded && !user) {
       setLoading(false);
-    } finally {
-      setCheckingAuth(false);
     }
-  };
+  }, [isLoaded, user]);
 
   const fetchPrompts = async () => {
     try {
@@ -108,7 +89,7 @@ export default function Home() {
   const regularPrompts = filteredPrompts.filter((p) => !p.favorite);
 
   // Show loading while checking auth
-  if (checkingAuth) {
+  if (!isLoaded) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center space-y-2">
@@ -120,7 +101,7 @@ export default function Home() {
   }
 
   // Show explainer page for unauthenticated users
-  if (!isAuthenticated) {
+  if (!user) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
         {/* Header for unauthenticated users */}

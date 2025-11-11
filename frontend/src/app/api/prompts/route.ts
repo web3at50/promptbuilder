@@ -1,23 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
+import { auth } from '@clerk/nextjs/server';
+import { createClerkSupabaseClient } from '@/lib/clerk-supabase';
 
 // GET all prompts (user-scoped)
 export async function GET() {
   try {
-    const supabase = await createClient();
+    const { userId } = await auth();
 
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (!user) {
+    if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+
+    const supabase = await createClerkSupabaseClient();
 
     const { data, error } = await supabase
       .from('prompts')
       .select('*')
-      .eq('user_id', user.id)
+      .eq('user_id', userId)
       .order('created_at', { ascending: false });
 
     if (error) throw error;
@@ -35,13 +34,9 @@ export async function GET() {
 // POST create new prompt
 export async function POST(request: NextRequest) {
   try {
-    const supabase = await createClient();
+    const { userId } = await auth();
 
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (!user) {
+    if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -55,6 +50,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const supabase = await createClerkSupabaseClient();
+
     const { data, error } = await supabase
       .from('prompts')
       .insert([
@@ -63,7 +60,7 @@ export async function POST(request: NextRequest) {
           content,
           tags,
           favorite,
-          user_id: user.id,
+          user_id: userId,
         },
       ])
       .select()

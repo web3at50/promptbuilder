@@ -1,44 +1,36 @@
-import { createClient } from '@/lib/supabase/server';
+import { auth, currentUser } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Calendar, FileText, Sparkles, Mail } from 'lucide-react';
+import { ArrowLeft, Calendar, FileText, Sparkles, Mail, User } from 'lucide-react';
 import Link from 'next/link';
-import { SignOutButton } from '@/components/SignOutButton';
 import { ThemeToggle } from '@/components/theme-toggle';
+import { createClerkSupabaseClient } from '@/lib/clerk-supabase';
 
 export default async function ProfilePage() {
-  const supabase = await createClient();
+  const { userId } = await auth();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
+  if (!userId) {
     redirect('/login');
   }
 
-  // Get profile data
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('id', user.id)
-    .single();
+  const user = await currentUser();
+  const supabase = await createClerkSupabaseClient();
 
   // Get prompts count
   const { count: promptsCount } = await supabase
     .from('prompts')
     .select('*', { count: 'exact', head: true })
-    .eq('user_id', user.id);
+    .eq('user_id', userId);
 
   // Get optimizations count
   const { count: optimizationsCount } = await supabase
     .from('optimization_usage')
     .select('*', { count: 'exact', head: true })
-    .eq('user_id', user.id);
+    .eq('user_id', userId);
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
+  const formatDate = (timestamp: number) => {
+    return new Date(timestamp).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
@@ -82,9 +74,25 @@ export default async function ProfilePage() {
                 <Mail className="h-5 w-5 text-muted-foreground" />
                 <div className="flex-1">
                   <p className="text-sm text-muted-foreground">Email Address</p>
-                  <p className="font-medium">{user.email}</p>
+                  <p className="font-medium">
+                    {user?.primaryEmailAddress?.emailAddress ||
+                     user?.emailAddresses[0]?.emailAddress ||
+                     'No email'}
+                  </p>
                 </div>
               </div>
+
+              {user?.firstName && (
+                <div className="flex items-center gap-3 py-3 border-b">
+                  <User className="h-5 w-5 text-muted-foreground" />
+                  <div className="flex-1">
+                    <p className="text-sm text-muted-foreground">Name</p>
+                    <p className="font-medium">
+                      {user.firstName} {user.lastName || ''}
+                    </p>
+                  </div>
+                </div>
+              )}
 
               <div className="flex items-center gap-3 py-3">
                 <Calendar className="h-5 w-5 text-muted-foreground" />
@@ -93,9 +101,7 @@ export default async function ProfilePage() {
                     Member Since
                   </p>
                   <p className="font-medium">
-                    {profile?.created_at
-                      ? formatDate(profile.created_at)
-                      : 'N/A'}
+                    {user?.createdAt ? formatDate(user.createdAt) : 'N/A'}
                   </p>
                 </div>
               </div>
@@ -141,16 +147,17 @@ export default async function ProfilePage() {
           {/* Account Actions */}
           <Card>
             <CardHeader>
-              <CardTitle>Account Actions</CardTitle>
+              <CardTitle>Account Settings</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              <Link href="/reset-password">
+              <p className="text-sm text-muted-foreground">
+                To manage your account settings, security, and password, visit your Clerk account dashboard.
+              </p>
+              <Link href="https://accounts.clerk.dev/user" target="_blank">
                 <Button variant="outline" className="w-full justify-start">
-                  Change Password
+                  Manage Account Settings
                 </Button>
               </Link>
-
-              <SignOutButton />
             </CardContent>
           </Card>
         </div>

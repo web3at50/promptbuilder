@@ -1,6 +1,5 @@
 'use client';
 
-import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import {
@@ -12,38 +11,20 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { User, Settings, LogOut } from 'lucide-react';
-import { useEffect, useState } from 'react';
-import type { User as SupabaseUser } from '@supabase/supabase-js';
+import { useUser, useClerk } from '@clerk/nextjs';
 
 export function UserMenu() {
   const router = useRouter();
-  const [user, setUser] = useState<SupabaseUser | null>(null);
+  const { user, isLoaded } = useUser();
+  const { signOut } = useClerk();
 
-  useEffect(() => {
-    const supabase = createClient();
-
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      setUser(user);
-    });
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
-
-  if (!user) {
+  if (!isLoaded || !user) {
     return null;
   }
 
   const handleSignOut = async () => {
-    const supabase = createClient();
-    await supabase.auth.signOut();
+    await signOut();
     router.push('/login');
-    router.refresh();
   };
 
   return (
@@ -58,7 +39,7 @@ export function UserMenu() {
           <div className="flex flex-col space-y-1">
             <p className="text-sm font-medium">My Account</p>
             <p className="text-xs text-muted-foreground truncate">
-              {user.email}
+              {user.primaryEmailAddress?.emailAddress || user.emailAddresses[0]?.emailAddress}
             </p>
           </div>
         </DropdownMenuLabel>
