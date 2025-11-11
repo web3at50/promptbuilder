@@ -16,7 +16,7 @@ const openai = new OpenAI({
 export async function POST(request: NextRequest) {
   const MODEL = 'gpt-4o';
   const timer = startTimer();
-  let supabase: Awaited<ReturnType<typeof createClerkSupabaseClient>>;
+  let supabase: Awaited<ReturnType<typeof createClerkSupabaseClient>> | undefined;
 
   try {
     const { userId } = await auth();

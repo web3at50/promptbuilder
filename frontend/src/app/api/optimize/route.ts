@@ -16,7 +16,7 @@ const anthropic = new Anthropic({
 export async function POST(request: NextRequest) {
   const MODEL = 'claude-sonnet-4-5-20250929';
   const timer = startTimer();
-  let supabase: Awaited<ReturnType<typeof createClerkSupabaseClient>>;
+  let supabase: Awaited<ReturnType<typeof createClerkSupabaseClient>> | undefined;
 
   try {
     const { userId } = await auth();
