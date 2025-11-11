@@ -2,14 +2,13 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useUser } from '@clerk/nextjs';
+import { useUser, UserButton } from '@clerk/nextjs';
 import { Prompt } from '@/types';
 import { PromptCard } from '@/components/PromptCard';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { UserMenu } from '@/components/UserMenu';
 import { ThemeToggle } from '@/components/theme-toggle';
-import { Plus, Search, Wand2, Sparkles, Save, Zap } from 'lucide-react';
+import { Plus, Search, Wand2, Sparkles, Save, Zap, BarChart3 } from 'lucide-react';
 
 export default function Home() {
   const router = useRouter();
@@ -280,7 +279,15 @@ export default function Home() {
                 <Plus className="h-5 w-5" />
                 New Prompt
               </Button>
-              <UserMenu />
+              <UserButton afterSignOutUrl="/">
+                <UserButton.MenuItems>
+                  <UserButton.Link
+                    label="View Stats"
+                    labelIcon={<BarChart3 className="h-4 w-4" />}
+                    href="/profile"
+                  />
+                </UserButton.MenuItems>
+              </UserButton>
             </div>
           </div>
         </div>

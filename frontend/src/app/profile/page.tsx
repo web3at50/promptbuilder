@@ -1,8 +1,8 @@
-import { auth, currentUser } from '@clerk/nextjs/server';
+import { auth } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Calendar, FileText, Sparkles, Mail, User } from 'lucide-react';
+import { ArrowLeft, FileText, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { createClerkSupabaseClient } from '@/lib/clerk-supabase';
@@ -14,7 +14,6 @@ export default async function ProfilePage() {
     redirect('/login');
   }
 
-  const user = await currentUser();
   const supabase = await createClerkSupabaseClient();
 
   // Get prompts count
@@ -28,14 +27,6 @@ export default async function ProfilePage() {
     .from('optimization_usage')
     .select('*', { count: 'exact', head: true })
     .eq('user_id', userId);
-
-  const formatDate = (timestamp: number) => {
-    return new Date(timestamp).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
@@ -58,60 +49,16 @@ export default async function ProfilePage() {
       <main className="container mx-auto px-4 py-8 max-w-4xl">
         <div className="space-y-6">
           <div>
-            <h1 className="text-3xl font-bold">Profile & Settings</h1>
+            <h1 className="text-3xl font-bold">Your Statistics</h1>
             <p className="text-muted-foreground mt-1">
-              Manage your account and view your statistics
+              Track your prompts and AI optimization usage
             </p>
           </div>
-
-          {/* Account Information */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Account Information</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center gap-3 py-3 border-b">
-                <Mail className="h-5 w-5 text-muted-foreground" />
-                <div className="flex-1">
-                  <p className="text-sm text-muted-foreground">Email Address</p>
-                  <p className="font-medium">
-                    {user?.primaryEmailAddress?.emailAddress ||
-                     user?.emailAddresses[0]?.emailAddress ||
-                     'No email'}
-                  </p>
-                </div>
-              </div>
-
-              {user?.firstName && (
-                <div className="flex items-center gap-3 py-3 border-b">
-                  <User className="h-5 w-5 text-muted-foreground" />
-                  <div className="flex-1">
-                    <p className="text-sm text-muted-foreground">Name</p>
-                    <p className="font-medium">
-                      {user.firstName} {user.lastName || ''}
-                    </p>
-                  </div>
-                </div>
-              )}
-
-              <div className="flex items-center gap-3 py-3">
-                <Calendar className="h-5 w-5 text-muted-foreground" />
-                <div className="flex-1">
-                  <p className="text-sm text-muted-foreground">
-                    Member Since
-                  </p>
-                  <p className="font-medium">
-                    {user?.createdAt ? formatDate(user.createdAt) : 'N/A'}
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
 
           {/* Statistics */}
           <Card>
             <CardHeader>
-              <CardTitle>Your Statistics</CardTitle>
+              <CardTitle>Usage Overview</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -141,23 +88,6 @@ export default async function ProfilePage() {
                   </div>
                 </div>
               </div>
-            </CardContent>
-          </Card>
-
-          {/* Account Actions */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Account Settings</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <p className="text-sm text-muted-foreground">
-                To manage your account settings, security, and password, visit your Clerk account dashboard.
-              </p>
-              <Link href="https://accounts.clerk.dev/user" target="_blank">
-                <Button variant="outline" className="w-full justify-start">
-                  Manage Account Settings
-                </Button>
-              </Link>
             </CardContent>
           </Card>
         </div>
