@@ -28,14 +28,23 @@ export function MarkdownEditor({
   const handleOptimize = async (provider: 'claude' | 'openai') => {
     if (!value.trim()) return;
 
+    console.log('[MarkdownEditor] handleOptimize called with promptId:', promptId);
+
+    if (!promptId) {
+      console.warn('[MarkdownEditor] WARNING: promptId is undefined/null - optimization tracking will not work!');
+    }
+
     setIsOptimizing(true);
     setOptimizingWith(provider);
     try {
       const endpoint = provider === 'claude' ? '/api/optimize' : '/api/optimize-openai';
+      const requestBody = { prompt: value, promptId };
+      console.log('[MarkdownEditor] Sending request to', endpoint, 'with body:', requestBody);
+
       const response = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt: value, promptId }),
+        body: JSON.stringify(requestBody),
       });
 
       if (!response.ok) throw new Error('Failed to optimise');

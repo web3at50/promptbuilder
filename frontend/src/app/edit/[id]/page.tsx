@@ -29,6 +29,7 @@ export default function EditPromptPage({
   useEffect(() => {
     const loadPrompt = async () => {
       const { id } = await params;
+      console.log('[Edit Page] Extracted promptId from URL params:', id);
       setPromptId(id);
       fetchPrompt(id);
     };
@@ -226,7 +227,10 @@ export default function EditPromptPage({
                 value={content}
                 onChange={setContent}
                 placeholder="Write your prompt here... You can use markdown formatting!"
-                promptId={promptId || undefined}
+                promptId={(() => {
+                  console.log('[Edit Page] Passing promptId to MarkdownEditor:', promptId);
+                  return promptId || undefined;
+                })()}
               />
             </div>
           </CardContent>

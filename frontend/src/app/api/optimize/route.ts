@@ -30,6 +30,9 @@ export async function POST(request: NextRequest) {
 
     const { prompt, promptId } = await request.json();
 
+    console.log('[Optimize API] Received request with promptId:', promptId, 'Type:', typeof promptId);
+    console.log('[Optimize API] promptId is truthy?', !!promptId);
+
     if (!prompt) {
       return NextResponse.json(
         { error: 'Prompt is required' },
@@ -41,6 +44,7 @@ export async function POST(request: NextRequest) {
 
     // If promptId provided, store original prompt and update metadata
     if (promptId) {
+      console.log('[Optimize API] promptId exists - will update prompt metadata');
       const { data: existingPrompt } = await supabase
         .from('prompts')
         .select('content, original_prompt, optimization_count')
@@ -64,11 +68,21 @@ export async function POST(request: NextRequest) {
           updates.original_prompt = existingPrompt.content;
         }
 
-        await supabase
+        const { error: updateError } = await supabase
           .from('prompts')
           .update(updates)
           .eq('id', promptId);
+
+        if (updateError) {
+          console.error('[Optimize API] Failed to update prompt metadata:', updateError);
+        } else {
+          console.log('[Optimize API] Successfully updated prompt metadata for promptId:', promptId);
+        }
+      } else {
+        console.log('[Optimize API] No existing prompt found for promptId:', promptId);
       }
+    } else {
+      console.log('[Optimize API] No promptId provided - skipping prompt metadata update');
     }
 
     // Call Claude API to optimize - start measuring latency
