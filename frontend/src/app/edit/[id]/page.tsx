@@ -226,6 +226,7 @@ export default function EditPromptPage({
                 value={content}
                 onChange={setContent}
                 placeholder="Write your prompt here... You can use markdown formatting!"
+                promptId={promptId || undefined}
               />
             </div>
           </CardContent>

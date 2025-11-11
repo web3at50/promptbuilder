@@ -13,12 +13,14 @@ interface MarkdownEditorProps {
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
+  promptId?: string;
 }
 
 export function MarkdownEditor({
   value,
   onChange,
   placeholder = 'Write your prompt here...',
+  promptId,
 }: MarkdownEditorProps) {
   const [isOptimizing, setIsOptimizing] = useState(false);
   const [optimizingWith, setOptimizingWith] = useState<'claude' | 'openai' | null>(null);
@@ -33,7 +35,7 @@ export function MarkdownEditor({
       const response = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt: value }),
+        body: JSON.stringify({ prompt: value, promptId }),
       });
 
       if (!response.ok) throw new Error('Failed to optimise');
