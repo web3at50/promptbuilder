@@ -40,7 +40,7 @@ export interface AnthropicMessageResponse {
     input_tokens: number;
     output_tokens: number;
   };
-  content: Array<{ type: string; text: string }>;
+  content: Array<{ type: string; text?: string }>;
   stop_reason: string | null;
 }
 
