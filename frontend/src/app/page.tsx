@@ -8,7 +8,7 @@ import { PromptCard } from '@/components/PromptCard';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ThemeToggle } from '@/components/theme-toggle';
-import { Plus, Search, Wand2, Sparkles, Save, Zap, BarChart3 } from 'lucide-react';
+import { Plus, Search, Wand2, Sparkles, Save, Zap, BarChart3, Menu, X } from 'lucide-react';
 
 export default function Home() {
   const router = useRouter();
@@ -16,6 +16,7 @@ export default function Home() {
   const [prompts, setPrompts] = useState<Prompt[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     if (isLoaded && user) {
@@ -264,32 +265,116 @@ export default function Home() {
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
       {/* Header */}
       <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-6">
+        <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between gap-4">
-            <div>
-              <h1 className="text-2xl font-bold">Prompt Library</h1>
-              <p className="text-sm text-muted-foreground">
-                Organise & optimise your AI prompts
-              </p>
+            {/* Logo/Title */}
+            <div className="flex items-center gap-4">
+              <div>
+                <h1 className="text-xl md:text-2xl font-bold">Prompt Library</h1>
+                <p className="text-xs md:text-sm text-muted-foreground hidden sm:block">
+                  Organise & optimise your AI prompts
+                </p>
+              </div>
+
+              {/* Desktop Navigation */}
+              <nav className="hidden md:flex items-center gap-1 ml-6">
+                <Button
+                  variant="ghost"
+                  onClick={() => router.push('/')}
+                  className="gap-2"
+                >
+                  <Search className="h-4 w-4" />
+                  Library
+                </Button>
+                <Button
+                  variant="ghost"
+                  onClick={() => router.push('/profile/analytics')}
+                  className="gap-2"
+                >
+                  <BarChart3 className="h-4 w-4" />
+                  Analytics
+                </Button>
+              </nav>
             </div>
 
-            <div className="flex items-center gap-3">
+            {/* Right Side Actions */}
+            <div className="flex items-center gap-2 md:gap-3">
               <ThemeToggle />
-              <Button onClick={() => router.push('/new')} size="lg" className="gap-2">
-                <Plus className="h-5 w-5" />
+              <Button
+                onClick={() => router.push('/new')}
+                size="default"
+                className="gap-2 hidden sm:flex"
+              >
+                <Plus className="h-4 w-4" />
                 New Prompt
               </Button>
-              <UserButton afterSignOutUrl="/">
-                <UserButton.MenuItems>
-                  <UserButton.Link
-                    label="View Stats"
-                    labelIcon={<BarChart3 className="h-4 w-4" />}
-                    href="/profile"
-                  />
-                </UserButton.MenuItems>
-              </UserButton>
+              <Button
+                onClick={() => router.push('/new')}
+                size="icon"
+                className="sm:hidden"
+              >
+                <Plus className="h-4 w-4" />
+              </Button>
+
+              {/* Mobile Menu Button */}
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="md:hidden"
+              >
+                {mobileMenuOpen ? (
+                  <X className="h-5 w-5" />
+                ) : (
+                  <Menu className="h-5 w-5" />
+                )}
+              </Button>
+
+              {/* User Button - Desktop Only */}
+              <div className="hidden md:block">
+                <UserButton afterSignOutUrl="/">
+                  <UserButton.MenuItems>
+                    <UserButton.Link
+                      label="View Profile"
+                      labelIcon={<BarChart3 className="h-4 w-4" />}
+                      href="/profile"
+                    />
+                  </UserButton.MenuItems>
+                </UserButton>
+              </div>
             </div>
           </div>
+
+          {/* Mobile Navigation Menu */}
+          {mobileMenuOpen && (
+            <div className="md:hidden mt-4 pb-4 space-y-2 border-t pt-4">
+              <Button
+                variant="ghost"
+                onClick={() => {
+                  router.push('/');
+                  setMobileMenuOpen(false);
+                }}
+                className="w-full justify-start gap-2"
+              >
+                <Search className="h-4 w-4" />
+                Library
+              </Button>
+              <Button
+                variant="ghost"
+                onClick={() => {
+                  router.push('/profile/analytics');
+                  setMobileMenuOpen(false);
+                }}
+                className="w-full justify-start gap-2"
+              >
+                <BarChart3 className="h-4 w-4" />
+                Analytics
+              </Button>
+              <div className="pt-2 border-t">
+                <UserButton afterSignOutUrl="/" />
+              </div>
+            </div>
+          )}
         </div>
       </header>
 

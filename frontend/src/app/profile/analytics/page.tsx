@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Download, Loader2 } from 'lucide-react';
+import { ArrowLeft, Download, Loader2, List } from 'lucide-react';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { AnalyticsOverview } from '@/components/analytics/AnalyticsOverview';
 import { SpendingChart } from '@/components/analytics/SpendingChart';
@@ -186,6 +186,14 @@ export default function AnalyticsPage() {
             </div>
 
             <div className="flex items-center gap-3">
+              <Button
+                variant="default"
+                onClick={() => router.push('/profile/analytics/logs')}
+                className="gap-2"
+              >
+                <List className="h-4 w-4" />
+                View Logs
+              </Button>
               <Button
                 variant="outline"
                 onClick={handleExportCSV}
