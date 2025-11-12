@@ -9,12 +9,13 @@ import { MarkdownEditor } from '@/components/MarkdownEditor';
 import { Badge } from '@/components/ui/badge';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowLeft, Save, X, Star, Eye, GitCompare, History, FileEdit } from 'lucide-react';
+import { ArrowLeft, Save, X, Star, Eye, GitCompare, History, FileEdit, Sparkles } from 'lucide-react';
 import { Prompt } from '@/types';
 import { OriginalPromptModal } from '@/components/OriginalPromptModal';
 import { BeforeAfterModal } from '@/components/BeforeAfterModal';
 import { DetailedOptimizationStats } from '@/components/OptimizationBadge';
 import { VersionHistory } from '@/components/VersionHistory';
+import { DualOptimizeView } from '@/components/DualOptimizeView';
 
 export default function EditPromptPage({
   params,
@@ -35,6 +36,7 @@ export default function EditPromptPage({
   const [promptData, setPromptData] = useState<Prompt | null>(null);
   const [showOriginalModal, setShowOriginalModal] = useState(false);
   const [showCompareModal, setShowCompareModal] = useState(false);
+  const [showDualOptimize, setShowDualOptimize] = useState(false);
 
   useEffect(() => {
     const loadPrompt = async () => {
@@ -244,6 +246,30 @@ export default function EditPromptPage({
               </div>
             )}
 
+            {/* Compare Both LLMs Action */}
+            {promptData && content.trim() && (
+              <div className="p-4 border rounded-lg bg-gradient-to-r from-purple-50 to-green-50 dark:from-purple-950/20 dark:to-green-950/20 border-purple-200 dark:border-purple-800">
+                <div className="flex items-center justify-between gap-4">
+                  <div>
+                    <h4 className="font-semibold flex items-center gap-2 mb-1">
+                      <Sparkles className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+                      Compare Claude vs ChatGPT
+                    </h4>
+                    <p className="text-sm text-muted-foreground">
+                      Run both AI models in parallel and compare their optimization suggestions side-by-side
+                    </p>
+                  </div>
+                  <Button
+                    onClick={() => setShowDualOptimize(true)}
+                    className="gap-2 bg-gradient-to-r from-purple-600 to-green-600 hover:from-purple-700 hover:to-green-700"
+                  >
+                    <Sparkles className="h-4 w-4" />
+                    Compare Both
+                  </Button>
+                </div>
+              </div>
+            )}
+
             {/* Tabs for Edit vs History */}
             <Tabs defaultValue="edit" className="w-full">
               <TabsList className="grid w-full grid-cols-2">
@@ -344,6 +370,29 @@ export default function EditPromptPage({
             optimizedWith={promptData.optimized_with}
           />
         </>
+      )}
+
+      {/* Dual Optimize View */}
+      {showDualOptimize && promptId && (
+        <div className="fixed inset-0 bg-background/95 backdrop-blur-sm z-50 overflow-y-auto">
+          <div className="container mx-auto px-4 py-8">
+            <DualOptimizeView
+              promptId={promptId}
+              promptText={content}
+              onComplete={(selectedContent) => {
+                if (selectedContent) {
+                  setContent(selectedContent);
+                }
+                setShowDualOptimize(false);
+                // Refresh the prompt data to get updated optimization count
+                if (promptId) {
+                  fetchPrompt(promptId);
+                }
+              }}
+              onCancel={() => setShowDualOptimize(false)}
+            />
+          </div>
+        </div>
       )}
     </div>
   );
