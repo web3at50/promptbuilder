@@ -34,7 +34,7 @@ interface CommunityPrompt {
 
 export default function CommunityPage() {
   const router = useRouter();
-  const { isLoaded } = useUser();
+  const { user, isLoaded } = useUser();
   const [prompts, setPrompts] = useState<CommunityPrompt[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -71,6 +71,12 @@ export default function CommunityPage() {
   };
 
   const handleLike = async (id: string, currentlyLiked: boolean) => {
+    if (!user) {
+      alert('Please sign in to like prompts');
+      router.push('/login');
+      return;
+    }
+
     try {
       const response = await fetch(`/api/community/prompts/${id}/like`, {
         method: 'POST',
@@ -99,6 +105,12 @@ export default function CommunityPage() {
   };
 
   const handleFork = async (id: string) => {
+    if (!user) {
+      alert('Please sign in to fork prompts');
+      router.push('/login');
+      return;
+    }
+
     try {
       const response = await fetch(`/api/community/prompts/${id}/fork`, {
         method: 'POST',
@@ -129,18 +141,6 @@ export default function CommunityPage() {
     }
   };
 
-  // Show loading while checking auth
-  if (!isLoaded) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center space-y-2">
-          <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto" />
-          <p className="text-muted-foreground">Loading...</p>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
       {/* Header */}
@@ -163,6 +163,16 @@ export default function CommunityPage() {
 
             <div className="flex items-center gap-2 md:gap-3">
               <ThemeToggle />
+              {!user && isLoaded && (
+                <>
+                  <Button variant="outline" onClick={() => router.push('/login')} className="hidden sm:flex">
+                    Sign In
+                  </Button>
+                  <Button onClick={() => router.push('/signup')}>
+                    Sign Up
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         </div>

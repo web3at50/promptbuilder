@@ -4,14 +4,10 @@ import { createClerkSupabaseClient } from '@/lib/clerk-supabase';
 
 // GET /api/community/prompts
 // Lists all public prompts with filters, sorting, and pagination
+// Public endpoint - no auth required for viewing
 export async function GET(request: NextRequest) {
   try {
     const { userId } = await auth();
-
-    if (!userId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
     const supabase = await createClerkSupabaseClient();
     const searchParams = request.nextUrl.searchParams;
 
@@ -69,15 +65,19 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Get user's likes for these prompts
-    const promptIds = prompts?.map(p => p.id) || [];
-    const { data: userLikes } = await supabase
-      .from('community_prompt_likes')
-      .select('community_prompt_id')
-      .eq('user_id', userId)
-      .in('community_prompt_id', promptIds);
+    // Get user's likes for these prompts (only if authenticated)
+    let likedPromptIds = new Set<string>();
 
-    const likedPromptIds = new Set(userLikes?.map(l => l.community_prompt_id) || []);
+    if (userId) {
+      const promptIds = prompts?.map(p => p.id) || [];
+      const { data: userLikes } = await supabase
+        .from('community_prompt_likes')
+        .select('community_prompt_id')
+        .eq('user_id', userId)
+        .in('community_prompt_id', promptIds);
+
+      likedPromptIds = new Set(userLikes?.map(l => l.community_prompt_id) || []);
+    }
 
     // Add is_liked_by_user field to each prompt
     const promptsWithLikes = prompts?.map(prompt => ({

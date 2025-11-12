@@ -67,6 +67,12 @@ export default function CommunityPromptDetailPage() {
   };
 
   const handleLike = async () => {
+    if (!user) {
+      alert('Please sign in to like prompts');
+      router.push('/login');
+      return;
+    }
+
     if (!prompt) return;
 
     try {
@@ -90,6 +96,12 @@ export default function CommunityPromptDetailPage() {
   };
 
   const handleFork = async () => {
+    if (!user) {
+      alert('Please sign in to fork prompts');
+      router.push('/login');
+      return;
+    }
+
     if (!prompt) return;
 
     try {
@@ -129,17 +141,6 @@ export default function CommunityPromptDetailPage() {
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
-
-  if (!isLoaded) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center space-y-2">
-          <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto" />
-          <p className="text-muted-foreground">Loading...</p>
-        </div>
-      </div>
-    );
-  }
 
   if (loading) {
     return (
@@ -189,7 +190,19 @@ export default function CommunityPromptDetailPage() {
               <ArrowLeft className="h-4 w-4" />
               Back to Community
             </Button>
-            <ThemeToggle />
+            <div className="flex items-center gap-2 md:gap-3">
+              <ThemeToggle />
+              {!user && isLoaded && (
+                <>
+                  <Button variant="outline" onClick={() => router.push('/login')} className="hidden sm:flex">
+                    Sign In
+                  </Button>
+                  <Button onClick={() => router.push('/signup')}>
+                    Sign Up
+                  </Button>
+                </>
+              )}
+            </div>
           </div>
         </div>
       </header>
