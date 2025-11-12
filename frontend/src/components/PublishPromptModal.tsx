@@ -21,6 +21,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Loader2, Globe } from 'lucide-react';
+import { VALIDATION_LIMITS } from '@/lib/validation';
 
 interface PublishPromptModalProps {
   open: boolean;
@@ -110,10 +111,10 @@ export function PublishPromptModal({
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Enter a clear, descriptive title"
-              maxLength={200}
+              maxLength={VALIDATION_LIMITS.TITLE_MAX_LENGTH}
             />
             <p className="text-xs text-muted-foreground">
-              {title.length}/200 characters
+              {title.length}/{VALIDATION_LIMITS.TITLE_MAX_LENGTH} characters
             </p>
           </div>
 
@@ -128,10 +129,10 @@ export function PublishPromptModal({
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Briefly describe what this prompt does and how to use it"
               rows={3}
-              maxLength={500}
+              maxLength={VALIDATION_LIMITS.DESCRIPTION_MAX_LENGTH}
             />
             <p className="text-xs text-muted-foreground">
-              {description.length}/500 characters
+              {description.length}/{VALIDATION_LIMITS.DESCRIPTION_MAX_LENGTH} characters
             </p>
           </div>
 

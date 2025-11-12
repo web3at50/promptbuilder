@@ -17,6 +17,8 @@ import { DetailedOptimizationStats } from '@/components/OptimizationBadge';
 import { VersionHistory } from '@/components/VersionHistory';
 import { DualOptimizeView } from '@/components/DualOptimizeView';
 import { PublishPromptModal } from '@/components/PublishPromptModal';
+import { VALIDATION_LIMITS } from '@/lib/validation';
+import { toast } from 'sonner';
 
 export default function EditPromptPage({
   params,
@@ -86,8 +88,22 @@ export default function EditPromptPage({
   const handleAddTag = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && tagInput.trim()) {
       e.preventDefault();
-      if (!tags.includes(tagInput.trim())) {
-        setTags([...tags, tagInput.trim()]);
+      const trimmedTag = tagInput.trim();
+
+      // Validate tag count
+      if (tags.length >= VALIDATION_LIMITS.TAG_MAX_COUNT) {
+        toast.error(`Maximum ${VALIDATION_LIMITS.TAG_MAX_COUNT} tags allowed`);
+        return;
+      }
+
+      // Validate tag length
+      if (trimmedTag.length > VALIDATION_LIMITS.TAG_MAX_LENGTH) {
+        toast.error(`Tag must be ${VALIDATION_LIMITS.TAG_MAX_LENGTH} characters or less`);
+        return;
+      }
+
+      if (!tags.includes(trimmedTag)) {
+        setTags([...tags, trimmedTag]);
       }
       setTagInput('');
     }
@@ -254,13 +270,14 @@ export default function EditPromptPage({
             {/* Title Input */}
             <div className="space-y-2">
               <label htmlFor="title" className="text-sm font-medium">
-                Title
+                Title ({title.length}/{VALIDATION_LIMITS.TITLE_MAX_LENGTH})
               </label>
               <Input
                 id="title"
                 placeholder="Give your prompt a descriptive title..."
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
+                maxLength={VALIDATION_LIMITS.TITLE_MAX_LENGTH}
                 className="text-lg"
               />
             </div>
@@ -347,7 +364,7 @@ export default function EditPromptPage({
                 {/* Tags Input */}
                 <div className="space-y-2">
                   <label htmlFor="tags" className="text-sm font-medium">
-                    Tags
+                    Tags ({tags.length}/{VALIDATION_LIMITS.TAG_MAX_COUNT})
                   </label>
                   <Input
                     id="tags"
@@ -355,6 +372,7 @@ export default function EditPromptPage({
                     value={tagInput}
                     onChange={(e) => setTagInput(e.target.value)}
                     onKeyDown={handleAddTag}
+                    maxLength={VALIDATION_LIMITS.TAG_MAX_LENGTH}
                   />
                   {tags.length > 0 && (
                     <div className="flex flex-wrap gap-2 mt-2">

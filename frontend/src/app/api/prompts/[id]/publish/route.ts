@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import { createClerkSupabaseClient } from '@/lib/clerk-supabase';
 import { nanoid } from 'nanoid';
+import { validateDescription } from '@/lib/validation';
 
 // POST /api/prompts/[id]/publish
 // Publishes a prompt to the community gallery
@@ -21,10 +22,11 @@ export async function POST(
     const body = await request.json();
     const { description, category } = body;
 
-    // Validate required fields
-    if (!description || !description.trim()) {
+    // Validate description with length limit
+    const validationError = validateDescription(description);
+    if (validationError) {
       return NextResponse.json(
-        { error: 'Description is required' },
+        { error: validationError.message },
         { status: 400 }
       );
     }

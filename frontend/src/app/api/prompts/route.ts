@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import { createClerkSupabaseClient } from '@/lib/clerk-supabase';
 import { isAdmin } from '@/lib/admin';
+import { validatePromptInput } from '@/lib/validation';
 
 // GET all prompts (user-scoped)
 export async function GET() {
@@ -44,9 +45,14 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { title, content, tags = [], favorite = false } = body;
 
-    if (!title || !content) {
+    // Validate input with length limits
+    const validationErrors = validatePromptInput({ title, content, tags });
+    if (validationErrors.length > 0) {
       return NextResponse.json(
-        { error: 'Title and content are required' },
+        {
+          error: 'Validation failed',
+          details: validationErrors,
+        },
         { status: 400 }
       );
     }

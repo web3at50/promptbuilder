@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import { createClerkSupabaseClient } from '@/lib/clerk-supabase';
+import { validatePromptInput } from '@/lib/validation';
 
 // GET single prompt (user-scoped)
 export async function GET(
@@ -52,12 +53,38 @@ export async function PUT(
     const { id } = await params;
     const body = await request.json();
 
+    // Only allow updating specific fields (security: prevent arbitrary field updates)
+    const { title, content, tags, favorite } = body;
+
+    // Validate input if fields are being updated
+    const fieldsToValidate: { title?: string; content?: string; tags?: string[] } = {};
+    if (title !== undefined) fieldsToValidate.title = title;
+    if (content !== undefined) fieldsToValidate.content = content;
+    if (tags !== undefined) fieldsToValidate.tags = tags;
+
+    const validationErrors = validatePromptInput(fieldsToValidate);
+    if (validationErrors.length > 0) {
+      return NextResponse.json(
+        {
+          error: 'Validation failed',
+          details: validationErrors,
+        },
+        { status: 400 }
+      );
+    }
+
+    // Build update object with only allowed fields
+    const updateData: Record<string, unknown> = {
+      updated_at: new Date().toISOString(),
+    };
+    if (title !== undefined) updateData.title = title;
+    if (content !== undefined) updateData.content = content;
+    if (tags !== undefined) updateData.tags = tags;
+    if (favorite !== undefined) updateData.favorite = favorite;
+
     const { data, error } = await supabase
       .from('prompts')
-      .update({
-        ...body,
-        updated_at: new Date().toISOString(),
-      })
+      .update(updateData)
       .eq('id', id)
       .eq('user_id', userId)
       .select()

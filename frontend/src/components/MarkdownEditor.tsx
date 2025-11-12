@@ -8,6 +8,7 @@ import { Card } from '@/components/ui/card';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Loader2, Wand2 } from 'lucide-react';
+import { VALIDATION_LIMITS } from '@/lib/validation';
 
 interface MarkdownEditorProps {
   value: string;
@@ -79,7 +80,7 @@ export function MarkdownEditor({
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <div className="text-sm text-muted-foreground">
-          {value.length} characters · {value.split(/\s+/).filter(Boolean).length} words
+          {value.length}/{VALIDATION_LIMITS.CONTENT_MAX_LENGTH} characters · {value.split(/\s+/).filter(Boolean).length} words
         </div>
         <div className="flex gap-2">
           <Button
@@ -134,6 +135,7 @@ export function MarkdownEditor({
             value={value}
             onChange={(e) => onChange(e.target.value)}
             placeholder={placeholder}
+            maxLength={VALIDATION_LIMITS.CONTENT_MAX_LENGTH}
             className="min-h-[400px] font-mono text-sm resize-none"
           />
         </TabsContent>
