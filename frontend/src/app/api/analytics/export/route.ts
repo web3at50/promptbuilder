@@ -1,10 +1,10 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import { createClerkSupabaseClient } from '@/lib/clerk-supabase';
 
 // GET /api/analytics/export
 // Exports all usage logs as CSV
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const { userId } = await auth();
 
@@ -57,7 +57,8 @@ export async function GET(request: NextRequest) {
     // Convert to CSV rows
     const rows = usageLogs?.map((log) => {
       const date = new Date(log.created_at);
-      const promptTitle = (log.prompts as any)?.title || 'N/A';
+      const prompts = log.prompts as { title?: string } | null;
+      const promptTitle = prompts?.title || 'N/A';
 
       return [
         date.toLocaleDateString('en-US'),

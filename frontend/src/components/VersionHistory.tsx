@@ -133,7 +133,7 @@ export function VersionHistory({
         {/* Vertical line connecting versions */}
         <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-border" />
 
-        {optimizations.map((optimization, index) => (
+        {optimizations.map((optimization) => (
           <div key={optimization.id} className="relative pl-14">
             {/* Timeline dot */}
             <div className="absolute left-4 top-4 w-4 h-4 rounded-full bg-primary border-2 border-background" />

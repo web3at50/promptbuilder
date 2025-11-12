@@ -168,7 +168,7 @@ export function InsightsCard({ overview, usage, spending, prompts }: InsightsCar
           <div className="text-center py-8 text-muted-foreground">
             <Lightbulb className="h-12 w-12 mx-auto mb-3 opacity-50" />
             <p>Keep optimizing prompts to unlock personalized insights!</p>
-            <p className="text-sm mt-1">We'll analyze your usage patterns and provide recommendations.</p>
+            <p className="text-sm mt-1">We&apos;ll analyze your usage patterns and provide recommendations.</p>
           </div>
         )}
       </CardContent>

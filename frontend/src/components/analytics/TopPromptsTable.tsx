@@ -39,15 +39,6 @@ export function TopPromptsTable({ mostOptimized, mostExpensive }: TopPromptsTabl
     return num.toString();
   };
 
-  const formatDate = (dateStr: string | null) => {
-    if (!dateStr) return 'Never';
-    return new Date(dateStr).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    });
-  };
-
   const PromptRow = ({ prompt }: { prompt: TopPrompt }) => (
     <div className="flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 transition-colors">
       <div className="flex-1 min-w-0">
