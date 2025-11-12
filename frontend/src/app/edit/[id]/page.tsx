@@ -9,13 +9,14 @@ import { MarkdownEditor } from '@/components/MarkdownEditor';
 import { Badge } from '@/components/ui/badge';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowLeft, Save, X, Star, Eye, GitCompare, History, FileEdit, Sparkles } from 'lucide-react';
+import { ArrowLeft, Save, X, Star, Eye, GitCompare, History, FileEdit, Sparkles, Globe, XCircle } from 'lucide-react';
 import { Prompt } from '@/types';
 import { OriginalPromptModal } from '@/components/OriginalPromptModal';
 import { BeforeAfterModal } from '@/components/BeforeAfterModal';
 import { DetailedOptimizationStats } from '@/components/OptimizationBadge';
 import { VersionHistory } from '@/components/VersionHistory';
 import { DualOptimizeView } from '@/components/DualOptimizeView';
+import { PublishPromptModal } from '@/components/PublishPromptModal';
 
 export default function EditPromptPage({
   params,
@@ -37,6 +38,11 @@ export default function EditPromptPage({
   const [showOriginalModal, setShowOriginalModal] = useState(false);
   const [showCompareModal, setShowCompareModal] = useState(false);
   const [showDualOptimize, setShowDualOptimize] = useState(false);
+
+  // Publishing fields
+  const [showPublishModal, setShowPublishModal] = useState(false);
+  const [isPublic, setIsPublic] = useState(false);
+  const [shareToken, setShareToken] = useState<string | null>(null);
 
   useEffect(() => {
     const loadPrompt = async () => {
@@ -60,6 +66,8 @@ export default function EditPromptPage({
       setContent(prompt.content);
       setTags(prompt.tags);
       setFavorite(prompt.favorite);
+      setIsPublic(prompt.is_public || false);
+      setShareToken(prompt.share_token || null);
     } catch (error) {
       console.error('Error fetching prompt:', error);
       alert('Failed to load prompt. Redirecting to library.');
@@ -138,6 +146,34 @@ export default function EditPromptPage({
     }
   };
 
+  const handlePublishSuccess = (newShareToken: string, publicUrl: string) => {
+    setIsPublic(true);
+    setShareToken(newShareToken);
+    alert(`Prompt published successfully! View it at: ${window.location.origin}${publicUrl}`);
+  };
+
+  const handleUnpublish = async () => {
+    if (!promptId) return;
+
+    if (!confirm('Are you sure you want to unpublish this prompt? It will be removed from the community gallery.')) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/prompts/${promptId}/unpublish`, {
+        method: 'POST',
+      });
+
+      if (!response.ok) throw new Error('Failed to unpublish prompt');
+
+      setIsPublic(false);
+      alert('Prompt unpublished successfully!');
+    } catch (error) {
+      console.error('Error unpublishing prompt:', error);
+      alert('Failed to unpublish prompt. Please try again.');
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -169,13 +205,32 @@ export default function EditPromptPage({
               <Button
                 variant="outline"
                 onClick={handleToggleFavorite}
-                className="gap-2"
+                className="gap-2 hidden sm:flex"
               >
                 <Star
                   className={`h-4 w-4 ${favorite ? 'fill-yellow-500 text-yellow-500' : ''}`}
                 />
                 {favorite ? 'Favorited' : 'Add to Favorites'}
               </Button>
+              {isPublic ? (
+                <Button
+                  variant="outline"
+                  onClick={handleUnpublish}
+                  className="gap-2 hidden sm:flex"
+                >
+                  <XCircle className="h-4 w-4" />
+                  Unpublish
+                </Button>
+              ) : (
+                <Button
+                  variant="outline"
+                  onClick={() => setShowPublishModal(true)}
+                  className="gap-2 hidden sm:flex"
+                >
+                  <Globe className="h-4 w-4" />
+                  Publish
+                </Button>
+              )}
               <Button
                 onClick={handleSave}
                 disabled={saving || !title.trim() || !content.trim()}
@@ -393,6 +448,19 @@ export default function EditPromptPage({
             />
           </div>
         </div>
+      )}
+
+      {/* Publish Modal */}
+      {promptId && (
+        <PublishPromptModal
+          open={showPublishModal}
+          onOpenChange={setShowPublishModal}
+          promptId={promptId}
+          defaultTitle={title}
+          defaultContent={content}
+          defaultTags={tags}
+          onPublishSuccess={handlePublishSuccess}
+        />
       )}
     </div>
   );

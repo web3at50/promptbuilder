@@ -4,7 +4,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Prompt } from '@/types';
-import { Pencil, Trash2, Star } from 'lucide-react';
+import { Pencil, Trash2, Star, Globe } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { OptimizationBadge } from '@/components/OptimizationBadge';
 
@@ -63,6 +63,14 @@ export function PromptCard({
             optimizedWith={prompt.optimized_with}
             lastOptimizedAt={prompt.last_optimized_at}
           />
+        )}
+
+        {/* Public Badge */}
+        {prompt.is_public && (
+          <Badge variant="outline" className="w-fit gap-1.5 text-blue-600 border-blue-600 dark:text-blue-400 dark:border-blue-400">
+            <Globe className="h-3 w-3" />
+            Public
+          </Badge>
         )}
       </CardHeader>
 

@@ -8,7 +8,7 @@ import { PromptCard } from '@/components/PromptCard';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ThemeToggle } from '@/components/theme-toggle';
-import { Plus, Search, Wand2, Sparkles, Save, Zap, BarChart3, Menu, X } from 'lucide-react';
+import { Plus, Search, Wand2, Sparkles, Save, Zap, BarChart3, Menu, X, Users } from 'lucide-react';
 
 export default function Home() {
   const router = useRouter();
@@ -288,6 +288,14 @@ export default function Home() {
                 </Button>
                 <Button
                   variant="ghost"
+                  onClick={() => router.push('/community')}
+                  className="gap-2"
+                >
+                  <Users className="h-4 w-4" />
+                  Community
+                </Button>
+                <Button
+                  variant="ghost"
                   onClick={() => router.push('/profile/analytics')}
                   className="gap-2"
                 >
@@ -358,6 +366,17 @@ export default function Home() {
               >
                 <Search className="h-4 w-4" />
                 Library
+              </Button>
+              <Button
+                variant="ghost"
+                onClick={() => {
+                  router.push('/community');
+                  setMobileMenuOpen(false);
+                }}
+                className="w-full justify-start gap-2"
+              >
+                <Users className="h-4 w-4" />
+                Community
               </Button>
               <Button
                 variant="ghost"

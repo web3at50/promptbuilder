@@ -16,6 +16,9 @@ export type Prompt = {
   optimized_with: string | null;
   optimization_count: number;
   last_optimized_at: string | null;
+  // Community sharing fields (Phase 5)
+  is_public: boolean | null;
+  share_token: string | null;
 };
 
 export type CreatePromptDto = {
