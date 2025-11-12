@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { Plus, Search, Wand2, Sparkles, Save, Zap, BarChart3, Menu, X, Users } from 'lucide-react';
 import { AdminNavLink } from '@/components/AdminNavLink';
+import { toast } from 'sonner';
 
 export default function Home() {
   const router = useRouter();
@@ -74,6 +75,30 @@ export default function Home() {
       );
     } catch (error) {
       console.error('Error updating prompt:', error);
+    }
+  };
+
+  const handleNewPrompt = async () => {
+    try {
+      const response = await fetch('/api/prompts/count');
+      if (response.ok) {
+        const data = await response.json();
+
+        if (!data.canCreate) {
+          toast.error('Prompt Limit Reached', {
+            description: 'You have reached the maximum of 10 prompts. Please contact support@syntorak.com to upgrade your account.',
+            duration: 6000,
+          });
+          return;
+        }
+      }
+
+      // If check passes or fails to check, allow navigation
+      router.push('/new');
+    } catch (error) {
+      console.error('Error checking prompt limit:', error);
+      // On error, still allow navigation (fail open)
+      router.push('/new');
     }
   };
 
@@ -325,7 +350,7 @@ export default function Home() {
             <div className="flex items-center gap-2 md:gap-3">
               <ThemeToggle />
               <Button
-                onClick={() => router.push('/new')}
+                onClick={handleNewPrompt}
                 size="default"
                 className="gap-2 hidden sm:flex"
               >
@@ -333,7 +358,7 @@ export default function Home() {
                 New Prompt
               </Button>
               <Button
-                onClick={() => router.push('/new')}
+                onClick={handleNewPrompt}
                 size="icon"
                 className="sm:hidden"
               >
@@ -465,7 +490,7 @@ export default function Home() {
 
               <div className="grid md:grid-cols-3 gap-6">
                 {/* Create a Prompt */}
-                <div className="flex flex-col p-6 border rounded-lg bg-card hover:bg-accent/50 transition-colors cursor-pointer" onClick={() => router.push('/new')}>
+                <div className="flex flex-col p-6 border rounded-lg bg-card hover:bg-accent/50 transition-colors cursor-pointer" onClick={handleNewPrompt}>
                   <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
                     <Plus className="h-6 w-6 text-primary" />
                   </div>
@@ -473,14 +498,14 @@ export default function Home() {
                   <p className="text-muted-foreground mb-4 flex-1">
                     Start building your library by creating your first AI prompt
                   </p>
-                  <Button className="w-full gap-2" onClick={(e) => { e.stopPropagation(); router.push('/new'); }}>
+                  <Button className="w-full gap-2" onClick={(e) => { e.stopPropagation(); handleNewPrompt(); }}>
                     <Plus className="h-4 w-4" />
                     New Prompt
                   </Button>
                 </div>
 
                 {/* Optimize a Prompt */}
-                <div className="flex flex-col p-6 border rounded-lg bg-card hover:bg-accent/50 transition-colors cursor-pointer" onClick={() => router.push('/new')}>
+                <div className="flex flex-col p-6 border rounded-lg bg-card hover:bg-accent/50 transition-colors cursor-pointer" onClick={handleNewPrompt}>
                   <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
                     <Wand2 className="h-6 w-6 text-primary" />
                   </div>
@@ -488,7 +513,7 @@ export default function Home() {
                   <p className="text-muted-foreground mb-4 flex-1">
                     Use Claude or ChatGPT to improve and refine your prompts for better results
                   </p>
-                  <Button variant="outline" className="w-full gap-2" onClick={(e) => { e.stopPropagation(); router.push('/new'); }}>
+                  <Button variant="outline" className="w-full gap-2" onClick={(e) => { e.stopPropagation(); handleNewPrompt(); }}>
                     <Wand2 className="h-4 w-4" />
                     Get Started
                   </Button>

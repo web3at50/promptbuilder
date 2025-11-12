@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { ArrowLeft, Save, X, Sparkles } from 'lucide-react';
 import { DualOptimizeView } from '@/components/DualOptimizeView';
+import { toast } from 'sonner';
 
 export default function NewPromptPage() {
   const router = useRouter();
@@ -53,6 +54,15 @@ export default function NewPromptPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ title, content, tags }),
       });
+
+      if (response.status === 429) {
+        const errorData = await response.json();
+        toast.error('Prompt Limit Reached', {
+          description: errorData.message || 'You have reached the maximum of 10 prompts. Please contact support@syntorak.com to upgrade your account.',
+          duration: 6000,
+        });
+        return undefined;
+      }
 
       if (!response.ok) throw new Error('Failed to create prompt');
 
@@ -100,6 +110,15 @@ export default function NewPromptPage() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ title, content, tags }),
         });
+
+        if (response.status === 429) {
+          const errorData = await response.json();
+          toast.error('Prompt Limit Reached', {
+            description: errorData.message || 'You have reached the maximum of 10 prompts. Please contact support@syntorak.com to upgrade your account.',
+            duration: 6000,
+          });
+          return;
+        }
 
         if (!response.ok) throw new Error('Failed to create prompt');
       }
