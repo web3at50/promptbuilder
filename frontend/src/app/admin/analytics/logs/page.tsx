@@ -25,6 +25,7 @@ import {
 } from '@/components/ui/select';
 import { Download, Search, Filter } from 'lucide-react';
 import { AdminNav } from '@/components/admin/AdminNav';
+import { VALIDATION_LIMITS } from '@/lib/validation';
 
 interface LogEntry {
   id: string;
@@ -317,6 +318,7 @@ export default function AdminLogsPage() {
                 placeholder="Search by user, model, or operation..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
+                maxLength={VALIDATION_LIMITS.SEARCH_MAX_LENGTH}
                 className="pl-9"
               />
             </div>

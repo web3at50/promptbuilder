@@ -11,6 +11,7 @@ import { ThemeToggle } from '@/components/theme-toggle';
 import { Plus, Search, Wand2, Sparkles, Save, Zap, BarChart3, Menu, X, Users } from 'lucide-react';
 import { AdminNavLink } from '@/components/AdminNavLink';
 import { toast } from 'sonner';
+import { VALIDATION_LIMITS } from '@/lib/validation';
 
 export default function Home() {
   const router = useRouter();
@@ -454,6 +455,7 @@ export default function Home() {
             placeholder="Search prompts by title, content, or tags..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
+            maxLength={VALIDATION_LIMITS.SEARCH_MAX_LENGTH}
             className="pl-10 h-12 text-base"
           />
         </div>

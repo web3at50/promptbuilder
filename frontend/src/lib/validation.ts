@@ -6,6 +6,7 @@ export const VALIDATION_LIMITS = {
   DESCRIPTION_MAX_LENGTH: 500,
   TAG_MAX_LENGTH: 50,
   TAG_MAX_COUNT: 10,
+  SEARCH_MAX_LENGTH: 1000,
 } as const;
 
 export interface ValidationError {

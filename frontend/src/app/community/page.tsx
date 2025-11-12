@@ -16,6 +16,7 @@ import {
 import { CommunityPromptCard } from '@/components/CommunityPromptCard';
 import { Search, Filter, TrendingUp, Clock, Heart, ArrowLeft, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { VALIDATION_LIMITS } from '@/lib/validation';
 
 interface CommunityPrompt {
   id: string;
@@ -192,6 +193,7 @@ export default function CommunityPage() {
             placeholder="Search community prompts..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
+            maxLength={VALIDATION_LIMITS.SEARCH_MAX_LENGTH}
             className="pl-10 h-12 text-base"
           />
         </form>
