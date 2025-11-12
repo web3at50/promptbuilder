@@ -4,6 +4,16 @@ import { requireAdmin } from '@/lib/admin';
 
 type TimeRange = 'daily' | 'weekly' | 'monthly';
 
+interface UsageDataItem {
+  date: string;
+  total_tokens: number;
+  anthropic_tokens: number;
+  openai_tokens: number;
+  total_requests: number;
+  anthropic_requests: number;
+  openai_requests: number;
+}
+
 export async function GET(request: Request) {
   try {
     // Check if user is admin
@@ -65,10 +75,10 @@ export async function GET(request: Request) {
       }
 
       return acc;
-    }, {} as Record<string, any>);
+    }, {} as Record<string, UsageDataItem>);
 
     // Convert to array and sort by date
-    const usageData = Object.values(groupedData).sort((a: any, b: any) =>
+    const usageData = Object.values(groupedData).sort((a: UsageDataItem, b: UsageDataItem) =>
       a.date.localeCompare(b.date)
     );
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -62,6 +62,15 @@ interface AggregatedData {
   avg_latency: number;
 }
 
+interface GroupedDataItem {
+  date: string;
+  total_requests: number;
+  total_cost: number;
+  total_tokens: number;
+  users: Set<string>;
+  total_latency: number;
+}
+
 export default function AdminLogsPage() {
   const router = useRouter();
   const [logs, setLogs] = useState<LogEntry[]>([]);
@@ -70,11 +79,7 @@ export default function AdminLogsPage() {
   const [providerFilter, setProviderFilter] = useState<string>('all');
   const [activeTab, setActiveTab] = useState('all');
 
-  useEffect(() => {
-    fetchLogs();
-  }, []);
-
-  async function fetchLogs() {
+  const fetchLogs = useCallback(async () => {
     setLoading(true);
     try {
       const response = await fetch('/api/admin/analytics/logs?limit=1000');
@@ -89,7 +94,11 @@ export default function AdminLogsPage() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [router]);
+
+  useEffect(() => {
+    fetchLogs();
+  }, [fetchLogs]);
 
   const getUserDisplayName = (user: LogEntry['user']) => {
     if (!user) return 'Unknown User';
@@ -144,10 +153,10 @@ export default function AdminLogsPage() {
       acc[date].users.add(log.user_id);
       acc[date].total_latency += log.latency_ms;
       return acc;
-    }, {} as Record<string, any>);
+    }, {} as Record<string, GroupedDataItem>);
 
     return Object.values(grouped)
-      .map((g: any) => ({
+      .map((g: GroupedDataItem) => ({
         date: g.date,
         total_requests: g.total_requests,
         total_cost: g.total_cost,
@@ -182,10 +191,10 @@ export default function AdminLogsPage() {
       acc[weekKey].users.add(log.user_id);
       acc[weekKey].total_latency += log.latency_ms;
       return acc;
-    }, {} as Record<string, any>);
+    }, {} as Record<string, GroupedDataItem>);
 
     return Object.values(grouped)
-      .map((g: any) => ({
+      .map((g: GroupedDataItem) => ({
         date: `Week of ${g.date}`,
         total_requests: g.total_requests,
         total_cost: g.total_cost,
@@ -218,10 +227,10 @@ export default function AdminLogsPage() {
       acc[monthKey].users.add(log.user_id);
       acc[monthKey].total_latency += log.latency_ms;
       return acc;
-    }, {} as Record<string, any>);
+    }, {} as Record<string, GroupedDataItem>);
 
     return Object.values(grouped)
-      .map((g: any) => ({
+      .map((g: GroupedDataItem) => ({
         date: g.date,
         total_requests: g.total_requests,
         total_cost: g.total_cost,

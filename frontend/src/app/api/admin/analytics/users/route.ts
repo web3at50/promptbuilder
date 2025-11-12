@@ -2,6 +2,18 @@ import { NextResponse } from 'next/server';
 import { createClerkSupabaseClient } from '@/lib/clerk-supabase';
 import { requireAdmin } from '@/lib/admin';
 
+interface UserStatsItem {
+  user_id: string;
+  total_requests: number;
+  total_cost: number;
+  total_tokens: number;
+  successful_requests: number;
+  failed_requests: number;
+  avg_latency: number;
+  providers: Record<string, number>;
+  last_activity: string;
+}
+
 export async function GET() {
   try {
     // Check if user is admin
@@ -66,11 +78,11 @@ export async function GET() {
       }
 
       return acc;
-    }, {} as Record<string, any>);
+    }, {} as Record<string, UserStatsItem>);
 
     // Calculate average latency and enrich with profile data
     const profileMap = new Map(profiles.map(p => [p.id, p]));
-    const userStatsList = Object.values(userStats).map((stats: any) => {
+    const userStatsList = Object.values(userStats).map((stats: UserStatsItem) => {
       const profile = profileMap.get(stats.user_id);
       return {
         ...stats,

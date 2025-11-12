@@ -12,49 +12,8 @@ export async function GET(request: Request) {
 
     const limit = parseInt(searchParams.get('limit') || '1000');
     const offset = parseInt(searchParams.get('offset') || '0');
-    const userId = searchParams.get('user_id');
-    const provider = searchParams.get('provider');
-    const startDate = searchParams.get('start_date');
-    const endDate = searchParams.get('end_date');
 
-    // Build query
-    let query = supabase
-      .from('ai_usage_logs')
-      .select(`
-        *,
-        prompts:prompt_id (
-          id,
-          title,
-          original_prompt
-        ),
-        profiles:user_id (
-          id,
-          email,
-          clerk_username,
-          first_name,
-          last_name,
-          avatar_url
-        )
-      `)
-      .order('created_at', { ascending: false });
-
-    // Apply filters
-    if (userId) {
-      query = query.eq('user_id', userId);
-    }
-    if (provider) {
-      query = query.eq('provider', provider);
-    }
-    if (startDate) {
-      query = query.gte('created_at', startDate);
-    }
-    if (endDate) {
-      query = query.lte('created_at', endDate);
-    }
-
-    // Apply pagination
-    query = query.range(offset, offset + limit - 1);
-
+    // Fetch all logs with count (filters can be added in future)
     const { data: logs, error, count } = await supabase
       .from('ai_usage_logs')
       .select('*', { count: 'exact', head: false })
