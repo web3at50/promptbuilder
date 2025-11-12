@@ -111,14 +111,11 @@ function normalizeModelName(model: string): string {
     return model;
   }
 
-  // For OpenAI models with version suffixes (e.g., gpt-4o-2024-08-06)
-  // Strip the date suffix and try matching base model name
-  const baseModelMatch = model.match(/^(gpt-[^-]+-?[^-]*)/);
-  if (baseModelMatch) {
-    const baseModel = baseModelMatch[1];
-    if (MODEL_PRICING[baseModel]) {
-      return baseModel;
-    }
+  // For OpenAI models with date suffixes (e.g., gpt-4o-2024-08-06)
+  // Strip the -YYYY-MM-DD pattern at the end
+  const withoutDate = model.replace(/-\d{4}-\d{2}-\d{2}$/, '');
+  if (withoutDate !== model && MODEL_PRICING[withoutDate]) {
+    return withoutDate;
   }
 
   // Return original if no normalization worked
