@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { Plus, Search, Wand2, Sparkles, Save, Zap, BarChart3, Menu, X, Users } from 'lucide-react';
+import { AdminNavLink } from '@/components/AdminNavLink';
 
 export default function Home() {
   const router = useRouter();
@@ -316,6 +317,7 @@ export default function Home() {
                   <BarChart3 className="h-4 w-4" />
                   Analytics
                 </Button>
+                <AdminNavLink onClick={() => router.push('/admin/analytics')} />
               </nav>
             </div>
 
@@ -403,6 +405,13 @@ export default function Home() {
                 <BarChart3 className="h-4 w-4" />
                 Analytics
               </Button>
+              <AdminNavLink
+                onClick={() => {
+                  router.push('/admin/analytics');
+                  setMobileMenuOpen(false);
+                }}
+                isMobile={true}
+              />
               <div className="pt-2 border-t">
                 <UserButton afterSignOutUrl="/" />
               </div>
