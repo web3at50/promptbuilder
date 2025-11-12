@@ -82,7 +82,7 @@ export async function GET() {
 
     // Calculate average latency and enrich with profile data
     const profileMap = new Map(profiles.map(p => [p.id, p]));
-    const userStatsList = Object.values(userStats).map((stats: UserStatsItem) => {
+    const userStatsList = (Object.values(userStats) as UserStatsItem[]).map((stats) => {
       const profile = profileMap.get(stats.user_id);
       return {
         ...stats,

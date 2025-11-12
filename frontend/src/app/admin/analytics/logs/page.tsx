@@ -155,8 +155,8 @@ export default function AdminLogsPage() {
       return acc;
     }, {} as Record<string, GroupedDataItem>);
 
-    return Object.values(grouped)
-      .map((g: GroupedDataItem) => ({
+    return (Object.values(grouped) as GroupedDataItem[])
+      .map((g) => ({
         date: g.date,
         total_requests: g.total_requests,
         total_cost: g.total_cost,
@@ -193,8 +193,8 @@ export default function AdminLogsPage() {
       return acc;
     }, {} as Record<string, GroupedDataItem>);
 
-    return Object.values(grouped)
-      .map((g: GroupedDataItem) => ({
+    return (Object.values(grouped) as GroupedDataItem[])
+      .map((g) => ({
         date: `Week of ${g.date}`,
         total_requests: g.total_requests,
         total_cost: g.total_cost,
@@ -229,8 +229,8 @@ export default function AdminLogsPage() {
       return acc;
     }, {} as Record<string, GroupedDataItem>);
 
-    return Object.values(grouped)
-      .map((g: GroupedDataItem) => ({
+    return (Object.values(grouped) as GroupedDataItem[])
+      .map((g) => ({
         date: g.date,
         total_requests: g.total_requests,
         total_cost: g.total_cost,

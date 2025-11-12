@@ -78,7 +78,7 @@ export async function GET(request: Request) {
     }, {} as Record<string, UsageDataItem>);
 
     // Convert to array and sort by date
-    const usageData = Object.values(groupedData).sort((a: UsageDataItem, b: UsageDataItem) =>
+    const usageData = (Object.values(groupedData) as UsageDataItem[]).sort((a, b) =>
       a.date.localeCompare(b.date)
     );
 
