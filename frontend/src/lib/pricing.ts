@@ -101,9 +101,34 @@ export const MODEL_PRICING: Record<string, ModelInfo> = {
 } as const;
 
 /**
+ * Normalize model name to match pricing keys
+ * OpenAI often returns versioned names like 'gpt-4o-2024-08-06'
+ * This function strips the version suffix to match our pricing keys
+ */
+function normalizeModelName(model: string): string {
+  // Try exact match first
+  if (MODEL_PRICING[model]) {
+    return model;
+  }
+
+  // For OpenAI models with version suffixes (e.g., gpt-4o-2024-08-06)
+  // Strip the date suffix and try matching base model name
+  const baseModelMatch = model.match(/^(gpt-[^-]+-?[^-]*)/);
+  if (baseModelMatch) {
+    const baseModel = baseModelMatch[1];
+    if (MODEL_PRICING[baseModel]) {
+      return baseModel;
+    }
+  }
+
+  // Return original if no normalization worked
+  return model;
+}
+
+/**
  * Calculate the cost in USD for an AI API call
  *
- * @param model - Model identifier (e.g., 'claude-sonnet-4-5-20250929', 'gpt-4o')
+ * @param model - Model identifier (e.g., 'claude-sonnet-4-5-20250929', 'gpt-4o', 'gpt-4o-2024-08-06')
  * @param inputTokens - Number of input/prompt tokens consumed
  * @param outputTokens - Number of output/completion tokens generated
  * @returns Total cost in USD
@@ -113,10 +138,11 @@ export function calculateCost(
   inputTokens: number,
   outputTokens: number
 ): number {
-  const modelInfo = MODEL_PRICING[model];
+  const normalizedModel = normalizeModelName(model);
+  const modelInfo = MODEL_PRICING[normalizedModel];
 
   if (!modelInfo) {
-    console.error(`Unknown model: ${model}. Cannot calculate cost. Returning 0.`);
+    console.error(`Unknown model: ${model} (normalized: ${normalizedModel}). Cannot calculate cost. Returning 0.`);
     return 0;
   }
 
