@@ -8,7 +8,8 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { MarkdownEditor } from '@/components/MarkdownEditor';
 import { Badge } from '@/components/ui/badge';
 import { ThemeToggle } from '@/components/theme-toggle';
-import { ArrowLeft, Save, X } from 'lucide-react';
+import { ArrowLeft, Save, X, Sparkles } from 'lucide-react';
+import { DualOptimizeView } from '@/components/DualOptimizeView';
 
 export default function NewPromptPage() {
   const router = useRouter();
@@ -18,6 +19,7 @@ export default function NewPromptPage() {
   const [tags, setTags] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
   const [promptId, setPromptId] = useState<string | null>(null);
+  const [showDualOptimize, setShowDualOptimize] = useState(false);
 
   const handleAddTag = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && tagInput.trim()) {
@@ -63,6 +65,14 @@ export default function NewPromptPage() {
       console.error('Error auto-saving prompt:', error);
       alert('Failed to save prompt. Please try again.');
       return undefined;
+    }
+  };
+
+  const handleCompareBoth = async () => {
+    // Auto-save the prompt first if not already saved
+    const savedPromptId = await handleAutoSave();
+    if (savedPromptId) {
+      setShowDualOptimize(true);
     }
   };
 
@@ -194,9 +204,52 @@ export default function NewPromptPage() {
                 onBeforeOptimize={handleAutoSave}
               />
             </div>
+
+            {/* Compare Both LLMs */}
+            {content.trim() && (
+              <div className="p-4 border rounded-lg bg-gradient-to-r from-purple-50 to-green-50 dark:from-purple-950/20 dark:to-green-950/20 border-purple-200 dark:border-purple-800">
+                <div className="flex items-center justify-between gap-4">
+                  <div>
+                    <h4 className="font-semibold flex items-center gap-2 mb-1">
+                      <Sparkles className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+                      Compare Claude vs ChatGPT
+                    </h4>
+                    <p className="text-sm text-muted-foreground">
+                      Run both AI models in parallel and compare their optimization suggestions side-by-side
+                    </p>
+                  </div>
+                  <Button
+                    onClick={handleCompareBoth}
+                    className="gap-2 bg-gradient-to-r from-purple-600 to-green-600 hover:from-purple-700 hover:to-green-700"
+                  >
+                    <Sparkles className="h-4 w-4" />
+                    Compare Both
+                  </Button>
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
       </main>
+
+      {/* Dual Optimize View */}
+      {showDualOptimize && promptId && (
+        <div className="fixed inset-0 bg-background/95 backdrop-blur-sm z-50 overflow-y-auto">
+          <div className="container mx-auto px-4 py-8">
+            <DualOptimizeView
+              promptId={promptId}
+              promptText={content}
+              onComplete={(selectedContent) => {
+                if (selectedContent) {
+                  setContent(selectedContent);
+                }
+                setShowDualOptimize(false);
+              }}
+              onCancel={() => setShowDualOptimize(false)}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -34,6 +34,8 @@ export function DualOptimizeView({
   const [openaiError, setOpenaiError] = useState<string | null>(null);
   const [selectedProvider, setSelectedProvider] = useState<'claude' | 'openai' | 'neither' | null>(null);
   const [hasRun, setHasRun] = useState(false);
+  const [versionNumber, setVersionNumber] = useState<number | null>(null);
+  const [isConfirming, setIsConfirming] = useState(false);
 
   const handleRunComparison = async () => {
     setIsLoading(true);
@@ -55,6 +57,11 @@ export function DualOptimizeView({
       }
 
       const data = await response.json();
+
+      // Store version number for later use
+      if (data.version) {
+        setVersionNumber(data.version);
+      }
 
       // Set results
       if (data.claude) {
@@ -99,13 +106,58 @@ export function DualOptimizeView({
     }
   };
 
-  const handleConfirm = () => {
-    if (selectedProvider === 'claude' && claudeResult) {
-      onComplete(claudeResult.output);
-    } else if (selectedProvider === 'openai' && openaiResult) {
-      onComplete(openaiResult.output);
-    } else {
-      onComplete(null); // Keep current
+  const handleConfirm = async () => {
+    if (!versionNumber) {
+      console.error('No version number available');
+      return;
+    }
+
+    setIsConfirming(true);
+
+    try {
+      let selectedContent: string | null = null;
+      let selectedProviderName: 'anthropic' | 'openai' | null = null;
+
+      if (selectedProvider === 'claude' && claudeResult) {
+        selectedContent = claudeResult.output;
+        selectedProviderName = 'anthropic';
+      } else if (selectedProvider === 'openai' && openaiResult) {
+        selectedContent = openaiResult.output;
+        selectedProviderName = 'openai';
+      } else if (selectedProvider === 'neither') {
+        // User wants to keep current version - just close
+        onComplete(null);
+        return;
+      }
+
+      if (!selectedContent || !selectedProviderName) {
+        console.error('No content selected');
+        return;
+      }
+
+      // Update the prompts table with the selected optimization
+      const response = await fetch(`/api/prompts/${promptId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          content: selectedContent,
+          optimization_count: versionNumber,
+          optimized_with: selectedProviderName,
+          last_optimized_at: new Date().toISOString(),
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to save selection');
+      }
+
+      // Success - call onComplete with the selected content
+      onComplete(selectedContent);
+    } catch (error) {
+      console.error('Error saving selection:', error);
+      alert('Failed to save your selection. Please try again.');
+    } finally {
+      setIsConfirming(false);
     }
   };
 
@@ -208,15 +260,17 @@ export function DualOptimizeView({
                   </Button>
                   <Button
                     onClick={handleConfirm}
-                    disabled={!selectedProvider}
+                    disabled={!selectedProvider || isConfirming}
                   >
-                    {selectedProvider === 'claude'
-                      ? 'Use Claude Version'
-                      : selectedProvider === 'openai'
-                        ? 'Use ChatGPT Version'
-                        : selectedProvider === 'neither'
-                          ? 'Keep Current Version'
-                          : 'Select a Version'}
+                    {isConfirming
+                      ? 'Saving...'
+                      : selectedProvider === 'claude'
+                        ? 'Use Claude Version'
+                        : selectedProvider === 'openai'
+                          ? 'Use ChatGPT Version'
+                          : selectedProvider === 'neither'
+                            ? 'Keep Current Version'
+                            : 'Select a Version'}
                   </Button>
                 </div>
               </div>
