@@ -8,11 +8,13 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { MarkdownEditor } from '@/components/MarkdownEditor';
 import { Badge } from '@/components/ui/badge';
 import { ThemeToggle } from '@/components/theme-toggle';
-import { ArrowLeft, Save, X, Star, Eye, GitCompare } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ArrowLeft, Save, X, Star, Eye, GitCompare, History, FileEdit } from 'lucide-react';
 import { Prompt } from '@/types';
 import { OriginalPromptModal } from '@/components/OriginalPromptModal';
 import { BeforeAfterModal } from '@/components/BeforeAfterModal';
 import { DetailedOptimizationStats } from '@/components/OptimizationBadge';
+import { VersionHistory } from '@/components/VersionHistory';
 
 export default function EditPromptPage({
   params,
@@ -242,48 +244,82 @@ export default function EditPromptPage({
               </div>
             )}
 
-            {/* Tags Input */}
-            <div className="space-y-2">
-              <label htmlFor="tags" className="text-sm font-medium">
-                Tags
-              </label>
-              <Input
-                id="tags"
-                placeholder="Type a tag and press Enter..."
-                value={tagInput}
-                onChange={(e) => setTagInput(e.target.value)}
-                onKeyDown={handleAddTag}
-              />
-              {tags.length > 0 && (
-                <div className="flex flex-wrap gap-2 mt-2">
-                  {tags.map((tag) => (
-                    <Badge key={tag} variant="secondary" className="gap-1 pr-1">
-                      {tag}
-                      <button
-                        onClick={() => handleRemoveTag(tag)}
-                        className="ml-1 hover:text-destructive"
-                      >
-                        <X className="h-3 w-3" />
-                      </button>
+            {/* Tabs for Edit vs History */}
+            <Tabs defaultValue="edit" className="w-full">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="edit" className="gap-2">
+                  <FileEdit className="h-4 w-4" />
+                  Edit
+                </TabsTrigger>
+                <TabsTrigger value="history" className="gap-2">
+                  <History className="h-4 w-4" />
+                  History
+                  {promptData && promptData.optimization_count > 0 && (
+                    <Badge variant="secondary" className="ml-1">
+                      {promptData.optimization_count}
                     </Badge>
-                  ))}
-                </div>
-              )}
-            </div>
+                  )}
+                </TabsTrigger>
+              </TabsList>
 
-            {/* Content Editor */}
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Content</label>
-              <MarkdownEditor
-                value={content}
-                onChange={setContent}
-                placeholder="Write your prompt here... You can use markdown formatting!"
-                promptId={(() => {
-                  console.log('[Edit Page] Passing promptId to MarkdownEditor:', promptId);
-                  return promptId || undefined;
-                })()}
-              />
-            </div>
+              <TabsContent value="edit" className="space-y-6 mt-6">
+                {/* Tags Input */}
+                <div className="space-y-2">
+                  <label htmlFor="tags" className="text-sm font-medium">
+                    Tags
+                  </label>
+                  <Input
+                    id="tags"
+                    placeholder="Type a tag and press Enter..."
+                    value={tagInput}
+                    onChange={(e) => setTagInput(e.target.value)}
+                    onKeyDown={handleAddTag}
+                  />
+                  {tags.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {tags.map((tag) => (
+                        <Badge key={tag} variant="secondary" className="gap-1 pr-1">
+                          {tag}
+                          <button
+                            onClick={() => handleRemoveTag(tag)}
+                            className="ml-1 hover:text-destructive"
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </Badge>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Content Editor */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Content</label>
+                  <MarkdownEditor
+                    value={content}
+                    onChange={setContent}
+                    placeholder="Write your prompt here... You can use markdown formatting!"
+                    promptId={(() => {
+                      console.log('[Edit Page] Passing promptId to MarkdownEditor:', promptId);
+                      return promptId || undefined;
+                    })()}
+                  />
+                </div>
+              </TabsContent>
+
+              <TabsContent value="history" className="mt-6">
+                {promptId && promptData && (
+                  <VersionHistory
+                    promptId={promptId}
+                    currentVersion={promptData.optimization_count}
+                    onRestore={() => {
+                      // Refresh the prompt data after restore
+                      fetchPrompt(promptId);
+                    }}
+                  />
+                )}
+              </TabsContent>
+            </Tabs>
           </CardContent>
         </Card>
       </main>

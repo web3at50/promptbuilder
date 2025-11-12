@@ -73,6 +73,26 @@ export type Profile = {
 };
 
 // ============================================================================
+// Prompt Optimization History Types (Phase 2)
+// ============================================================================
+
+export type PromptOptimization = {
+  id: string;
+  prompt_id: string;
+  version: number;
+  provider: 'anthropic' | 'openai';
+  model: string;
+  input_text: string;
+  output_text: string;
+  tokens_input: number | null;
+  tokens_output: number | null;
+  cost_usd: number | null;
+  latency_ms: number | null;
+  created_at: string;
+  user_id: string;
+};
+
+// ============================================================================
 // Usage Analytics Types (for dashboards)
 // ============================================================================
 

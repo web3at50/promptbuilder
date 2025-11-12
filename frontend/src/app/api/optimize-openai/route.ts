@@ -41,7 +41,10 @@ export async function POST(request: NextRequest) {
 
     supabase = await createClerkSupabaseClient();
 
-    // If promptId provided, store original prompt and update metadata
+    // Get current optimization data if promptId provided
+    let nextVersion = 1;
+    let inputText = prompt;
+
     if (promptId) {
       console.log('[OpenAI API] promptId exists - will update prompt metadata');
       const { data: existingPrompt } = await supabase
@@ -51,6 +54,10 @@ export async function POST(request: NextRequest) {
         .single();
 
       if (existingPrompt) {
+        // Calculate next version number based on existing count
+        nextVersion = (existingPrompt.optimization_count || 0) + 1;
+        inputText = existingPrompt.content; // Save what we're actually sending to the LLM
+
         // Only store original_prompt if this is the first optimization
         const updates: {
           optimization_count: number;
@@ -58,7 +65,7 @@ export async function POST(request: NextRequest) {
           optimized_with: string;
           original_prompt?: string;
         } = {
-          optimization_count: (existingPrompt.optimization_count || 0) + 1,
+          optimization_count: nextVersion,
           last_optimized_at: new Date().toISOString(),
           optimized_with: MODEL,
         };
@@ -119,6 +126,37 @@ Please provide ONLY the optimised prompt without any explanation or meta-comment
       promptId
     );
     await logAIUsage(supabase, usageLog);
+
+    // Save to optimization history (Phase 2)
+    if (promptId && supabase) {
+      try {
+        const { error: historyError } = await supabase
+          .from('prompt_optimizations')
+          .insert({
+            prompt_id: promptId,
+            version: nextVersion,
+            provider: 'openai',
+            model: MODEL,
+            input_text: inputText,
+            output_text: optimizedPrompt,
+            tokens_input: completion.usage?.prompt_tokens || null,
+            tokens_output: completion.usage?.completion_tokens || null,
+            cost_usd: usageLog.cost_usd,
+            latency_ms: latencyMs,
+            user_id: userId,
+          });
+
+        if (historyError) {
+          console.error('[OpenAI API] Failed to save optimization history:', historyError);
+          // Don't fail the request if history save fails
+        } else {
+          console.log('[OpenAI API] Saved optimization v' + nextVersion + ' to history');
+        }
+      } catch (historyErr) {
+        console.error('[OpenAI API] Exception saving history:', historyErr);
+        // Don't fail the request
+      }
+    }
 
     return NextResponse.json({
       optimizedPrompt,
