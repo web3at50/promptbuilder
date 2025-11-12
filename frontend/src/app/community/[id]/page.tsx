@@ -19,6 +19,7 @@ import {
   Loader2,
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
+import { toast } from 'sonner';
 
 interface CommunityPromptDetail {
   id: string;
@@ -68,8 +69,9 @@ export default function CommunityPromptDetailPage() {
 
   const handleLike = async () => {
     if (!user) {
-      alert('Please sign in to like prompts');
-      router.push('/login');
+      toast.info('Please sign in to like prompts', {
+        description: 'Create an account or sign in to interact with community prompts',
+      });
       return;
     }
 
@@ -91,14 +93,15 @@ export default function CommunityPromptDetailPage() {
       });
     } catch (error) {
       console.error('Error toggling like:', error);
-      alert('Failed to update like. Please try again.');
+      toast.error('Failed to update like. Please try again.');
     }
   };
 
   const handleFork = async () => {
     if (!user) {
-      alert('Please sign in to fork prompts');
-      router.push('/login');
+      toast.info('Please sign in to fork prompts', {
+        description: 'Create an account or sign in to add prompts to your library',
+      });
       return;
     }
 
@@ -126,11 +129,12 @@ export default function CommunityPromptDetailPage() {
         is_forked_by_user: true,
       });
 
-      // Navigate to the new forked prompt
+      // Show success message and navigate
+      toast.success('Prompt forked successfully!');
       router.push(`/edit/${data.prompt_id}`);
     } catch (error) {
       console.error('Error forking prompt:', error);
-      alert('Failed to fork prompt. Please try again.');
+      toast.error('Failed to fork prompt. Please try again.');
     }
   };
 

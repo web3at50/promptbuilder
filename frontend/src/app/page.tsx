@@ -108,16 +108,30 @@ export default function Home() {
         <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-40">
           <div className="container mx-auto px-4 py-6">
             <div className="flex items-center justify-between gap-4">
-              <div>
-                <h1 className="text-2xl font-bold">Prompt Library</h1>
-                <p className="text-sm text-muted-foreground">
-                  Create, optimise, and save your AI prompts
-                </p>
+              <div className="flex items-center gap-4">
+                <div>
+                  <h1 className="text-2xl font-bold">Prompt Library</h1>
+                  <p className="text-sm text-muted-foreground hidden sm:block">
+                    Create, optimise, and save your AI prompts
+                  </p>
+                </div>
+
+                {/* Navigation for unauthenticated users */}
+                <nav className="hidden md:flex items-center gap-1 ml-6">
+                  <Button
+                    variant="ghost"
+                    onClick={() => router.push('/community')}
+                    className="gap-2"
+                  >
+                    <Users className="h-4 w-4" />
+                    Community
+                  </Button>
+                </nav>
               </div>
 
               <div className="flex items-center gap-3">
                 <ThemeToggle />
-                <Button variant="outline" onClick={() => router.push('/login')}>
+                <Button variant="outline" onClick={() => router.push('/login')} className="hidden sm:flex">
                   Sign In
                 </Button>
                 <Button onClick={() => router.push('/signup')}>

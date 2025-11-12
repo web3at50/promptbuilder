@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/select';
 import { CommunityPromptCard } from '@/components/CommunityPromptCard';
 import { Search, Filter, TrendingUp, Clock, Heart, ArrowLeft, Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface CommunityPrompt {
   id: string;
@@ -72,8 +73,9 @@ export default function CommunityPage() {
 
   const handleLike = async (id: string, currentlyLiked: boolean) => {
     if (!user) {
-      alert('Please sign in to like prompts');
-      router.push('/login');
+      toast.info('Please sign in to like prompts', {
+        description: 'Create an account or sign in to interact with community prompts',
+      });
       return;
     }
 
@@ -100,14 +102,15 @@ export default function CommunityPage() {
       );
     } catch (error) {
       console.error('Error toggling like:', error);
-      alert('Failed to update like. Please try again.');
+      toast.error('Failed to update like. Please try again.');
     }
   };
 
   const handleFork = async (id: string) => {
     if (!user) {
-      alert('Please sign in to fork prompts');
-      router.push('/login');
+      toast.info('Please sign in to fork prompts', {
+        description: 'Create an account or sign in to add prompts to your library',
+      });
       return;
     }
 
@@ -133,11 +136,12 @@ export default function CommunityPage() {
         )
       );
 
-      // Navigate to the new forked prompt
+      // Show success message and navigate
+      toast.success('Prompt forked successfully!');
       router.push(`/edit/${data.prompt_id}`);
     } catch (error) {
       console.error('Error forking prompt:', error);
-      alert('Failed to fork prompt. Please try again.');
+      toast.error('Failed to fork prompt. Please try again.');
     }
   };
 
