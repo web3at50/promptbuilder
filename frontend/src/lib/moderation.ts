@@ -75,10 +75,10 @@ export function analyzeModerationResult(result: ModerationResult): ModerationDec
 
   // Find max score and flagged categories
   const scoreEntries = Object.entries(scores);
-  const maxScore = Math.max(...scoreEntries.map(([_, score]) => score));
+  const maxScore = Math.max(...scoreEntries.map(([, score]) => score));
 
   const flaggedCategories = scoreEntries
-    .filter(([_, score]) => score >= MODERATION_THRESHOLDS.AUTO_APPROVE)
+    .filter(([, score]) => score >= MODERATION_THRESHOLDS.AUTO_APPROVE)
     .map(([category]) => category);
 
   // Determine status based on thresholds
@@ -102,10 +102,9 @@ export function analyzeModerationResult(result: ModerationResult): ModerationDec
 
 /**
  * Get user-friendly message for rejected content
- * @param flaggedCategories - Categories that were flagged
  * @returns User-friendly message
  */
-export function getRejectionMessage(flaggedCategories: string[]): string {
+export function getRejectionMessage(): string {
   return 'This content doesn\'t meet our community guidelines. Please review our content policy and ensure your prompt is appropriate for public sharing.';
 }
 

@@ -36,7 +36,7 @@ interface PendingPrompt {
   category: string | null;
   tags: string[];
   moderation_status: string;
-  moderation_scores: any;
+  moderation_scores: Record<string, number> | null;
   moderation_flagged_for: string[];
   moderation_notes: string | null;
   reviewed_at: string | null;

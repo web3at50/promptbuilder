@@ -44,7 +44,8 @@ export default function EditPromptPage({
   // Publishing fields
   const [showPublishModal, setShowPublishModal] = useState(false);
   const [isPublic, setIsPublic] = useState(false);
-  const [shareToken, setShareToken] = useState<string | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_shareToken, setShareToken] = useState<string | null>(null);
 
   useEffect(() => {
     const loadPrompt = async () => {

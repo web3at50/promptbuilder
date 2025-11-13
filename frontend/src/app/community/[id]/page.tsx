@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { useUser } from '@clerk/nextjs';
 import { Button } from '@/components/ui/button';
@@ -46,13 +46,7 @@ export default function CommunityPromptDetailPage() {
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
 
-  useEffect(() => {
-    if (params.id) {
-      fetchPrompt();
-    }
-  }, [params.id]);
-
-  const fetchPrompt = async () => {
+  const fetchPrompt = useCallback(async () => {
     setLoading(true);
     try {
       const response = await fetch(`/api/community/prompts/${params.id}`);
@@ -65,7 +59,13 @@ export default function CommunityPromptDetailPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [params.id]);
+
+  useEffect(() => {
+    if (params.id) {
+      fetchPrompt();
+    }
+  }, [params.id, fetchPrompt]);
 
   const handleLike = async () => {
     if (!user) {

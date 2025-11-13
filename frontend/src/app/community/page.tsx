@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useUser } from '@clerk/nextjs';
 import { Button } from '@/components/ui/button';
@@ -43,11 +43,7 @@ export default function CommunityPage() {
   const [category, setCategory] = useState<string>('all');
   const [sortBy, setSortBy] = useState<string>('recent');
 
-  useEffect(() => {
-    fetchCommunityPrompts();
-  }, [category, sortBy]);
-
-  const fetchCommunityPrompts = async () => {
+  const fetchCommunityPrompts = useCallback(async () => {
     setLoading(true);
     try {
       const params = new URLSearchParams();
@@ -65,14 +61,18 @@ export default function CommunityPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [category, sortBy, searchQuery]);
+
+  useEffect(() => {
+    fetchCommunityPrompts();
+  }, [fetchCommunityPrompts]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     fetchCommunityPrompts();
   };
 
-  const handleLike = async (id: string, currentlyLiked: boolean) => {
+  const handleLike = async (id: string) => {
     if (!user) {
       toast.info('Please sign in to like prompts', {
         description: 'Create an account or sign in to interact with community prompts',

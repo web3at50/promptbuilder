@@ -92,7 +92,7 @@ export async function POST(
       if (decision.status === 'rejected') {
         return NextResponse.json(
           {
-            error: getRejectionMessage(decision.flaggedCategories),
+            error: getRejectionMessage(),
             moderation: {
               flagged: true,
               categories: decision.flaggedCategories,
