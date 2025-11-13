@@ -42,7 +42,7 @@ interface PendingPrompt {
   reviewed_at: string | null;
   reviewed_by: string | null;
   published_at: string;
-  created_at: string;
+  updated_at: string;
   user_id: string;
   author_name: string | null;
 }
@@ -272,7 +272,7 @@ export default function AdminPendingPromptsPage() {
                               </TableCell>
                               <TableCell>{prompt.author_name || 'Unknown'}</TableCell>
                               <TableCell>
-                                {new Date(prompt.created_at).toLocaleDateString()}
+                                {new Date(prompt.published_at).toLocaleDateString()}
                               </TableCell>
                               <TableCell>
                                 {prompt.moderation_flagged_for && prompt.moderation_flagged_for.length > 0 ? (
@@ -345,7 +345,7 @@ export default function AdminPendingPromptsPage() {
             <DialogTitle>{selectedPrompt?.title}</DialogTitle>
             <DialogDescription>
               Submitted by {selectedPrompt?.author_name || 'Unknown'} on{' '}
-              {selectedPrompt && new Date(selectedPrompt.created_at).toLocaleDateString()}
+              {selectedPrompt && new Date(selectedPrompt.published_at).toLocaleDateString()}
             </DialogDescription>
           </DialogHeader>
 

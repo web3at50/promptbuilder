@@ -42,11 +42,11 @@ export async function GET(request: NextRequest) {
         reviewed_at,
         reviewed_by,
         published_at,
-        created_at,
+        updated_at,
         user_id,
         author_name
       `)
-      .order('created_at', { ascending: false });
+      .order('published_at', { ascending: false });
 
     // Filter by status if not 'all'
     if (status !== 'all') {
