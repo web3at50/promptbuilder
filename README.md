@@ -1,6 +1,12 @@
 # PromptBuilder AI
 
-**Live Site**: [promptbuilderai.xyz](https://www.promptbuilderai.xyz/)
+[![Live Demo](https://img.shields.io/badge/demo-live-green)](https://www.promptbuilderai.xyz/)
+[![Next.js](https://img.shields.io/badge/Next.js-15-black)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19-blue)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)](https://www.typescriptlang.org/)
+[![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-green)](https://supabase.com/)
+[![Clerk](https://img.shields.io/badge/Clerk-Auth-purple)](https://clerk.com/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-CSS_4-38bdf8)](https://tailwindcss.com/)
 
 A modern AI prompt management platform with multi-AI comparison, smart content moderation, and powerful analytics. Built to showcase full-stack development capabilities including authentication, role-based access control, community features, and real-time data visualization.
 
