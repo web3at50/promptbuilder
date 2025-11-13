@@ -19,10 +19,11 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '20');
     const offset = (page - 1) * limit;
 
-    // Build query
+    // Build query - only show approved prompts (auto_approved or manually approved)
     let query = supabase
       .from('community_prompts')
-      .select('*', { count: 'exact' });
+      .select('*', { count: 'exact' })
+      .in('moderation_status', ['auto_approved', 'approved']);
 
     // Apply category filter
     if (category && category !== 'all') {

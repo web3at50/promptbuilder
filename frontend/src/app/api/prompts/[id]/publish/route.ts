@@ -3,6 +3,12 @@ import { auth } from '@clerk/nextjs/server';
 import { createClerkSupabaseClient } from '@/lib/clerk-supabase';
 import { nanoid } from 'nanoid';
 import { validateDescription } from '@/lib/validation';
+import {
+  moderateContent,
+  analyzeModerationResult,
+  getRejectionMessage,
+  getPendingMessage,
+} from '@/lib/moderation';
 
 // POST /api/prompts/[id]/publish
 // Publishes a prompt to the community gallery
@@ -66,6 +72,41 @@ export async function POST(
     // Generate unique share token
     const share_token = nanoid(12);
 
+    // Moderate content before publishing
+    let moderationStatus = 'auto_approved';
+    let moderationScores = null;
+    let moderationFlaggedFor: string[] = [];
+
+    try {
+      // Combine all text for moderation
+      const contentToModerate = `${prompt.title}\n\n${description.trim()}\n\n${prompt.content}`;
+
+      const moderationResult = await moderateContent(contentToModerate);
+      const decision = analyzeModerationResult(moderationResult);
+
+      moderationStatus = decision.status;
+      moderationScores = decision.scores;
+      moderationFlaggedFor = decision.flaggedCategories;
+
+      // If rejected, return error immediately
+      if (decision.status === 'rejected') {
+        return NextResponse.json(
+          {
+            error: getRejectionMessage(decision.flaggedCategories),
+            moderation: {
+              flagged: true,
+              categories: decision.flaggedCategories,
+            },
+          },
+          { status: 400 }
+        );
+      }
+    } catch (error) {
+      // If moderation API fails, auto-approve (fail open)
+      console.error('[Publish] Moderation API failed, auto-approving:', error);
+      moderationStatus = 'auto_approved';
+    }
+
     // Insert into community_prompts
     const { data: communityPrompt, error: communityError } = await supabase
       .from('community_prompts')
@@ -82,6 +123,9 @@ export async function POST(
         fork_count: 0,
         view_count: 0,
         is_featured: false,
+        moderation_status: moderationStatus,
+        moderation_scores: moderationScores,
+        moderation_flagged_for: moderationFlaggedFor,
       })
       .select()
       .single();
@@ -117,13 +161,20 @@ export async function POST(
       );
     }
 
-    // Return success with public URL
+    // Return success with appropriate message based on moderation status
+    const responseMessage =
+      moderationStatus === 'pending'
+        ? getPendingMessage()
+        : 'Prompt published successfully!';
+
     return NextResponse.json({
       success: true,
-      message: 'Prompt published successfully!',
+      message: responseMessage,
       share_token,
       community_prompt_id: communityPrompt.id,
       public_url: `/community/${communityPrompt.id}`,
+      moderation_status: moderationStatus,
+      requires_review: moderationStatus === 'pending',
     });
   } catch (error) {
     console.error('[Publish Prompt] Error:', error);
