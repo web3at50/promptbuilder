@@ -43,8 +43,6 @@ interface PendingPrompt {
   reviewed_by: string | null;
   published_at: string;
   updated_at: string;
-  user_id: string;
-  author_name: string | null;
 }
 
 interface StatusCounts {
@@ -251,7 +249,6 @@ export default function AdminPendingPromptsPage() {
                       <TableHeader>
                         <TableRow>
                           <TableHead>Title</TableHead>
-                          <TableHead>Author</TableHead>
                           <TableHead>Submitted</TableHead>
                           <TableHead>Flagged For</TableHead>
                           <TableHead>Max Score</TableHead>
@@ -270,7 +267,6 @@ export default function AdminPendingPromptsPage() {
                               <TableCell className="font-medium max-w-xs truncate">
                                 {prompt.title}
                               </TableCell>
-                              <TableCell>{prompt.author_name || 'Unknown'}</TableCell>
                               <TableCell>
                                 {new Date(prompt.published_at).toLocaleDateString()}
                               </TableCell>
@@ -344,8 +340,7 @@ export default function AdminPendingPromptsPage() {
           <DialogHeader>
             <DialogTitle>{selectedPrompt?.title}</DialogTitle>
             <DialogDescription>
-              Submitted by {selectedPrompt?.author_name || 'Unknown'} on{' '}
-              {selectedPrompt && new Date(selectedPrompt.published_at).toLocaleDateString()}
+              Submitted on {selectedPrompt && new Date(selectedPrompt.published_at).toLocaleDateString()}
             </DialogDescription>
           </DialogHeader>
 
