@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const status = searchParams.get('status') || 'pending';
 
-    // Build query
+    // Build query with profile join to get author names
     let query = supabase
       .from('community_prompts')
       .select(`
@@ -44,7 +44,7 @@ export async function GET(request: NextRequest) {
         published_at,
         updated_at,
         user_id,
-        author_name
+        profiles(first_name, last_name, clerk_username)
       `)
       .order('published_at', { ascending: false });
 
@@ -60,6 +60,31 @@ export async function GET(request: NextRequest) {
       throw error;
     }
 
+    // Transform prompts to include author_name from profiles
+    const transformedPrompts = prompts?.map((prompt: any) => {
+      const profile = prompt.profiles;
+      let author_name = null;
+
+      if (profile) {
+        if (profile.first_name && profile.last_name) {
+          author_name = `${profile.first_name} ${profile.last_name}`;
+        } else if (profile.first_name) {
+          author_name = profile.first_name;
+        } else if (profile.last_name) {
+          author_name = profile.last_name;
+        } else if (profile.clerk_username) {
+          author_name = profile.clerk_username;
+        }
+      }
+
+      // Remove the nested profiles object and add author_name at root level
+      const { profiles: _, ...promptData } = prompt;
+      return {
+        ...promptData,
+        author_name,
+      };
+    });
+
     // Get counts for each status
     const { data: counts } = await supabase
       .from('community_prompts')
@@ -74,7 +99,7 @@ export async function GET(request: NextRequest) {
     };
 
     return NextResponse.json({
-      prompts: prompts || [],
+      prompts: transformedPrompts || [],
       counts: statusCounts,
     });
   } catch (error) {
