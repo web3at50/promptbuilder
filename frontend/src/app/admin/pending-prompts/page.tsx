@@ -79,7 +79,12 @@ export default function AdminPendingPromptsPage() {
         }
         const data = await response.json();
         setPrompts(data.prompts || []);
-        setCounts(data.counts || counts);
+        setCounts(data.counts || {
+          pending: 0,
+          auto_approved: 0,
+          approved: 0,
+          rejected: 0,
+        });
       } catch (error) {
         console.error('Error fetching prompts:', error);
         toast.error('Failed to load prompts');
@@ -87,7 +92,7 @@ export default function AdminPendingPromptsPage() {
         setLoading(false);
       }
     },
-    [router, counts]
+    [router]
   );
 
   useEffect(() => {
