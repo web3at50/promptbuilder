@@ -37,3 +37,6 @@ next-env.d.ts
 
 # Setup files (guidance documents)
 setup/
+
+# VS Code workspace file
+promptbuilder.code-workspace
