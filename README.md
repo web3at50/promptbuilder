@@ -125,7 +125,7 @@ Every AI optimization is automatically saved with full details: the input, outpu
 ## Built With
 
 - **Frontend**: Next.js 15 with React 19 and TypeScript
-- **Authentication**: Clerk (email + Google OAuth with role-based access control)
+- **Authentication**: Clerk (email/password + Google & GitHub OAuth with role-based access control)
 - **Database**: Supabase (PostgreSQL with Row Level Security)
 - **AI Models**: Anthropic Claude Sonnet 4.5 & OpenAI GPT-4o
 - **Styling**: Tailwind CSS 4 with Radix UI components
@@ -277,6 +277,34 @@ This project showcases a range of full-stack development skills:
 - Environment configuration
 - Version control strategy
 - Production deployment (Vercel)
+
+---
+
+## Possible Future Enhancements
+
+This project demonstrates solid full-stack competence as-is, but there are several features that could be added if the application gained traction or to showcase additional skills:
+
+**Expanded AI Support:**
+- Add more AI providers (Google Gemini, xAI Grok)
+- Support additional models per provider (Claude Haiku, GPT-4.5, GPT-5)
+- Multi-model comparison (compare 3+ AIs simultaneously)
+
+**Enhanced User Experience:**
+- **Command Palette** - Keyboard-driven navigation and actions for power users
+- **Folders & Collections** - Organizational system for users with 100+ prompts
+- **Custom Usernames** - User-chosen usernames displayed on community prompt cards
+
+**Advanced Prompt Features:**
+- **Prompt Templates with Variables** - Reusable templates with variable substitution (e.g., `{{company_name}}`, `{{target_audience}}`)
+- **"10x Better" AI Enhancement** - One-click prompt optimization using advanced meta-prompting techniques
+- **Prompt Chaining** - Link multiple prompts together for complex workflows
+
+**Collaboration Features:**
+- Team workspaces with shared prompt libraries
+- Commenting and discussion on community prompts
+- Collaborative editing with version conflict resolution
+
+These enhancements would demonstrate additional capabilities in UX design, complex state management, real-time collaboration, and advanced AI integration while building on the solid foundation already in place.
 
 ---
 

@@ -7,7 +7,7 @@ PromptBuilder implements multiple layers of security to protect user data and pr
 ## Authentication & Authorization
 
 ### User Authentication
-- **Clerk Authentication** with email/password and Google OAuth
+- **Clerk Authentication** with email/password, Google OAuth, and GitHub OAuth
 - Secure session management with automatic token refresh
 - Email verification for new accounts (configurable)
 - Multi-factor authentication support (available through Clerk)
@@ -184,7 +184,7 @@ Update operations only allow specific fields to be modified:
 
 This is a portfolio/demonstration project and has some limitations:
 
-- **No Enterprise SSO**: Currently supports email/password and Google OAuth only
+- **No Enterprise SSO**: Supports consumer OAuth (Google, GitHub) but not enterprise SAML/Azure AD
 - **Basic Rate Limiting**: Simple prompt count limit, not API request rate limiting
 - **Moderation Scope**: Only applied to community prompts, not private prompts
 - **No WAF**: Web Application Firewall not implemented (could be added via Cloudflare/Vercel)
