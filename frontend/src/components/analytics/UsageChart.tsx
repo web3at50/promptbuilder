@@ -52,20 +52,20 @@ export function UsageChart({
   };
 
   // Prepare pie chart data
-  const pieData = [
-    {
-      name: 'Claude',
-      value: byProvider.anthropic.tokens,
-      color: '#9333ea',
-    },
-    {
-      name: 'ChatGPT',
-      value: byProvider.openai.tokens,
-      color: '#16a34a',
-    },
-  ];
+const pieData = [
+  {
+    name: 'Claude',
+    value: byProvider.anthropic.tokens,
+    color: 'var(--chart-1)',
+  },
+  {
+    name: 'ChatGPT',
+    value: byProvider.openai.tokens,
+    color: 'var(--chart-2)',
+  },
+];
 
-  const COLORS = ['#9333ea', '#16a34a'];
+const COLORS = pieData.map((entry) => entry.color);
 
   return (
     <div className="space-y-4">
@@ -84,8 +84,8 @@ export function UsageChart({
               <AreaChart data={dailyUsage}>
                 <defs>
                   <linearGradient id="colorTokens" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
-                    <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
+                    <stop offset="5%" stopColor="var(--primary)" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="var(--primary)" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
@@ -116,7 +116,7 @@ export function UsageChart({
                 <Area
                   type="monotone"
                   dataKey="tokens"
-                  stroke="#3b82f6"
+                  stroke="var(--primary)"
                   fillOpacity={1}
                   fill="url(#colorTokens)"
                   strokeWidth={2}
@@ -171,7 +171,10 @@ export function UsageChart({
                 {/* Claude Stats */}
                 <div className="space-y-2">
                   <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-orange" />
+                    <div
+                      className="w-3 h-3 rounded-full"
+                      style={{ backgroundColor: 'var(--chart-1)' }}
+                    />
                     <span className="font-medium">Claude</span>
                   </div>
                   <div className="pl-5 space-y-1 text-sm">
@@ -197,7 +200,10 @@ export function UsageChart({
                 {/* ChatGPT Stats */}
                 <div className="space-y-2">
                   <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-blue" />
+                    <div
+                      className="w-3 h-3 rounded-full"
+                      style={{ backgroundColor: 'var(--chart-2)' }}
+                    />
                     <span className="font-medium">ChatGPT</span>
                   </div>
                   <div className="pl-5 space-y-1 text-sm">

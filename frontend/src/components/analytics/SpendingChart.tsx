@@ -6,6 +6,7 @@ import {
   Line,
   BarChart,
   Bar,
+  Cell,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -57,12 +58,12 @@ export function SpendingChart({ data, totals, period }: SpendingChartProps) {
     {
       name: 'Claude',
       cost: totals.anthropic,
-      color: '#9333ea',
+      color: 'var(--chart-1)',
     },
     {
       name: 'ChatGPT',
       cost: totals.openai,
-      color: '#16a34a',
+      color: 'var(--chart-2)',
     },
   ];
 
@@ -105,7 +106,7 @@ export function SpendingChart({ data, totals, period }: SpendingChartProps) {
                 <Line
                   type="monotone"
                   dataKey="anthropic"
-                  stroke="#9333ea"
+                  stroke="var(--chart-1)"
                   name="Claude"
                   strokeWidth={2}
                   dot={{ r: 3 }}
@@ -113,7 +114,7 @@ export function SpendingChart({ data, totals, period }: SpendingChartProps) {
                 <Line
                   type="monotone"
                   dataKey="openai"
-                  stroke="#16a34a"
+                  stroke="var(--chart-2)"
                   name="ChatGPT"
                   strokeWidth={2}
                   dot={{ r: 3 }}
@@ -121,7 +122,7 @@ export function SpendingChart({ data, totals, period }: SpendingChartProps) {
                 <Line
                   type="monotone"
                   dataKey="total"
-                  stroke="#f97316"
+                  stroke="var(--provider-both)"
                   name="Total"
                   strokeWidth={2}
                   strokeDasharray="5 5"
@@ -162,9 +163,9 @@ export function SpendingChart({ data, totals, period }: SpendingChartProps) {
                     borderRadius: '8px',
                   }}
                 />
-                <Bar dataKey="cost" fill="#9333ea" radius={[8, 8, 0, 0]}>
+                <Bar dataKey="cost" radius={[8, 8, 0, 0]}>
                   {providerComparisonData.map((entry, index) => (
-                    <Bar key={`bar-${index}`} dataKey="cost" fill={entry.color} />
+                    <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Bar>
               </BarChart>

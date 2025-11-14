@@ -59,6 +59,8 @@ export function BeforeAfterModal({
   };
 
   const provider = getProvider(optimizedWith || null);
+  const growthColor = 'var(--chart-1)';
+  const reductionColor = 'var(--destructive)';
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -84,13 +86,15 @@ export function BeforeAfterModal({
           <div className="text-center">
             <p className="text-xs sm:text-sm font-medium">Character Change</p>
             <p
-              className={`text-xl sm:text-2xl font-bold ${
-                charDiff > 0
-                  ? 'text-orange'
-                  : charDiff < 0
-                    ? 'text-red-600 dark:text-red-400'
-                    : 'text-muted-foreground'
-              }`}
+              className="text-xl sm:text-2xl font-bold"
+              style={{
+                color:
+                  charDiff > 0
+                    ? growthColor
+                    : charDiff < 0
+                      ? reductionColor
+                      : 'var(--muted-foreground)',
+              }}
             >
               {charDiff > 0 ? '+' : ''}
               {charDiff} ({charDiffPercent > '0' ? '+' : ''}
@@ -100,13 +104,15 @@ export function BeforeAfterModal({
           <div className="text-center">
             <p className="text-xs sm:text-sm font-medium">Word Change</p>
             <p
-              className={`text-xl sm:text-2xl font-bold ${
-                wordDiff > 0
-                  ? 'text-orange'
-                  : wordDiff < 0
-                    ? 'text-red-600 dark:text-red-400'
-                    : 'text-muted-foreground'
-              }`}
+              className="text-xl sm:text-2xl font-bold"
+              style={{
+                color:
+                  wordDiff > 0
+                    ? growthColor
+                    : wordDiff < 0
+                      ? reductionColor
+                      : 'var(--muted-foreground)',
+              }}
             >
               {wordDiff > 0 ? '+' : ''}
               {wordDiff} ({wordDiffPercent > '0' ? '+' : ''}
@@ -161,8 +167,8 @@ export function BeforeAfterModal({
         </div>
 
         {/* Insights */}
-        <div className="p-3 bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg">
-          <p className="text-xs sm:text-sm text-blue-800 dark:text-blue-200">
+        <div className="p-3 rounded-lg border bg-primary/5 border-primary/30">
+          <p className="text-xs sm:text-sm text-primary">
             💡 <strong>What changed?</strong>{' '}
             {charDiff > 0 && wordDiff > 0
               ? `${provider} expanded your prompt, adding ${Math.abs(charDiff)} characters and ${Math.abs(wordDiff)} words for more detail and clarity.`

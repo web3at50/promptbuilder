@@ -44,11 +44,16 @@ export function OptimizationBadge({
       {optimizedWith && provider && (
         <Badge
           variant="outline"
-          className={`gap-1.5 ${
-            provider === 'Claude'
-              ? 'border-orange/50 bg-orange/10 text-orange'
-              : 'border-blue/50 bg-blue/10 text-blue'
-          }`}
+          className="gap-1.5"
+          style={{
+            borderColor:
+              provider === 'Claude' ? 'var(--chart-1)' : provider === 'ChatGPT' ? 'var(--chart-2)' : 'var(--primary)',
+            color:
+              provider === 'Claude' ? 'var(--chart-1)' : provider === 'ChatGPT' ? 'var(--chart-2)' : 'var(--primary)',
+            background: `color-mix(in oklch, ${
+              provider === 'Claude' ? 'var(--chart-1)' : provider === 'ChatGPT' ? 'var(--chart-2)' : 'var(--primary)'
+            } 15%, transparent)`,
+          }}
         >
           <span>{providerIcon}</span>
           <span>Last: {provider}</span>

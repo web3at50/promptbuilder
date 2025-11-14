@@ -116,13 +116,13 @@ export function AdminUsageChart() {
               <Bar
                 dataKey="anthropic_tokens"
                 name="Anthropic Tokens"
-                fill="#8b5cf6"
+                fill="var(--chart-1)"
                 radius={[4, 4, 0, 0]}
               />
               <Bar
                 dataKey="openai_tokens"
                 name="OpenAI Tokens"
-                fill="#10b981"
+                fill="var(--chart-2)"
                 radius={[4, 4, 0, 0]}
               />
             </BarChart>

@@ -30,15 +30,13 @@ export function VersionCard({
       return {
         name: 'Claude',
         emoji: '🧠',
-        color: 'border-orange/50 bg-orange/10',
-        textColor: 'text-purple-700 dark:text-purple-300',
+        color: 'var(--chart-1)',
       };
     }
     return {
       name: 'ChatGPT',
       emoji: '🤖',
-      color: 'border-blue/50 bg-blue/10',
-      textColor: 'text-green-700 dark:text-green-300',
+      color: 'var(--chart-2)',
     };
   };
 
@@ -52,7 +50,13 @@ export function VersionCard({
     : optimization.output_text.substring(0, previewLength) + (isLong ? '...' : '');
 
   return (
-    <Card className={`p-4 ${provider.color} border-2 relative`}>
+    <Card
+      className="p-4 border-2 relative"
+      style={{
+        borderColor: provider.color,
+        background: `color-mix(in oklch, var(--card) 85%, ${provider.color} 15%)`,
+      }}
+    >
       {/* Latest Badge */}
       {isLatest && (
         <div className="absolute top-2 right-2">
@@ -66,7 +70,7 @@ export function VersionCard({
       <div className="flex items-start gap-3 mb-3">
         <div className="text-3xl">{provider.emoji}</div>
         <div className="flex-1">
-          <h4 className={`font-semibold text-lg ${provider.textColor}`}>
+          <h4 className="font-semibold text-lg" style={{ color: provider.color }}>
             Version {optimization.version} - {provider.name}
           </h4>
           <p className="text-xs text-muted-foreground">

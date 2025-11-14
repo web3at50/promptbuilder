@@ -268,11 +268,11 @@ export default function NewPromptPage() {
 
             {/* AI Optimization Actions */}
             {content.trim() && (
-              <div className="p-4 border rounded-lg bg-gradient-to-r from-orange/5 to-blue/5 dark:from-orange/10 dark:to-blue/10 border-orange/20 dark:border-orange/30">
+              <div className="p-4 border border-border rounded-lg bg-muted/40 dark:bg-muted/30">
                 <div className="space-y-4">
                   <div>
                     <h4 className="font-semibold flex items-center gap-2 mb-1 text-sm sm:text-base font-serif">
-                      <Sparkles className="h-4 w-4 text-orange" />
+                      <Sparkles className="h-4 w-4 text-primary" />
                       AI Optimization
                     </h4>
                     <p className="text-xs sm:text-sm text-muted-foreground">
@@ -308,7 +308,7 @@ export default function NewPromptPage() {
                           setOptimizingClaude(false);
                         }
                       }}
-                      variant="orange"
+                      variant="claude"
                       className="gap-2 min-h-[44px] sm:min-h-[40px]"
                       disabled={optimizingClaude || optimizingChatGPT}
                     >
@@ -341,17 +341,14 @@ export default function NewPromptPage() {
                           setOptimizingChatGPT(false);
                         }
                       }}
-                      variant="blue"
+                      variant="openai"
                       className="gap-2 min-h-[44px] sm:min-h-[40px]"
                       disabled={optimizingClaude || optimizingChatGPT}
                     >
                       <Sparkles className={`h-4 w-4 ${optimizingChatGPT ? 'animate-spin' : ''}`} />
                       <span className="hidden xs:inline">{optimizingChatGPT ? 'Optimizing...' : 'Optimize with '}</span>{optimizingChatGPT ? '' : 'ChatGPT'}
                     </Button>
-                    <Button
-                      onClick={handleCompareBoth}
-                      className="gap-2 min-h-[44px] sm:min-h-[40px] bg-gradient-to-r from-orange to-blue hover:from-orange/90 hover:to-blue/90 text-white"
-                    >
+                    <Button onClick={handleCompareBoth} className="gap-2 min-h-[44px] sm:min-h-[40px]">
                       <Sparkles className="h-4 w-4" />
                       Compare Both
                     </Button>

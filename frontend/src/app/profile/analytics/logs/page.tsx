@@ -434,14 +434,10 @@ function AggregatedView({
                         {item.count}
                       </TableCell>
                       <TableCell className="text-right tabular-nums">
-                        <span className="text-purple-600 dark:text-purple-400">
-                          {item.anthropic_count}
-                        </span>
+                        <span style={{ color: 'var(--chart-1)' }}>{item.anthropic_count}</span>
                       </TableCell>
                       <TableCell className="text-right tabular-nums">
-                        <span className="text-green-600 dark:text-green-400">
-                          {item.openai_count}
-                        </span>
+                        <span style={{ color: 'var(--chart-2)' }}>{item.openai_count}</span>
                       </TableCell>
                       <TableCell className="text-right tabular-nums">
                         <div className="flex items-center justify-end gap-1">
@@ -483,15 +479,19 @@ function AggregatedView({
                       </div>
                       <div className="h-8 w-px bg-border" />
                       <div>
-                        <div className="text-xs text-purple-600 dark:text-purple-400">Claude</div>
-                        <div className="text-sm font-medium text-purple-600 dark:text-purple-400">
+                        <div className="text-xs" style={{ color: 'var(--chart-1)' }}>
+                          Claude
+                        </div>
+                        <div className="text-sm font-medium" style={{ color: 'var(--chart-1)' }}>
                           {item.anthropic_count}
                         </div>
                       </div>
                       <div className="h-8 w-px bg-border" />
                       <div>
-                        <div className="text-xs text-green-600 dark:text-green-400">ChatGPT</div>
-                        <div className="text-sm font-medium text-green-600 dark:text-green-400">
+                        <div className="text-xs" style={{ color: 'var(--chart-2)' }}>
+                          ChatGPT
+                        </div>
+                        <div className="text-sm font-medium" style={{ color: 'var(--chart-2)' }}>
                           {item.openai_count}
                         </div>
                       </div>

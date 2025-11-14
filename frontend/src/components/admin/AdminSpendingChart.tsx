@@ -78,12 +78,12 @@ export function AdminSpendingChart() {
             <AreaChart data={data}>
               <defs>
                 <linearGradient id="anthropic" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.3} />
-                  <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
+                  <stop offset="5%" stopColor="var(--chart-1)" stopOpacity={0.3} />
+                  <stop offset="95%" stopColor="var(--chart-1)" stopOpacity={0} />
                 </linearGradient>
                 <linearGradient id="openai" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
-                  <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
+                  <stop offset="5%" stopColor="var(--chart-2)" stopOpacity={0.3} />
+                  <stop offset="95%" stopColor="var(--chart-2)" stopOpacity={0} />
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
@@ -126,7 +126,7 @@ export function AdminSpendingChart() {
                 type="monotone"
                 dataKey="anthropic_cost"
                 name="Anthropic"
-                stroke="#8b5cf6"
+                stroke="var(--chart-1)"
                 fill="url(#anthropic)"
                 strokeWidth={2}
               />
@@ -134,7 +134,7 @@ export function AdminSpendingChart() {
                 type="monotone"
                 dataKey="openai_cost"
                 name="OpenAI"
-                stroke="#10b981"
+                stroke="var(--chart-2)"
                 fill="url(#openai)"
                 strokeWidth={2}
               />

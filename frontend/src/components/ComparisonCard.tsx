@@ -22,6 +22,27 @@ interface ComparisonCardProps {
   isDiscarded: boolean;
 }
 
+const PROVIDER_META = {
+  claude: {
+    name: 'Claude Sonnet 4.5',
+    emoji: '✨',
+    accent: 'var(--chart-1)',
+    buttonVariant: 'claude',
+  },
+  openai: {
+    name: 'GPT-4o',
+    emoji: '🤖',
+    accent: 'var(--chart-2)',
+    buttonVariant: 'openai',
+  },
+} as const;
+
+const mixWithCard = (accent: string, accentPercent: number) =>
+  `color-mix(in oklch, var(--card) ${100 - accentPercent}%, ${accent} ${accentPercent}%)`;
+
+const transparentTint = (accent: string, accentPercent: number) =>
+  `color-mix(in oklch, ${accent} ${accentPercent}%, transparent)`;
+
 export function ComparisonCard({
   provider,
   output,
@@ -36,42 +57,31 @@ export function ComparisonCard({
   isSelected,
   isDiscarded,
 }: ComparisonCardProps) {
-  const getProviderInfo = () => {
-    if (provider === 'claude') {
-      return {
-        name: 'Claude Sonnet 4.5',
-        emoji: '🧠',
-        color: 'border-orange bg-orange/5',
-        textColor: 'text-orange',
-        buttonColor: 'bg-orange hover:bg-orange/90 text-orange-foreground',
-      };
-    }
-    return {
-      name: 'GPT-4o',
-      emoji: '🤖',
-      color: 'border-blue bg-blue/5',
-      textColor: 'text-blue',
-      buttonColor: 'bg-blue hover:bg-blue/90 text-blue-foreground',
-    };
-  };
-
-  const providerInfo = getProviderInfo();
+  const providerInfo = PROVIDER_META[provider];
 
   return (
-    <Card className={`p-6 ${providerInfo.color} border-2 relative`}>
+    <Card
+      className="p-6 border-2 relative"
+      style={{
+        borderColor: providerInfo.accent,
+        background: mixWithCard(providerInfo.accent, 10),
+      }}
+    >
       {/* Selected/Discarded Overlay */}
       {(isSelected || isDiscarded) && (
         <div
-          className={`absolute inset-0 ${
-            isSelected ? 'bg-orange/10' : 'bg-muted/50'
-          } rounded-lg flex items-center justify-center z-10`}
+          className="absolute inset-0 rounded-lg flex items-center justify-center z-10"
+          style={{
+            background: isSelected
+              ? transparentTint(providerInfo.accent, 25)
+              : 'color-mix(in oklch, var(--muted) 70%, transparent)',
+          }}
         >
           <div
-            className={`text-6xl ${
-              isSelected ? 'text-orange' : 'text-muted-foreground'
-            }`}
+            className="text-6xl"
+            style={{ color: isSelected ? providerInfo.accent : 'var(--muted-foreground)' }}
           >
-            {isSelected ? '✅' : '❌'}
+            {isSelected ? '✓' : '✕'}
           </div>
         </div>
       )}
@@ -79,9 +89,11 @@ export function ComparisonCard({
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
-          <div className="text-3xl">{providerInfo.emoji}</div>
+          <div className="text-3xl" aria-hidden>
+            {providerInfo.emoji}
+          </div>
           <div>
-            <h3 className={`font-bold text-lg ${providerInfo.textColor}`}>
+            <h3 className="font-bold text-lg" style={{ color: providerInfo.accent }}>
               {providerInfo.name}
             </h3>
             <p className="text-xs text-muted-foreground">AI Optimization</p>
@@ -122,9 +134,7 @@ export function ComparisonCard({
           {/* Output Preview */}
           <div className="mb-4">
             <div className="prose prose-sm dark:prose-invert max-w-none p-4 bg-background/50 rounded-lg border max-h-96 overflow-y-auto">
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                {output}
-              </ReactMarkdown>
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>{output}</ReactMarkdown>
             </div>
           </div>
 
@@ -165,7 +175,8 @@ export function ComparisonCard({
             <Button
               onClick={onSelect}
               disabled={isSelected || isDiscarded}
-              className={`flex-1 gap-2 ${providerInfo.buttonColor}`}
+              variant={providerInfo.buttonVariant}
+              className="flex-1 gap-2"
             >
               <Check className="h-4 w-4" />
               {isSelected ? 'Selected' : 'Use This Version'}
