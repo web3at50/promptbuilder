@@ -10,6 +10,13 @@
 
 A modern AI prompt management platform with multi-AI comparison, smart content moderation, and powerful analytics. Built to showcase full-stack development capabilities including authentication, role-based access control, community features, and real-time data visualization.
 
+## Recent UX & Design Update – 14 November 2025
+
+- Unified the visual language across `/new`, `/edit`, analytics, and admin screens so the whole experience feels like a single professional tool rather than a collection of disparate panels.
+- Rebuilt the AI optimization cards and analytics charts to focus on calm, classical colours with clear legends instead of the usual “AI brand” gradients.
+- Replaced every browser alert/confirm with styled toast notifications and in-app confirmation dialogs, all using the site’s typography and colour tokens, so the experience feels bespoke and reassuring.
+- Added clear “optimizing…” states and “remember to save” reminders around any action that changes prompt content, highlighting that this is a polished workflow you can hand to clients.
+
 ## What It Does
 
 PromptBuilder helps you create, optimize, and manage AI prompts with support for both Claude and ChatGPT. Run prompts through multiple AIs simultaneously to compare results, track version history, share prompts with the community, and get detailed analytics on your usage and costs. The platform includes a comprehensive admin system with AI-powered content moderation and usage analytics.
