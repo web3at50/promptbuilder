@@ -62,13 +62,13 @@ export function BeforeAfterModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-6xl max-h-[85vh] overflow-y-auto">
+      <DialogContent className="max-w-full sm:max-w-5xl max-h-[90vh] overflow-y-auto mx-4">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <ArrowRight className="h-5 w-5" />
+          <DialogTitle className="flex items-center gap-2 text-base sm:text-lg">
+            <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5" />
             Before & After Comparison
           </DialogTitle>
-          <DialogDescription>
+          <DialogDescription className="text-xs sm:text-sm">
             Compare your original prompt with the AI-optimized version
             {optimizationCount > 1 &&
               ` (optimized ${optimizationCount} times)`}
@@ -76,15 +76,15 @@ export function BeforeAfterModal({
         </DialogHeader>
 
         {/* Statistics Summary */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-muted/50 rounded-lg">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 p-3 sm:p-4 bg-muted/50 rounded-lg">
           <div className="text-center">
-            <p className="text-sm font-medium">Optimized With</p>
-            <p className="text-2xl font-bold text-primary">{provider}</p>
+            <p className="text-xs sm:text-sm font-medium">Optimized With</p>
+            <p className="text-xl sm:text-2xl font-bold text-primary">{provider}</p>
           </div>
           <div className="text-center">
-            <p className="text-sm font-medium">Character Change</p>
+            <p className="text-xs sm:text-sm font-medium">Character Change</p>
             <p
-              className={`text-2xl font-bold ${
+              className={`text-xl sm:text-2xl font-bold ${
                 charDiff > 0
                   ? 'text-green-600 dark:text-green-400'
                   : charDiff < 0
@@ -98,9 +98,9 @@ export function BeforeAfterModal({
             </p>
           </div>
           <div className="text-center">
-            <p className="text-sm font-medium">Word Change</p>
+            <p className="text-xs sm:text-sm font-medium">Word Change</p>
             <p
-              className={`text-2xl font-bold ${
+              className={`text-xl sm:text-2xl font-bold ${
                 wordDiff > 0
                   ? 'text-green-600 dark:text-green-400'
                   : wordDiff < 0
@@ -116,22 +116,22 @@ export function BeforeAfterModal({
         </div>
 
         {/* Side-by-Side Comparison */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
           {/* Original (Before) */}
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <h3 className="font-semibold text-sm flex items-center gap-2">
+              <h3 className="font-semibold text-xs sm:text-sm flex items-center gap-2">
                 📝 Original
               </h3>
-              <div className="flex items-center gap-3 text-xs text-muted-foreground">
+              <div className="flex items-center gap-2 sm:gap-3 text-xs text-muted-foreground">
                 <span className="flex items-center gap-1">
                   <Hash className="h-3 w-3" />
-                  {originalCharCount} chars
+                  {originalCharCount}
                 </span>
-                <span>{originalWordCount} words</span>
+                <span className="hidden xs:inline">{originalWordCount} words</span>
               </div>
             </div>
-            <div className="prose prose-sm dark:prose-invert max-w-none p-4 border rounded-lg bg-background min-h-[300px] max-h-[500px] overflow-y-auto">
+            <div className="prose prose-sm dark:prose-invert max-w-none p-3 sm:p-4 border rounded-lg bg-background min-h-[200px] sm:min-h-[300px] max-h-[300px] sm:max-h-[400px] overflow-y-auto">
               <ReactMarkdown remarkPlugins={[remarkGfm]}>
                 {originalPrompt}
               </ReactMarkdown>
@@ -141,18 +141,18 @@ export function BeforeAfterModal({
           {/* Current (After) */}
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <h3 className="font-semibold text-sm flex items-center gap-2">
+              <h3 className="font-semibold text-xs sm:text-sm flex items-center gap-2">
                 ✨ Optimized
               </h3>
-              <div className="flex items-center gap-3 text-xs text-muted-foreground">
+              <div className="flex items-center gap-2 sm:gap-3 text-xs text-muted-foreground">
                 <span className="flex items-center gap-1">
                   <Hash className="h-3 w-3" />
-                  {currentCharCount} chars
+                  {currentCharCount}
                 </span>
-                <span>{currentWordCount} words</span>
+                <span className="hidden xs:inline">{currentWordCount} words</span>
               </div>
             </div>
-            <div className="prose prose-sm dark:prose-invert max-w-none p-4 border rounded-lg bg-gradient-to-br from-primary/5 to-primary/10 min-h-[300px] max-h-[500px] overflow-y-auto">
+            <div className="prose prose-sm dark:prose-invert max-w-none p-3 sm:p-4 border rounded-lg bg-gradient-to-br from-primary/5 to-primary/10 min-h-[200px] sm:min-h-[300px] max-h-[300px] sm:max-h-[400px] overflow-y-auto">
               <ReactMarkdown remarkPlugins={[remarkGfm]}>
                 {currentPrompt}
               </ReactMarkdown>
@@ -162,7 +162,7 @@ export function BeforeAfterModal({
 
         {/* Insights */}
         <div className="p-3 bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg">
-          <p className="text-sm text-blue-800 dark:text-blue-200">
+          <p className="text-xs sm:text-sm text-blue-800 dark:text-blue-200">
             💡 <strong>What changed?</strong>{' '}
             {charDiff > 0 && wordDiff > 0
               ? `${provider} expanded your prompt, adding ${Math.abs(charDiff)} characters and ${Math.abs(wordDiff)} words for more detail and clarity.`

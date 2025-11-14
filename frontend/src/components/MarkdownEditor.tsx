@@ -16,6 +16,7 @@ interface MarkdownEditorProps {
   placeholder?: string;
   promptId?: string;
   onBeforeOptimize?: () => Promise<string | undefined>;
+  hideOptimizeButtons?: boolean;
 }
 
 export function MarkdownEditor({
@@ -24,6 +25,7 @@ export function MarkdownEditor({
   placeholder = 'Write your prompt here...',
   promptId,
   onBeforeOptimize,
+  hideOptimizeButtons = false,
 }: MarkdownEditorProps) {
   const [isOptimizing, setIsOptimizing] = useState(false);
   const [optimizingWith, setOptimizingWith] = useState<'claude' | 'openai' | null>(null);
@@ -82,46 +84,48 @@ export function MarkdownEditor({
         <div className="text-sm text-muted-foreground">
           {value.length}/{VALIDATION_LIMITS.CONTENT_MAX_LENGTH} characters · {value.split(/\s+/).filter(Boolean).length} words
         </div>
-        <div className="flex gap-2">
-          <Button
-            onClick={() => handleOptimize('claude')}
-            disabled={isOptimizing || !value.trim()}
-            variant="secondary"
-            size="sm"
-            className="gap-2"
-          >
-            {isOptimizing && optimizingWith === 'claude' ? (
-              <>
-                <Loader2 className="h-4 w-4 animate-spin" />
-                Optimising...
-              </>
-            ) : (
-              <>
-                <Wand2 className="h-4 w-4" />
-                Optimise with Claude
-              </>
-            )}
-          </Button>
-          <Button
-            onClick={() => handleOptimize('openai')}
-            disabled={isOptimizing || !value.trim()}
-            variant="secondary"
-            size="sm"
-            className="gap-2"
-          >
-            {isOptimizing && optimizingWith === 'openai' ? (
-              <>
-                <Loader2 className="h-4 w-4 animate-spin" />
-                Optimising...
-              </>
-            ) : (
-              <>
-                <Wand2 className="h-4 w-4" />
-                Optimise with ChatGPT
-              </>
-            )}
-          </Button>
-        </div>
+        {!hideOptimizeButtons && (
+          <div className="flex gap-2">
+            <Button
+              onClick={() => handleOptimize('claude')}
+              disabled={isOptimizing || !value.trim()}
+              variant="secondary"
+              size="sm"
+              className="gap-2"
+            >
+              {isOptimizing && optimizingWith === 'claude' ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Optimising...
+                </>
+              ) : (
+                <>
+                  <Wand2 className="h-4 w-4" />
+                  Optimise with Claude
+                </>
+              )}
+            </Button>
+            <Button
+              onClick={() => handleOptimize('openai')}
+              disabled={isOptimizing || !value.trim()}
+              variant="secondary"
+              size="sm"
+              className="gap-2"
+            >
+              {isOptimizing && optimizingWith === 'openai' ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Optimising...
+                </>
+              ) : (
+                <>
+                  <Wand2 className="h-4 w-4" />
+                  Optimise with ChatGPT
+                </>
+              )}
+            </Button>
+          </div>
+        )}
       </div>
 
       <Tabs defaultValue="edit" className="w-full">

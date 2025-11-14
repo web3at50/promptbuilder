@@ -59,20 +59,20 @@ export function OriginalPromptModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+      <DialogContent className="max-w-full sm:max-w-3xl max-h-[90vh] overflow-y-auto mx-4">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <RotateCcw className="h-5 w-5" />
+          <DialogTitle className="flex items-center gap-2 text-base sm:text-lg">
+            <RotateCcw className="h-4 w-4 sm:h-5 sm:w-5" />
             Your Original Prompt
           </DialogTitle>
-          <DialogDescription>
+          <DialogDescription className="text-xs sm:text-sm">
             This is your original input before any AI optimization. It has been
             preserved for reference.
           </DialogDescription>
         </DialogHeader>
 
         {/* Metadata */}
-        <div className="grid grid-cols-3 gap-4 p-4 bg-muted/50 rounded-lg">
+        <div className="grid grid-cols-1 xs:grid-cols-3 gap-3 sm:gap-4 p-3 sm:p-4 bg-muted/50 rounded-lg">
           <div className="flex items-center gap-2 text-sm">
             <Calendar className="h-4 w-4 text-muted-foreground" />
             <div>
@@ -100,7 +100,7 @@ export function OriginalPromptModal({
 
         {/* Original Prompt Content */}
         <div className="space-y-2">
-          <div className="prose prose-sm dark:prose-invert max-w-none p-4 border rounded-lg bg-background">
+          <div className="prose prose-sm dark:prose-invert max-w-none p-3 sm:p-4 border rounded-lg bg-background max-h-[40vh] overflow-y-auto">
             <ReactMarkdown remarkPlugins={[remarkGfm]}>
               {originalPrompt}
             </ReactMarkdown>
@@ -109,21 +109,21 @@ export function OriginalPromptModal({
 
         {/* Info Banner */}
         <div className="p-3 bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg">
-          <p className="text-sm text-blue-800 dark:text-blue-200">
+          <p className="text-xs sm:text-sm text-blue-800 dark:text-blue-200">
             💡 <strong>Tip:</strong> You can restore this original version at
             any time, or copy it to use elsewhere.
           </p>
         </div>
 
-        <DialogFooter className="gap-2">
-          <Button variant="outline" onClick={handleCopy} className="gap-2">
+        <DialogFooter className="flex-col sm:flex-row gap-2">
+          <Button variant="outline" onClick={handleCopy} className="gap-2 w-full sm:w-auto min-h-[44px] sm:min-h-[36px]">
             <Copy className="h-4 w-4" />
             Copy to Clipboard
           </Button>
           <Button
             variant="default"
             onClick={handleRestore}
-            className="gap-2"
+            className="gap-2 w-full sm:w-auto min-h-[44px] sm:min-h-[36px]"
             disabled={originalPrompt === currentPrompt}
           >
             <RotateCcw className="h-4 w-4" />

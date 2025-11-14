@@ -379,26 +379,70 @@ export default function EditPromptPage({
               </div>
             )}
 
-            {/* Compare Both LLMs Action */}
+            {/* AI Optimization Actions */}
             {promptData && content.trim() && (
-              <div className="p-4 sm:p-4 border rounded-lg bg-gradient-to-r from-purple-50 to-green-50 dark:from-purple-950/20 dark:to-green-950/20 border-purple-200 dark:border-purple-800">
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                  <div className="flex-1">
+              <div className="p-4 border rounded-lg bg-gradient-to-r from-purple-50 to-green-50 dark:from-purple-950/20 dark:to-green-950/20 border-purple-200 dark:border-purple-800">
+                <div className="space-y-4">
+                  <div>
                     <h4 className="font-semibold flex items-center gap-2 mb-1 text-sm sm:text-base">
                       <Sparkles className="h-4 w-4 text-purple-600 dark:text-purple-400" />
-                      Compare Claude vs ChatGPT
+                      AI Optimization
                     </h4>
                     <p className="text-xs sm:text-sm text-muted-foreground">
-                      Run both AI models in parallel and compare optimization suggestions
+                      Optimize your prompt with Claude, ChatGPT, or compare both models in parallel
                     </p>
                   </div>
-                  <Button
-                    onClick={() => setShowDualOptimize(true)}
-                    className="gap-2 bg-gradient-to-r from-purple-600 to-green-600 hover:from-purple-700 hover:to-green-700 w-full sm:w-auto min-h-[44px] sm:min-h-[40px]"
-                  >
-                    <Sparkles className="h-4 w-4" />
-                    Compare Both
-                  </Button>
+
+                  {/* Optimization Buttons */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                    <Button
+                      onClick={async () => {
+                        if (!promptId) return;
+                        const response = await fetch('/api/optimize', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ prompt: content, promptId }),
+                        });
+                        if (response.ok) {
+                          const { optimizedPrompt } = await response.json();
+                          setContent(optimizedPrompt);
+                          fetchPrompt(promptId);
+                        }
+                      }}
+                      variant="outline"
+                      className="gap-2 min-h-[44px] sm:min-h-[40px] bg-purple-50 hover:bg-purple-100 dark:bg-purple-950/50 dark:hover:bg-purple-950/70 border-purple-200 dark:border-purple-800"
+                    >
+                      <Sparkles className="h-4 w-4" />
+                      <span className="hidden xs:inline">Optimize with </span>Claude
+                    </Button>
+                    <Button
+                      onClick={async () => {
+                        if (!promptId) return;
+                        const response = await fetch('/api/optimize-openai', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ prompt: content, promptId }),
+                        });
+                        if (response.ok) {
+                          const { optimizedPrompt } = await response.json();
+                          setContent(optimizedPrompt);
+                          fetchPrompt(promptId);
+                        }
+                      }}
+                      variant="outline"
+                      className="gap-2 min-h-[44px] sm:min-h-[40px] bg-green-50 hover:bg-green-100 dark:bg-green-950/50 dark:hover:bg-green-950/70 border-green-200 dark:border-green-800"
+                    >
+                      <Sparkles className="h-4 w-4" />
+                      <span className="hidden xs:inline">Optimize with </span>ChatGPT
+                    </Button>
+                    <Button
+                      onClick={() => setShowDualOptimize(true)}
+                      className="gap-2 min-h-[44px] sm:min-h-[40px] bg-gradient-to-r from-purple-600 to-green-600 hover:from-purple-700 hover:to-green-700"
+                    >
+                      <Sparkles className="h-4 w-4" />
+                      Compare Both
+                    </Button>
+                  </div>
                 </div>
               </div>
             )}
@@ -463,6 +507,7 @@ export default function EditPromptPage({
                       console.log('[Edit Page] Passing promptId to MarkdownEditor:', promptId);
                       return promptId || undefined;
                     })()}
+                    hideOptimizeButtons={true}
                   />
                 </div>
               </TabsContent>
