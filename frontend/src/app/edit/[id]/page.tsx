@@ -207,11 +207,12 @@ export default function EditPromptPage({
       {/* Header */}
       <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between gap-4">
+          {/* Desktop Header */}
+          <div className="hidden md:flex items-center justify-between gap-4">
             <Button
               variant="ghost"
               onClick={() => router.push('/')}
-              className="gap-2"
+              className="gap-2 min-h-[40px]"
             >
               <ArrowLeft className="h-4 w-4" />
               Back to Library
@@ -222,7 +223,7 @@ export default function EditPromptPage({
               <Button
                 variant="outline"
                 onClick={handleToggleFavorite}
-                className="gap-2 hidden sm:flex"
+                className="gap-2"
               >
                 <Star
                   className={`h-4 w-4 ${favorite ? 'fill-yellow-500 text-yellow-500' : ''}`}
@@ -233,7 +234,7 @@ export default function EditPromptPage({
                 <Button
                   variant="outline"
                   onClick={handleUnpublish}
-                  className="gap-2 hidden sm:flex"
+                  className="gap-2"
                 >
                   <XCircle className="h-4 w-4" />
                   Unpublish
@@ -242,7 +243,7 @@ export default function EditPromptPage({
                 <Button
                   variant="outline"
                   onClick={() => setShowPublishModal(true)}
-                  className="gap-2 hidden sm:flex"
+                  className="gap-2"
                 >
                   <Globe className="h-4 w-4" />
                   Publish
@@ -258,11 +259,70 @@ export default function EditPromptPage({
               </Button>
             </div>
           </div>
+
+          {/* Mobile Header */}
+          <div className="md:hidden space-y-3">
+            <div className="flex items-center justify-between gap-2">
+              <Button
+                variant="ghost"
+                onClick={() => router.push('/')}
+                className="gap-2 min-h-[44px] px-3"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                <span className="hidden xs:inline">Back</span>
+              </Button>
+
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={handleToggleFavorite}
+                  className="min-h-[44px] min-w-[44px]"
+                >
+                  <Star
+                    className={`h-5 w-5 ${favorite ? 'fill-yellow-500 text-yellow-500' : ''}`}
+                  />
+                </Button>
+                <ThemeToggle />
+              </div>
+            </div>
+
+            {/* Mobile Action Buttons */}
+            <div className="flex gap-2">
+              {isPublic ? (
+                <Button
+                  variant="outline"
+                  onClick={handleUnpublish}
+                  className="flex-1 gap-2 min-h-[44px]"
+                >
+                  <XCircle className="h-4 w-4" />
+                  Unpublish
+                </Button>
+              ) : (
+                <Button
+                  variant="outline"
+                  onClick={() => setShowPublishModal(true)}
+                  className="flex-1 gap-2 min-h-[44px]"
+                >
+                  <Globe className="h-4 w-4" />
+                  Publish
+                </Button>
+              )}
+              <Button
+                onClick={handleSave}
+                disabled={saving || !title.trim() || !content.trim()}
+                className="flex-1 gap-2 min-h-[44px]"
+              >
+                <Save className="h-4 w-4" />
+                {saving ? 'Saving...' : 'Save'}
+              </Button>
+            </div>
+          </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-8 max-w-4xl">
+      <main className="container mx-auto px-4 py-6 sm:py-8 max-w-4xl">
         <Card>
           <CardHeader>
             <CardTitle>Edit Prompt</CardTitle>
@@ -292,14 +352,14 @@ export default function EditPromptPage({
                   lastOptimizedAt={promptData.last_optimized_at}
                 />
 
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-col sm:flex-row gap-2">
                   {promptData.original_prompt && (
                     <>
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={() => setShowOriginalModal(true)}
-                        className="gap-2"
+                        className="gap-2 min-h-[44px] sm:min-h-[36px]"
                       >
                         <Eye className="h-4 w-4" />
                         View Original
@@ -308,7 +368,7 @@ export default function EditPromptPage({
                         variant="outline"
                         size="sm"
                         onClick={() => setShowCompareModal(true)}
-                        className="gap-2"
+                        className="gap-2 min-h-[44px] sm:min-h-[36px]"
                       >
                         <GitCompare className="h-4 w-4" />
                         Compare Before & After
@@ -321,20 +381,20 @@ export default function EditPromptPage({
 
             {/* Compare Both LLMs Action */}
             {promptData && content.trim() && (
-              <div className="p-4 border rounded-lg bg-gradient-to-r from-purple-50 to-green-50 dark:from-purple-950/20 dark:to-green-950/20 border-purple-200 dark:border-purple-800">
-                <div className="flex items-center justify-between gap-4">
-                  <div>
-                    <h4 className="font-semibold flex items-center gap-2 mb-1">
+              <div className="p-4 sm:p-4 border rounded-lg bg-gradient-to-r from-purple-50 to-green-50 dark:from-purple-950/20 dark:to-green-950/20 border-purple-200 dark:border-purple-800">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                  <div className="flex-1">
+                    <h4 className="font-semibold flex items-center gap-2 mb-1 text-sm sm:text-base">
                       <Sparkles className="h-4 w-4 text-purple-600 dark:text-purple-400" />
                       Compare Claude vs ChatGPT
                     </h4>
-                    <p className="text-sm text-muted-foreground">
-                      Run both AI models in parallel and compare their optimization suggestions side-by-side
+                    <p className="text-xs sm:text-sm text-muted-foreground">
+                      Run both AI models in parallel and compare optimization suggestions
                     </p>
                   </div>
                   <Button
                     onClick={() => setShowDualOptimize(true)}
-                    className="gap-2 bg-gradient-to-r from-purple-600 to-green-600 hover:from-purple-700 hover:to-green-700"
+                    className="gap-2 bg-gradient-to-r from-purple-600 to-green-600 hover:from-purple-700 hover:to-green-700 w-full sm:w-auto min-h-[44px] sm:min-h-[40px]"
                   >
                     <Sparkles className="h-4 w-4" />
                     Compare Both

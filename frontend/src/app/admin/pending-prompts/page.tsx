@@ -380,24 +380,24 @@ export default function AdminPendingPromptsPage() {
                                 )}
 
                                 {/* Actions */}
-                                <div className="flex gap-2 pt-2 border-t">
+                                <div className="space-y-2 pt-2 border-t">
                                   <Button
                                     variant="outline"
                                     size="sm"
                                     onClick={() => setSelectedPrompt(prompt)}
-                                    className="flex-1 gap-2 min-h-[44px]"
+                                    className="w-full gap-2 min-h-[44px]"
                                   >
                                     <Eye className="h-4 w-4" />
-                                    View
+                                    View Details
                                   </Button>
                                   {prompt.moderation_status === 'pending' && (
-                                    <>
+                                    <div className="flex gap-2">
                                       <Button
                                         variant="outline"
                                         size="sm"
                                         onClick={() => handleApprove(prompt.id)}
                                         disabled={actionLoading}
-                                        className="flex-1 gap-2 min-h-[44px] text-green-600 hover:text-green-700 border-green-600"
+                                        className="flex-1 gap-2 min-h-[44px] text-green-600 hover:text-green-700 hover:bg-green-50 dark:hover:bg-green-950/20 border-green-600"
                                       >
                                         <CheckCircle className="h-4 w-4" />
                                         Approve
@@ -410,12 +410,12 @@ export default function AdminPendingPromptsPage() {
                                           setShowRejectDialog(true);
                                         }}
                                         disabled={actionLoading}
-                                        className="flex-1 gap-2 min-h-[44px] text-red-600 hover:text-red-700 border-red-600"
+                                        className="flex-1 gap-2 min-h-[44px] text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/20 border-red-600"
                                       >
                                         <XCircle className="h-4 w-4" />
                                         Reject
                                       </Button>
-                                    </>
+                                    </div>
                                   )}
                                 </div>
                               </CardContent>
