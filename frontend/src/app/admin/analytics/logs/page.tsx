@@ -287,31 +287,31 @@ export default function AdminLogsPage() {
   };
 
   return (
-    <div className="container mx-auto py-8 space-y-6">
+    <div className="container mx-auto py-6 sm:py-8 space-y-4 sm:space-y-6">
       <AdminNav />
 
-      <div>
-        <h1 className="text-4xl font-bold tracking-tight">Usage Logs</h1>
-        <p className="text-muted-foreground mt-2">
+      <div className="px-4 sm:px-0">
+        <h1 className="text-2xl sm:text-4xl font-bold tracking-tight">Usage Logs</h1>
+        <p className="text-sm sm:text-base text-muted-foreground mt-2">
           Detailed view of all LLM API requests across all users
         </p>
       </div>
 
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
-              <CardTitle>All Platform Logs</CardTitle>
-              <CardDescription>View and filter LLM usage logs for all users</CardDescription>
+              <CardTitle className="text-lg sm:text-xl">All Platform Logs</CardTitle>
+              <CardDescription className="text-sm">View and filter LLM usage logs for all users</CardDescription>
             </div>
-            <Button onClick={exportToCSV} variant="outline" size="sm">
+            <Button onClick={exportToCSV} variant="outline" size="sm" className="min-h-[44px] sm:min-h-[36px] w-full sm:w-auto">
               <Download className="h-4 w-4 mr-2" />
               Export CSV
             </Button>
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="flex gap-4">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
@@ -319,11 +319,11 @@ export default function AdminLogsPage() {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 maxLength={VALIDATION_LIMITS.SEARCH_MAX_LENGTH}
-                className="pl-9"
+                className="pl-9 h-12 sm:h-10"
               />
             </div>
             <Select value={providerFilter} onValueChange={setProviderFilter}>
-              <SelectTrigger className="w-[180px]">
+              <SelectTrigger className="w-full sm:w-[180px] min-h-[48px] sm:min-h-[40px]">
                 <Filter className="h-4 w-4 mr-2" />
                 <SelectValue placeholder="Filter by provider" />
               </SelectTrigger>
@@ -336,11 +336,11 @@ export default function AdminLogsPage() {
           </div>
 
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-4">
-              <TabsTrigger value="all">All Logs</TabsTrigger>
-              <TabsTrigger value="daily">Daily Totals</TabsTrigger>
-              <TabsTrigger value="weekly">Weekly Totals</TabsTrigger>
-              <TabsTrigger value="monthly">Monthly Totals</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 h-auto">
+              <TabsTrigger value="all" className="text-xs sm:text-sm py-2">All Logs</TabsTrigger>
+              <TabsTrigger value="daily" className="text-xs sm:text-sm py-2">Daily</TabsTrigger>
+              <TabsTrigger value="weekly" className="text-xs sm:text-sm py-2">Weekly</TabsTrigger>
+              <TabsTrigger value="monthly" className="text-xs sm:text-sm py-2">Monthly</TabsTrigger>
             </TabsList>
 
             <TabsContent value="all" className="space-y-4">
@@ -353,45 +353,130 @@ export default function AdminLogsPage() {
                   No logs found
                 </div>
               ) : (
-                <div className="border rounded-lg">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>User</TableHead>
-                        <TableHead>Date/Time</TableHead>
-                        <TableHead>Provider</TableHead>
-                        <TableHead>Model</TableHead>
-                        <TableHead className="text-right">Tokens</TableHead>
-                        <TableHead className="text-right">Cost</TableHead>
-                        <TableHead className="text-right">Latency</TableHead>
-                        <TableHead>Status</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {filteredLogs.slice(0, 100).map((log) => (
-                        <TableRow key={log.id}>
-                          <TableCell>
-                            <div className="flex items-center gap-2">
-                              <Avatar className="h-6 w-6">
+                <>
+                  {/* Desktop Table View */}
+                  <div className="hidden md:block border rounded-lg overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>User</TableHead>
+                          <TableHead>Date/Time</TableHead>
+                          <TableHead>Provider</TableHead>
+                          <TableHead>Model</TableHead>
+                          <TableHead className="text-right">Tokens</TableHead>
+                          <TableHead className="text-right">Cost</TableHead>
+                          <TableHead className="text-right">Latency</TableHead>
+                          <TableHead>Status</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {filteredLogs.slice(0, 100).map((log) => (
+                          <TableRow key={log.id}>
+                            <TableCell>
+                              <div className="flex items-center gap-2">
+                                <Avatar className="h-6 w-6">
+                                  <AvatarImage src={log.user?.avatar_url} />
+                                  <AvatarFallback className="text-xs">
+                                    {getUserInitials(log.user)}
+                                  </AvatarFallback>
+                                </Avatar>
+                                <div className="flex flex-col">
+                                  <span className="text-sm font-medium">
+                                    {getUserDisplayName(log.user)}
+                                  </span>
+                                  <span className="text-xs text-muted-foreground">
+                                    {log.user?.email}
+                                  </span>
+                                </div>
+                              </div>
+                            </TableCell>
+                            <TableCell className="text-sm text-muted-foreground">
+                              {new Date(log.created_at).toLocaleString()}
+                            </TableCell>
+                            <TableCell>
+                              <Badge
+                                variant="outline"
+                                className={
+                                  log.provider === 'anthropic'
+                                    ? 'border-purple-500 text-purple-500'
+                                    : 'border-green-500 text-green-500'
+                                }
+                              >
+                                {log.provider === 'anthropic' ? 'Claude' : 'ChatGPT'}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="text-sm font-mono">
+                              {log.model.split('-').slice(0, 3).join('-')}
+                            </TableCell>
+                            <TableCell className="text-right text-sm">
+                              {log.total_tokens.toLocaleString()}
+                            </TableCell>
+                            <TableCell className="text-right text-sm font-medium">
+                              ${parseFloat(log.cost_usd).toFixed(4)}
+                            </TableCell>
+                            <TableCell className="text-right text-sm text-muted-foreground">
+                              {log.latency_ms}ms
+                            </TableCell>
+                            <TableCell>
+                              <Badge
+                                variant={log.success ? 'default' : 'destructive'}
+                                className={
+                                  log.success
+                                    ? 'bg-green-500/10 text-green-500 hover:bg-green-500/20'
+                                    : ''
+                                }
+                              >
+                                {log.success ? 'Success' : 'Failed'}
+                              </Badge>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+
+                  {/* Mobile Card View */}
+                  <div className="md:hidden space-y-3">
+                    {filteredLogs.slice(0, 100).map((log) => (
+                      <Card key={log.id} className="overflow-hidden">
+                        <CardContent className="p-4 space-y-3">
+                          {/* User & Date Header */}
+                          <div className="flex items-center justify-between gap-2">
+                            <div className="flex items-center gap-2 min-w-0 flex-1">
+                              <Avatar className="h-8 w-8 shrink-0">
                                 <AvatarImage src={log.user?.avatar_url} />
                                 <AvatarFallback className="text-xs">
                                   {getUserInitials(log.user)}
                                 </AvatarFallback>
                               </Avatar>
-                              <div className="flex flex-col">
-                                <span className="text-sm font-medium">
+                              <div className="flex flex-col min-w-0">
+                                <span className="text-sm font-medium truncate">
                                   {getUserDisplayName(log.user)}
                                 </span>
-                                <span className="text-xs text-muted-foreground">
+                                <span className="text-xs text-muted-foreground truncate">
                                   {log.user?.email}
                                 </span>
                               </div>
                             </div>
-                          </TableCell>
-                          <TableCell className="text-sm text-muted-foreground">
+                            <Badge
+                              variant={log.success ? 'default' : 'destructive'}
+                              className={
+                                log.success
+                                  ? 'bg-green-500/10 text-green-500 hover:bg-green-500/20 shrink-0'
+                                  : 'shrink-0'
+                              }
+                            >
+                              {log.success ? 'Success' : 'Failed'}
+                            </Badge>
+                          </div>
+
+                          {/* Date */}
+                          <div className="text-xs text-muted-foreground">
                             {new Date(log.created_at).toLocaleString()}
-                          </TableCell>
-                          <TableCell>
+                          </div>
+
+                          {/* Provider & Model */}
+                          <div className="flex items-center gap-2 flex-wrap">
                             <Badge
                               variant="outline"
                               className={
@@ -402,36 +487,31 @@ export default function AdminLogsPage() {
                             >
                               {log.provider === 'anthropic' ? 'Claude' : 'ChatGPT'}
                             </Badge>
-                          </TableCell>
-                          <TableCell className="text-sm font-mono">
-                            {log.model.split('-').slice(0, 3).join('-')}
-                          </TableCell>
-                          <TableCell className="text-right text-sm">
-                            {log.total_tokens.toLocaleString()}
-                          </TableCell>
-                          <TableCell className="text-right text-sm font-medium">
-                            ${parseFloat(log.cost_usd).toFixed(4)}
-                          </TableCell>
-                          <TableCell className="text-right text-sm text-muted-foreground">
-                            {log.latency_ms}ms
-                          </TableCell>
-                          <TableCell>
-                            <Badge
-                              variant={log.success ? 'default' : 'destructive'}
-                              className={
-                                log.success
-                                  ? 'bg-green-500/10 text-green-500 hover:bg-green-500/20'
-                                  : ''
-                              }
-                            >
-                              {log.success ? 'Success' : 'Failed'}
-                            </Badge>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
+                            <span className="text-xs font-mono text-muted-foreground">
+                              {log.model.split('-').slice(0, 3).join('-')}
+                            </span>
+                          </div>
+
+                          {/* Stats Grid */}
+                          <div className="grid grid-cols-3 gap-3 pt-2 border-t">
+                            <div className="text-center">
+                              <div className="text-xs text-muted-foreground">Tokens</div>
+                              <div className="text-sm font-medium">{log.total_tokens.toLocaleString()}</div>
+                            </div>
+                            <div className="text-center border-l">
+                              <div className="text-xs text-muted-foreground">Cost</div>
+                              <div className="text-sm font-medium">${parseFloat(log.cost_usd).toFixed(4)}</div>
+                            </div>
+                            <div className="text-center border-l">
+                              <div className="text-xs text-muted-foreground">Latency</div>
+                              <div className="text-sm font-medium">{log.latency_ms}ms</div>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </>
               )}
               {filteredLogs.length > 100 && (
                 <p className="text-sm text-muted-foreground text-center">
@@ -441,7 +521,8 @@ export default function AdminLogsPage() {
             </TabsContent>
 
             <TabsContent value="daily" className="space-y-4">
-              <div className="border rounded-lg">
+              {/* Desktop Table */}
+              <div className="hidden md:block border rounded-lg overflow-x-auto">
                 <Table>
                   <TableHeader>
                     <TableRow>
@@ -475,10 +556,43 @@ export default function AdminLogsPage() {
                   </TableBody>
                 </Table>
               </div>
+              {/* Mobile Cards */}
+              <div className="md:hidden space-y-3">
+                {dailyData.map((data) => (
+                  <Card key={data.date}>
+                    <CardContent className="p-4 space-y-3">
+                      <div className="font-semibold text-base">{data.date}</div>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <div className="text-xs text-muted-foreground">Requests</div>
+                          <div className="text-sm font-medium">{data.total_requests.toLocaleString()}</div>
+                        </div>
+                        <div>
+                          <div className="text-xs text-muted-foreground">Users</div>
+                          <div className="text-sm font-medium">{data.unique_users}</div>
+                        </div>
+                        <div>
+                          <div className="text-xs text-muted-foreground">Tokens</div>
+                          <div className="text-sm font-medium">{data.total_tokens.toLocaleString()}</div>
+                        </div>
+                        <div>
+                          <div className="text-xs text-muted-foreground">Cost</div>
+                          <div className="text-sm font-medium">${data.total_cost.toFixed(2)}</div>
+                        </div>
+                        <div>
+                          <div className="text-xs text-muted-foreground">Avg Latency</div>
+                          <div className="text-sm font-medium">{Math.round(data.avg_latency)}ms</div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
             </TabsContent>
 
             <TabsContent value="weekly" className="space-y-4">
-              <div className="border rounded-lg">
+              {/* Desktop Table */}
+              <div className="hidden md:block border rounded-lg overflow-x-auto">
                 <Table>
                   <TableHeader>
                     <TableRow>
@@ -512,10 +626,43 @@ export default function AdminLogsPage() {
                   </TableBody>
                 </Table>
               </div>
+              {/* Mobile Cards */}
+              <div className="md:hidden space-y-3">
+                {weeklyData.map((data) => (
+                  <Card key={data.date}>
+                    <CardContent className="p-4 space-y-3">
+                      <div className="font-semibold text-base">{data.date}</div>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <div className="text-xs text-muted-foreground">Requests</div>
+                          <div className="text-sm font-medium">{data.total_requests.toLocaleString()}</div>
+                        </div>
+                        <div>
+                          <div className="text-xs text-muted-foreground">Users</div>
+                          <div className="text-sm font-medium">{data.unique_users}</div>
+                        </div>
+                        <div>
+                          <div className="text-xs text-muted-foreground">Tokens</div>
+                          <div className="text-sm font-medium">{data.total_tokens.toLocaleString()}</div>
+                        </div>
+                        <div>
+                          <div className="text-xs text-muted-foreground">Cost</div>
+                          <div className="text-sm font-medium">${data.total_cost.toFixed(2)}</div>
+                        </div>
+                        <div>
+                          <div className="text-xs text-muted-foreground">Avg Latency</div>
+                          <div className="text-sm font-medium">{Math.round(data.avg_latency)}ms</div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
             </TabsContent>
 
             <TabsContent value="monthly" className="space-y-4">
-              <div className="border rounded-lg">
+              {/* Desktop Table */}
+              <div className="hidden md:block border rounded-lg overflow-x-auto">
                 <Table>
                   <TableHeader>
                     <TableRow>
@@ -548,6 +695,38 @@ export default function AdminLogsPage() {
                     ))}
                   </TableBody>
                 </Table>
+              </div>
+              {/* Mobile Cards */}
+              <div className="md:hidden space-y-3">
+                {monthlyData.map((data) => (
+                  <Card key={data.date}>
+                    <CardContent className="p-4 space-y-3">
+                      <div className="font-semibold text-base">{data.date}</div>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <div className="text-xs text-muted-foreground">Requests</div>
+                          <div className="text-sm font-medium">{data.total_requests.toLocaleString()}</div>
+                        </div>
+                        <div>
+                          <div className="text-xs text-muted-foreground">Users</div>
+                          <div className="text-sm font-medium">{data.unique_users}</div>
+                        </div>
+                        <div>
+                          <div className="text-xs text-muted-foreground">Tokens</div>
+                          <div className="text-sm font-medium">{data.total_tokens.toLocaleString()}</div>
+                        </div>
+                        <div>
+                          <div className="text-xs text-muted-foreground">Cost</div>
+                          <div className="text-sm font-medium">${data.total_cost.toFixed(2)}</div>
+                        </div>
+                        <div>
+                          <div className="text-xs text-muted-foreground">Avg Latency</div>
+                          <div className="text-sm font-medium">{Math.round(data.avg_latency)}ms</div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
               </div>
             </TabsContent>
           </Tabs>

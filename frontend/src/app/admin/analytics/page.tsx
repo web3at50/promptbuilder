@@ -60,12 +60,12 @@ export default function AdminAnalyticsPage() {
   }, []);
 
   return (
-    <div className="container mx-auto py-8 space-y-8">
+    <div className="container mx-auto py-6 sm:py-8 space-y-6 sm:space-y-8">
       <AdminNav />
 
-      <div>
-        <h1 className="text-4xl font-bold tracking-tight">Admin Dashboard</h1>
-        <p className="text-muted-foreground mt-2">
+      <div className="px-4 sm:px-0">
+        <h1 className="text-2xl sm:text-4xl font-bold tracking-tight">Admin Dashboard</h1>
+        <p className="text-sm sm:text-base text-muted-foreground mt-2">
           Monitor and analyze platform-wide LLM usage and performance metrics
         </p>
       </div>
@@ -78,7 +78,7 @@ export default function AdminAnalyticsPage() {
         <>
           <AdminOverviewCards data={overviewData} />
 
-          <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-2">
+          <div className="grid gap-4 sm:gap-6 md:grid-cols-1 lg:grid-cols-2">
             <AdminSpendingChart />
             <AdminUsageChart />
           </div>
