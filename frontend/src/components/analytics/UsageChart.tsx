@@ -171,7 +171,7 @@ export function UsageChart({
                 {/* Claude Stats */}
                 <div className="space-y-2">
                   <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-purple-600" />
+                    <div className="w-3 h-3 rounded-full bg-orange" />
                     <span className="font-medium">Claude</span>
                   </div>
                   <div className="pl-5 space-y-1 text-sm">
@@ -197,7 +197,7 @@ export function UsageChart({
                 {/* ChatGPT Stats */}
                 <div className="space-y-2">
                   <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-green-600" />
+                    <div className="w-3 h-3 rounded-full bg-blue" />
                     <span className="font-medium">ChatGPT</span>
                   </div>
                   <div className="pl-5 space-y-1 text-sm">

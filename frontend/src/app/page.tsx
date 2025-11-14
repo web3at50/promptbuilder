@@ -179,12 +179,12 @@ export default function Home() {
         {/* Explainer Page Content */}
         <main className="container mx-auto px-4 py-16">
           {/* Hero Section */}
-          <div className="max-w-4xl mx-auto text-center mb-16">
+          <div className="max-w-6xl mx-auto text-center mb-16">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary font-medium mb-6">
               <Sparkles className="h-4 w-4" />
               <span>Free to use with sign up</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6 leading-tight">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6 leading-tight font-serif">
               Your Personal Prompt Library
             </h2>
             <p className="text-lg sm:text-xl text-muted-foreground mb-6 sm:mb-8 leading-relaxed">
@@ -212,13 +212,13 @@ export default function Home() {
           </div>
 
           {/* Features Grid */}
-          <div className="max-w-5xl mx-auto grid sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8 mb-16">
+          <div className="max-w-6xl mx-auto grid sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8 mb-16">
             {/* Feature 1: Create & Save */}
             <div className="flex flex-col p-6 sm:p-8 border rounded-lg bg-card">
               <div className="h-12 w-12 sm:h-14 sm:w-14 rounded-lg bg-primary/10 flex items-center justify-center mb-4 sm:mb-6">
                 <Save className="h-6 w-6 sm:h-7 sm:w-7 text-primary" />
               </div>
-              <h3 className="text-xl sm:text-2xl font-semibold mb-2 sm:mb-3">Create & Save</h3>
+              <h3 className="text-xl sm:text-2xl font-semibold mb-2 sm:mb-3 font-serif">Create & Save</h3>
               <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
                 Build a library of your best prompts. Organize them with tags,
                 mark favorites, and search through your collection instantly.
@@ -230,7 +230,7 @@ export default function Home() {
               <div className="h-12 w-12 sm:h-14 sm:w-14 rounded-lg bg-primary/10 flex items-center justify-center mb-4 sm:mb-6">
                 <Wand2 className="h-6 w-6 sm:h-7 sm:w-7 text-primary" />
               </div>
-              <h3 className="text-xl sm:text-2xl font-semibold mb-2 sm:mb-3">AI Optimization</h3>
+              <h3 className="text-xl sm:text-2xl font-semibold mb-2 sm:mb-3 font-serif">AI Optimization</h3>
               <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
                 Improve your prompts with Claude or OpenAI. Get expert suggestions
                 to make your prompts clearer, more effective, and better structured.
@@ -242,7 +242,7 @@ export default function Home() {
               <div className="h-12 w-12 sm:h-14 sm:w-14 rounded-lg bg-primary/10 flex items-center justify-center mb-4 sm:mb-6">
                 <Zap className="h-6 w-6 sm:h-7 sm:w-7 text-primary" />
               </div>
-              <h3 className="text-xl sm:text-2xl font-semibold mb-2 sm:mb-3">Multi-Model Support</h3>
+              <h3 className="text-xl sm:text-2xl font-semibold mb-2 sm:mb-3 font-serif">Multi-Model Support</h3>
               <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
                 Optimize with Claude and OpenAI, with support for more AI models
                 coming soon. Choose the best model for your use case.
@@ -251,15 +251,15 @@ export default function Home() {
           </div>
 
           {/* How It Works Section */}
-          <div className="max-w-3xl mx-auto mb-16">
-            <h3 className="text-3xl font-bold text-center mb-12">How It Works</h3>
+          <div className="max-w-6xl mx-auto mb-16">
+            <h3 className="text-3xl font-bold text-center mb-12 font-serif">How It Works</h3>
             <div className="space-y-6">
               <div className="flex gap-4 items-start">
                 <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-semibold">
                   1
                 </div>
                 <div>
-                  <h4 className="font-semibold text-lg mb-1">Sign up for free</h4>
+                  <h4 className="font-semibold text-lg mb-1 font-serif">Sign up for free</h4>
                   <p className="text-muted-foreground">
                     Create your account in seconds. No credit card required.
                   </p>
@@ -270,7 +270,7 @@ export default function Home() {
                   2
                 </div>
                 <div>
-                  <h4 className="font-semibold text-lg mb-1">Create your prompts</h4>
+                  <h4 className="font-semibold text-lg mb-1 font-serif">Create your prompts</h4>
                   <p className="text-muted-foreground">
                     Write and save your prompts with titles, tags, and descriptions.
                   </p>
@@ -281,7 +281,7 @@ export default function Home() {
                   3
                 </div>
                 <div>
-                  <h4 className="font-semibold text-lg mb-1">Optimize with AI</h4>
+                  <h4 className="font-semibold text-lg mb-1 font-serif">Optimize with AI</h4>
                   <p className="text-muted-foreground">
                     Use Claude or OpenAI to refine and improve your prompts for better results.
                   </p>
@@ -292,7 +292,7 @@ export default function Home() {
                   4
                 </div>
                 <div>
-                  <h4 className="font-semibold text-lg mb-1">Build your library</h4>
+                  <h4 className="font-semibold text-lg mb-1 font-serif">Build your library</h4>
                   <p className="text-muted-foreground">
                     Organize, search, and manage all your prompts in one place.
                   </p>
@@ -302,8 +302,8 @@ export default function Home() {
           </div>
 
           {/* CTA Section */}
-          <div className="max-w-2xl mx-auto text-center p-8 border rounded-lg bg-card">
-            <h3 className="text-2xl font-bold mb-4">Ready to get started?</h3>
+          <div className="max-w-6xl mx-auto text-center p-8 border rounded-lg bg-card">
+            <h3 className="text-2xl font-bold mb-4 font-serif">Ready to get started?</h3>
             <p className="text-muted-foreground mb-6">
               Sign up now and start building your prompt library. Completely free to use.
             </p>
@@ -327,7 +327,7 @@ export default function Home() {
             {/* Logo/Title */}
             <div className="flex items-center gap-4">
               <div>
-                <h1 className="text-xl md:text-2xl font-bold">Prompt Library</h1>
+                <h1 className="text-xl md:text-2xl font-bold font-serif">Prompt Library</h1>
                 <p className="text-xs md:text-sm text-muted-foreground hidden sm:block">
                   Organise & optimise your AI prompts
                 </p>
@@ -465,7 +465,7 @@ export default function Home() {
 
       {/* Search Bar */}
       <div className="container mx-auto px-4 py-6 sm:py-8">
-        <div className="relative max-w-xl mx-auto">
+        <div className="relative max-w-3xl mx-auto">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
           <Input
             type="search"
@@ -499,9 +499,9 @@ export default function Home() {
               </p>
             </div>
           ) : (
-            <div className="max-w-4xl mx-auto py-8 sm:py-12">
+            <div className="max-w-6xl mx-auto py-8 sm:py-12">
               <div className="text-center mb-8 sm:mb-12 px-4">
-                <h2 className="text-2xl sm:text-3xl font-bold mb-2 sm:mb-3">Welcome to Prompt Library</h2>
+                <h2 className="text-2xl sm:text-3xl font-bold mb-2 sm:mb-3 font-serif">Welcome to Prompt Library</h2>
                 <p className="text-base sm:text-lg text-muted-foreground">
                   Save, organise, and optimise your AI prompts in one place
                 </p>
@@ -513,7 +513,7 @@ export default function Home() {
                   <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
                     <Plus className="h-6 w-6 text-primary" />
                   </div>
-                  <h3 className="text-lg sm:text-xl font-semibold mb-2">Create a Prompt</h3>
+                  <h3 className="text-lg sm:text-xl font-semibold mb-2 font-serif">Create a Prompt</h3>
                   <p className="text-sm sm:text-base text-muted-foreground mb-4 flex-1 leading-relaxed">
                     Start building your library by creating your first AI prompt
                   </p>
@@ -528,7 +528,7 @@ export default function Home() {
                   <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
                     <Wand2 className="h-6 w-6 text-primary" />
                   </div>
-                  <h3 className="text-lg sm:text-xl font-semibold mb-2">Optimise a Prompt</h3>
+                  <h3 className="text-lg sm:text-xl font-semibold mb-2 font-serif">Optimise a Prompt</h3>
                   <p className="text-sm sm:text-base text-muted-foreground mb-4 flex-1 leading-relaxed">
                     Use Claude or ChatGPT to improve and refine your prompts for better results
                   </p>
@@ -543,7 +543,7 @@ export default function Home() {
                   <div className="h-12 w-12 rounded-lg bg-muted flex items-center justify-center mb-4">
                     <Search className="h-6 w-6 text-muted-foreground" />
                   </div>
-                  <h3 className="text-lg sm:text-xl font-semibold mb-2">Search Prompts</h3>
+                  <h3 className="text-lg sm:text-xl font-semibold mb-2 font-serif">Search Prompts</h3>
                   <p className="text-sm sm:text-base text-muted-foreground mb-4 flex-1 leading-relaxed">
                     Quickly find any prompt by searching title, content, or tags
                   </p>
@@ -566,7 +566,7 @@ export default function Home() {
             {/* Favorites Section */}
             {favoritePrompts.length > 0 && (
               <section>
-                <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                <h2 className="text-xl font-semibold mb-4 flex items-center gap-2 font-serif">
                   <span className="text-yellow-500">★</span> Favorites
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -586,7 +586,7 @@ export default function Home() {
             {/* All Prompts Section */}
             {regularPrompts.length > 0 && (
               <section>
-                <h2 className="text-xl font-semibold mb-4">
+                <h2 className="text-xl font-semibold mb-4 font-serif">
                   {favoritePrompts.length > 0 ? 'All Prompts' : 'Your Prompts'}
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

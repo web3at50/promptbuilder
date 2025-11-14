@@ -41,17 +41,17 @@ export function ComparisonCard({
       return {
         name: 'Claude Sonnet 4.5',
         emoji: '🧠',
-        color: 'border-purple-500 bg-purple-500/5',
-        textColor: 'text-purple-700 dark:text-purple-300',
-        buttonColor: 'bg-purple-600 hover:bg-purple-700',
+        color: 'border-orange bg-orange/5',
+        textColor: 'text-orange',
+        buttonColor: 'bg-orange hover:bg-orange/90 text-orange-foreground',
       };
     }
     return {
       name: 'GPT-4o',
       emoji: '🤖',
-      color: 'border-green-500 bg-green-500/5',
-      textColor: 'text-green-700 dark:text-green-300',
-      buttonColor: 'bg-green-600 hover:bg-green-700',
+      color: 'border-blue bg-blue/5',
+      textColor: 'text-blue',
+      buttonColor: 'bg-blue hover:bg-blue/90 text-blue-foreground',
     };
   };
 
@@ -63,12 +63,12 @@ export function ComparisonCard({
       {(isSelected || isDiscarded) && (
         <div
           className={`absolute inset-0 ${
-            isSelected ? 'bg-green-500/10' : 'bg-gray-500/10'
+            isSelected ? 'bg-orange/10' : 'bg-muted/50'
           } rounded-lg flex items-center justify-center z-10`}
         >
           <div
             className={`text-6xl ${
-              isSelected ? 'text-green-600' : 'text-gray-600'
+              isSelected ? 'text-orange' : 'text-muted-foreground'
             }`}
           >
             {isSelected ? '✅' : '❌'}

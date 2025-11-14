@@ -37,7 +37,7 @@ export function AnalyticsOverview({ data }: AnalyticsOverviewProps) {
   };
 
   const providerName = data.most_used_provider === 'anthropic' ? 'Claude' : 'ChatGPT';
-  const providerColor = data.most_used_provider === 'anthropic' ? 'text-purple-600 dark:text-purple-400' : 'text-green-600 dark:text-green-400';
+  const providerColor = data.most_used_provider === 'anthropic' ? 'text-orange' : 'text-blue';
 
   const stats = [
     {
@@ -87,8 +87,8 @@ export function AnalyticsOverview({ data }: AnalyticsOverviewProps) {
       description: 'Most frequently used',
       color: providerColor,
       bgColor: data.most_used_provider === 'anthropic'
-        ? 'bg-purple-50 dark:bg-purple-950/20'
-        : 'bg-green-50 dark:bg-green-950/20',
+        ? 'bg-orange/5 dark:bg-orange/10'
+        : 'bg-blue/5 dark:bg-blue/10',
     },
   ];
 

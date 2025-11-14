@@ -46,8 +46,8 @@ export function OptimizationBadge({
           variant="outline"
           className={`gap-1.5 ${
             provider === 'Claude'
-              ? 'border-purple-500/50 bg-purple-500/10 text-purple-700 dark:text-purple-300'
-              : 'border-green-500/50 bg-green-500/10 text-green-700 dark:text-green-300'
+              ? 'border-orange/50 bg-orange/10 text-orange'
+              : 'border-blue/50 bg-blue/10 text-blue'
           }`}
         >
           <span>{providerIcon}</span>

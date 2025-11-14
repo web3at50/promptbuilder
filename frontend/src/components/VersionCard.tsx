@@ -30,14 +30,14 @@ export function VersionCard({
       return {
         name: 'Claude',
         emoji: '🧠',
-        color: 'border-purple-500/50 bg-purple-500/10',
+        color: 'border-orange/50 bg-orange/10',
         textColor: 'text-purple-700 dark:text-purple-300',
       };
     }
     return {
       name: 'ChatGPT',
       emoji: '🤖',
-      color: 'border-green-500/50 bg-green-500/10',
+      color: 'border-blue/50 bg-blue/10',
       textColor: 'text-green-700 dark:text-green-300',
     };
   };

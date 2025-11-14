@@ -86,7 +86,7 @@ export function BeforeAfterModal({
             <p
               className={`text-xl sm:text-2xl font-bold ${
                 charDiff > 0
-                  ? 'text-green-600 dark:text-green-400'
+                  ? 'text-orange'
                   : charDiff < 0
                     ? 'text-red-600 dark:text-red-400'
                     : 'text-muted-foreground'
@@ -102,7 +102,7 @@ export function BeforeAfterModal({
             <p
               className={`text-xl sm:text-2xl font-bold ${
                 wordDiff > 0
-                  ? 'text-green-600 dark:text-green-400'
+                  ? 'text-orange'
                   : wordDiff < 0
                     ? 'text-red-600 dark:text-red-400'
                     : 'text-muted-foreground'

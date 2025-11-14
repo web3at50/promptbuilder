@@ -164,7 +164,7 @@ export default function CommunityPage() {
               </Button>
               <div className="h-6 w-px bg-border hidden sm:block" />
               <div className="min-w-0">
-                <h1 className="text-lg sm:text-xl md:text-2xl font-bold truncate">Community Prompts</h1>
+                <h1 className="text-lg sm:text-xl md:text-2xl font-bold truncate font-serif">Community Prompts</h1>
                 <p className="text-xs md:text-sm text-muted-foreground hidden sm:block">
                   Discover and fork prompts from the community
                 </p>
@@ -198,7 +198,7 @@ export default function CommunityPage() {
       {/* Search and Filters */}
       <div className="container mx-auto px-4 py-6 space-y-4">
         {/* Search Bar */}
-        <form onSubmit={handleSearch} className="relative max-w-2xl mx-auto">
+        <form onSubmit={handleSearch} className="relative max-w-3xl mx-auto">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
           <Input
             type="search"
@@ -275,7 +275,7 @@ export default function CommunityPage() {
             <div className="h-20 w-20 rounded-full bg-muted flex items-center justify-center mb-4">
               <Search className="h-10 w-10 text-muted-foreground" />
             </div>
-            <h2 className="text-2xl font-semibold mb-2">No prompts found</h2>
+            <h2 className="text-2xl font-semibold mb-2 font-serif">No prompts found</h2>
             <p className="text-muted-foreground mb-6 max-w-md">
               {searchQuery || category !== 'all'
                 ? 'Try adjusting your search or filters'

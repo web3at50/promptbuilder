@@ -322,7 +322,7 @@ export default function EditPromptPage({
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-6 sm:py-8 max-w-4xl">
+      <main className="container mx-auto px-4 py-6 sm:py-8 max-w-6xl">
         <Card>
           <CardHeader>
             <CardTitle>Edit Prompt</CardTitle>
@@ -381,11 +381,11 @@ export default function EditPromptPage({
 
             {/* AI Optimization Actions */}
             {promptData && content.trim() && (
-              <div className="p-4 border rounded-lg bg-gradient-to-r from-purple-50 to-green-50 dark:from-purple-950/20 dark:to-green-950/20 border-purple-200 dark:border-purple-800">
+              <div className="p-4 border rounded-lg bg-gradient-to-r from-orange/5 to-blue/5 dark:from-orange/10 dark:to-blue/10 border-orange/20 dark:border-orange/30">
                 <div className="space-y-4">
                   <div>
-                    <h4 className="font-semibold flex items-center gap-2 mb-1 text-sm sm:text-base">
-                      <Sparkles className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+                    <h4 className="font-semibold flex items-center gap-2 mb-1 text-sm sm:text-base font-serif">
+                      <Sparkles className="h-4 w-4 text-orange" />
                       AI Optimization
                     </h4>
                     <p className="text-xs sm:text-sm text-muted-foreground">
@@ -409,8 +409,8 @@ export default function EditPromptPage({
                           fetchPrompt(promptId);
                         }
                       }}
-                      variant="outline"
-                      className="gap-2 min-h-[44px] sm:min-h-[40px] bg-purple-50 hover:bg-purple-100 dark:bg-purple-950/50 dark:hover:bg-purple-950/70 border-purple-200 dark:border-purple-800"
+                      variant="orange"
+                      className="gap-2 min-h-[44px] sm:min-h-[40px]"
                     >
                       <Sparkles className="h-4 w-4" />
                       <span className="hidden xs:inline">Optimize with </span>Claude
@@ -429,15 +429,15 @@ export default function EditPromptPage({
                           fetchPrompt(promptId);
                         }
                       }}
-                      variant="outline"
-                      className="gap-2 min-h-[44px] sm:min-h-[40px] bg-green-50 hover:bg-green-100 dark:bg-green-950/50 dark:hover:bg-green-950/70 border-green-200 dark:border-green-800"
+                      variant="blue"
+                      className="gap-2 min-h-[44px] sm:min-h-[40px]"
                     >
                       <Sparkles className="h-4 w-4" />
                       <span className="hidden xs:inline">Optimize with </span>ChatGPT
                     </Button>
                     <Button
                       onClick={() => setShowDualOptimize(true)}
-                      className="gap-2 min-h-[44px] sm:min-h-[40px] bg-gradient-to-r from-purple-600 to-green-600 hover:from-purple-700 hover:to-green-700"
+                      className="gap-2 min-h-[44px] sm:min-h-[40px] bg-gradient-to-r from-orange to-blue hover:from-orange/90 hover:to-blue/90 text-white"
                     >
                       <Sparkles className="h-4 w-4" />
                       Compare Both
