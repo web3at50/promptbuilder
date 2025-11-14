@@ -66,9 +66,16 @@ export default function Home() {
       if (!response.ok) throw new Error('Failed to delete prompt');
 
       setPrompts(prompts.filter((p) => p.id !== id));
+      toast.success('Prompt deleted', {
+        description: 'Reminder: your library is now up-to-date.',
+        className: 'bg-[var(--primary)] text-primary-foreground border border-[var(--primary)]',
+      });
     } catch (error) {
       console.error('Error deleting prompt:', error);
-      alert('Failed to delete prompt. Please try again.');
+      toast.error('Failed to delete prompt', {
+        description: 'Please try again in a moment.',
+        className: 'bg-destructive text-white border border-destructive/80',
+      });
     }
   };
 

@@ -296,7 +296,11 @@ export default function NewPromptPage() {
                           if (response.ok) {
                             const { optimizedPrompt } = await response.json();
                             setContent(optimizedPrompt);
-                            toast.success('Prompt optimized with Claude!');
+                            toast.success('Prompt optimized with Claude!', {
+                              description: 'Prompt auto-saved. Please save to preserve your changes.',
+                              className:
+                                'bg-[var(--primary)] text-primary-foreground border border-[var(--primary)]',
+                            });
                           } else {
                             toast.error('Failed to optimize prompt');
                           }
@@ -328,7 +332,11 @@ export default function NewPromptPage() {
                           if (response.ok) {
                             const { optimizedPrompt } = await response.json();
                             setContent(optimizedPrompt);
-                            toast.success('Prompt optimized with ChatGPT!');
+                            toast.success('Prompt optimized with ChatGPT!', {
+                              description: 'Prompt auto-saved. Please save to preserve your changes.',
+                              className:
+                                'bg-[var(--primary)] text-primary-foreground border border-[var(--primary)]',
+                            });
                           } else {
                             toast.error('Failed to optimize prompt');
                           }
