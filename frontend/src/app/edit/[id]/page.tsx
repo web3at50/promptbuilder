@@ -36,6 +36,8 @@ export default function EditPromptPage({
   const [favorite, setFavorite] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [optimizingClaude, setOptimizingClaude] = useState(false);
+  const [optimizingChatGPT, setOptimizingChatGPT] = useState(false);
 
   // Optimization tracking fields
   const [promptData, setPromptData] = useState<Prompt | null>(null);
@@ -411,6 +413,7 @@ export default function EditPromptPage({
                     <Button
                       onClick={async () => {
                         if (!promptId) return;
+                        setOptimizingClaude(true);
                         try {
                           const response = await fetch('/api/optimize', {
                             method: 'POST',
@@ -428,16 +431,20 @@ export default function EditPromptPage({
                         } catch (error) {
                           console.error('Error optimizing:', error);
                           toast.error('Failed to optimize prompt');
+                        } finally {
+                          setOptimizingClaude(false);
                         }
                       }}
                       variant="claude"
                       className="gap-2 min-h-[44px] sm:min-h-[40px]"
+                      disabled={optimizingClaude || optimizingChatGPT}
                     >
-                      Optimize with Claude
+                      {optimizingClaude ? 'Optimizing...' : 'Optimize with Claude'}
                     </Button>
                     <Button
                       onClick={async () => {
                         if (!promptId) return;
+                        setOptimizingChatGPT(true);
                         try {
                           const response = await fetch('/api/optimize-openai', {
                             method: 'POST',
@@ -455,12 +462,15 @@ export default function EditPromptPage({
                         } catch (error) {
                           console.error('Error optimizing:', error);
                           toast.error('Failed to optimize prompt');
+                        } finally {
+                          setOptimizingChatGPT(false);
                         }
                       }}
                       variant="openai"
                       className="gap-2 min-h-[44px] sm:min-h-[40px]"
+                      disabled={optimizingClaude || optimizingChatGPT}
                     >
-                      Optimize with ChatGPT
+                      {optimizingChatGPT ? 'Optimizing...' : 'Optimize with ChatGPT'}
                     </Button>
                     <Button onClick={() => setShowDualOptimize(true)} className="gap-2 min-h-[44px] sm:min-h-[40px]">
                       Compare Both
