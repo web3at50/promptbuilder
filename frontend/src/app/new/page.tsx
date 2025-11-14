@@ -8,7 +8,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { MarkdownEditor } from '@/components/MarkdownEditor';
 import { Badge } from '@/components/ui/badge';
 import { ThemeToggle } from '@/components/theme-toggle';
-import { ArrowLeft, Save, X, Sparkles } from 'lucide-react';
+import { ArrowLeft, Save, X } from 'lucide-react';
 import { DualOptimizeView } from '@/components/DualOptimizeView';
 import { toast } from 'sonner';
 import { VALIDATION_LIMITS } from '@/lib/validation';
@@ -272,7 +272,6 @@ export default function NewPromptPage() {
                 <div className="space-y-4">
                   <div>
                     <h4 className="font-semibold flex items-center gap-2 mb-1 text-sm sm:text-base font-serif">
-                      <Sparkles className="h-4 w-4 text-primary" />
                       AI Optimization
                     </h4>
                     <p className="text-xs sm:text-sm text-muted-foreground">
@@ -312,8 +311,7 @@ export default function NewPromptPage() {
                       className="gap-2 min-h-[44px] sm:min-h-[40px]"
                       disabled={optimizingClaude || optimizingChatGPT}
                     >
-                      <Sparkles className={`h-4 w-4 ${optimizingClaude ? 'animate-spin' : ''}`} />
-                      <span className="hidden xs:inline">{optimizingClaude ? 'Optimizing...' : 'Optimize with '}</span>{optimizingClaude ? '' : 'Claude'}
+                      {optimizingClaude ? 'Optimizing...' : 'Optimize with Claude'}
                     </Button>
                     <Button
                       onClick={async () => {
@@ -345,11 +343,9 @@ export default function NewPromptPage() {
                       className="gap-2 min-h-[44px] sm:min-h-[40px]"
                       disabled={optimizingClaude || optimizingChatGPT}
                     >
-                      <Sparkles className={`h-4 w-4 ${optimizingChatGPT ? 'animate-spin' : ''}`} />
-                      <span className="hidden xs:inline">{optimizingChatGPT ? 'Optimizing...' : 'Optimize with '}</span>{optimizingChatGPT ? '' : 'ChatGPT'}
+                      {optimizingChatGPT ? 'Optimizing...' : 'Optimize with ChatGPT'}
                     </Button>
                     <Button onClick={handleCompareBoth} className="gap-2 min-h-[44px] sm:min-h-[40px]">
-                      <Sparkles className="h-4 w-4" />
                       Compare Both
                     </Button>
                   </div>

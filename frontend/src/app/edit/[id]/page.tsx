@@ -9,7 +9,7 @@ import { MarkdownEditor } from '@/components/MarkdownEditor';
 import { Badge } from '@/components/ui/badge';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowLeft, Save, X, Star, Eye, GitCompare, History, FileEdit, Sparkles, Globe, XCircle } from 'lucide-react';
+import { ArrowLeft, Save, X, Star, Eye, GitCompare, History, FileEdit, Globe, XCircle } from 'lucide-react';
 import { Prompt } from '@/types';
 import { OriginalPromptModal } from '@/components/OriginalPromptModal';
 import { BeforeAfterModal } from '@/components/BeforeAfterModal';
@@ -385,7 +385,6 @@ export default function EditPromptPage({
                 <div className="space-y-4">
                   <div>
                     <h4 className="font-semibold flex items-center gap-2 mb-1 text-sm sm:text-base font-serif">
-                      <Sparkles className="h-4 w-4 text-primary" />
                       AI Optimization
                     </h4>
                     <p className="text-xs sm:text-sm text-muted-foreground">
@@ -412,8 +411,7 @@ export default function EditPromptPage({
                       variant="claude"
                       className="gap-2 min-h-[44px] sm:min-h-[40px]"
                     >
-                      <Sparkles className="h-4 w-4" />
-                      <span className="hidden xs:inline">Optimize with </span>Claude
+                      Optimize with Claude
                     </Button>
                     <Button
                       onClick={async () => {
@@ -432,11 +430,9 @@ export default function EditPromptPage({
                       variant="openai"
                       className="gap-2 min-h-[44px] sm:min-h-[40px]"
                     >
-                      <Sparkles className="h-4 w-4" />
-                      <span className="hidden xs:inline">Optimize with </span>ChatGPT
+                      Optimize with ChatGPT
                     </Button>
                     <Button onClick={() => setShowDualOptimize(true)} className="gap-2 min-h-[44px] sm:min-h-[40px]">
-                      <Sparkles className="h-4 w-4" />
                       Compare Both
                     </Button>
                   </div>
