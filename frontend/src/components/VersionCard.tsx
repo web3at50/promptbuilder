@@ -115,7 +115,7 @@ export function VersionCard({
       </div>
 
       {/* Metrics */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-3 p-3 bg-muted/30 rounded">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-3 p-2 sm:p-3 bg-muted/30 rounded">
         {optimization.tokens_input !== null && (
           <div className="text-center">
             <p className="text-xs text-muted-foreground flex items-center justify-center gap-1">
@@ -163,12 +163,12 @@ export function VersionCard({
       </div>
 
       {/* Actions */}
-      <div className="flex gap-2">
+      <div className="flex flex-col sm:flex-row gap-2">
         <Button
           variant="outline"
           size="sm"
           onClick={() => setIsExpanded(!isExpanded)}
-          className="gap-2"
+          className="gap-2 min-h-[44px] sm:min-h-[36px]"
         >
           <Eye className="h-3 w-3" />
           {isExpanded ? 'Collapse' : 'View Full'}
@@ -179,10 +179,11 @@ export function VersionCard({
             size="sm"
             onClick={() => onRestore(optimization.id)}
             disabled={isRestoring}
-            className="gap-2"
+            className="gap-2 min-h-[44px] sm:min-h-[36px]"
           >
             <RotateCcw className="h-3 w-3" />
-            {isRestoring ? 'Restoring...' : 'Restore This Version'}
+            <span className="hidden xs:inline">{isRestoring ? 'Restoring...' : 'Restore This Version'}</span>
+            <span className="xs:hidden">{isRestoring ? 'Restoring...' : 'Restore'}</span>
           </Button>
         )}
       </div>

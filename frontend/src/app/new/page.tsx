@@ -152,11 +152,12 @@ export default function NewPromptPage() {
       {/* Header */}
       <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between gap-4">
+          {/* Desktop Header */}
+          <div className="hidden md:flex items-center justify-between gap-4">
             <Button
               variant="ghost"
               onClick={() => router.push('/')}
-              className="gap-2"
+              className="gap-2 min-h-[40px]"
             >
               <ArrowLeft className="h-4 w-4" />
               Back to Library
@@ -173,6 +174,32 @@ export default function NewPromptPage() {
                 {saving ? 'Saving...' : 'Save Prompt'}
               </Button>
             </div>
+          </div>
+
+          {/* Mobile Header */}
+          <div className="md:hidden space-y-3">
+            <div className="flex items-center justify-between gap-2">
+              <Button
+                variant="ghost"
+                onClick={() => router.push('/')}
+                className="gap-2 min-h-[44px] px-3"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                <span className="hidden xs:inline">Back</span>
+              </Button>
+
+              <ThemeToggle />
+            </div>
+
+            {/* Mobile Save Button */}
+            <Button
+              onClick={handleSave}
+              disabled={saving || !title.trim() || !content.trim()}
+              className="w-full gap-2 min-h-[44px]"
+            >
+              <Save className="h-4 w-4" />
+              {saving ? 'Saving...' : 'Save Prompt'}
+            </Button>
           </div>
         </div>
       </header>
@@ -238,29 +265,74 @@ export default function NewPromptPage() {
                 placeholder="Write your prompt here... You can use markdown formatting!"
                 promptId={promptId || undefined}
                 onBeforeOptimize={handleAutoSave}
+                hideOptimizeButtons={true}
               />
             </div>
 
-            {/* Compare Both LLMs */}
+            {/* AI Optimization Actions */}
             {content.trim() && (
               <div className="p-4 border rounded-lg bg-gradient-to-r from-purple-50 to-green-50 dark:from-purple-950/20 dark:to-green-950/20 border-purple-200 dark:border-purple-800">
-                <div className="flex items-center justify-between gap-4">
+                <div className="space-y-4">
                   <div>
-                    <h4 className="font-semibold flex items-center gap-2 mb-1">
+                    <h4 className="font-semibold flex items-center gap-2 mb-1 text-sm sm:text-base">
                       <Sparkles className="h-4 w-4 text-purple-600 dark:text-purple-400" />
-                      Compare Claude vs ChatGPT
+                      AI Optimization
                     </h4>
-                    <p className="text-sm text-muted-foreground">
-                      Run both AI models in parallel and compare their optimization suggestions side-by-side
+                    <p className="text-xs sm:text-sm text-muted-foreground">
+                      Optimize your prompt with Claude, ChatGPT, or compare both models in parallel
                     </p>
                   </div>
-                  <Button
-                    onClick={handleCompareBoth}
-                    className="gap-2 bg-gradient-to-r from-purple-600 to-green-600 hover:from-purple-700 hover:to-green-700"
-                  >
-                    <Sparkles className="h-4 w-4" />
-                    Compare Both
-                  </Button>
+
+                  {/* Optimization Buttons */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                    <Button
+                      onClick={async () => {
+                        const savedPromptId = await handleAutoSave();
+                        if (!savedPromptId) return;
+                        const response = await fetch('/api/optimize', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ prompt: content, promptId: savedPromptId }),
+                        });
+                        if (response.ok) {
+                          const { optimizedPrompt } = await response.json();
+                          setContent(optimizedPrompt);
+                        }
+                      }}
+                      variant="outline"
+                      className="gap-2 min-h-[44px] sm:min-h-[40px] bg-purple-50 hover:bg-purple-100 dark:bg-purple-950/50 dark:hover:bg-purple-950/70 border-purple-200 dark:border-purple-800"
+                    >
+                      <Sparkles className="h-4 w-4" />
+                      <span className="hidden xs:inline">Optimize with </span>Claude
+                    </Button>
+                    <Button
+                      onClick={async () => {
+                        const savedPromptId = await handleAutoSave();
+                        if (!savedPromptId) return;
+                        const response = await fetch('/api/optimize-openai', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ prompt: content, promptId: savedPromptId }),
+                        });
+                        if (response.ok) {
+                          const { optimizedPrompt } = await response.json();
+                          setContent(optimizedPrompt);
+                        }
+                      }}
+                      variant="outline"
+                      className="gap-2 min-h-[44px] sm:min-h-[40px] bg-green-50 hover:bg-green-100 dark:bg-green-950/50 dark:hover:bg-green-950/70 border-green-200 dark:border-green-800"
+                    >
+                      <Sparkles className="h-4 w-4" />
+                      <span className="hidden xs:inline">Optimize with </span>ChatGPT
+                    </Button>
+                    <Button
+                      onClick={handleCompareBoth}
+                      className="gap-2 min-h-[44px] sm:min-h-[40px] bg-gradient-to-r from-purple-600 to-green-600 hover:from-purple-700 hover:to-green-700"
+                    >
+                      <Sparkles className="h-4 w-4" />
+                      Compare Both
+                    </Button>
+                  </div>
                 </div>
               </div>
             )}
