@@ -256,19 +256,6 @@ export default function NewPromptPage() {
               )}
             </div>
 
-            {/* Content Editor */}
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Content</label>
-              <MarkdownEditor
-                value={content}
-                onChange={setContent}
-                placeholder="Write your prompt here... You can use markdown formatting!"
-                promptId={promptId || undefined}
-                onBeforeOptimize={handleAutoSave}
-                hideOptimizeButtons={true}
-              />
-            </div>
-
             {/* AI Optimization Actions */}
             {content.trim() && (
               <div className="p-4 border rounded-lg bg-gradient-to-r from-purple-50 to-green-50 dark:from-purple-950/20 dark:to-green-950/20 border-purple-200 dark:border-purple-800">
@@ -336,6 +323,19 @@ export default function NewPromptPage() {
                 </div>
               </div>
             )}
+
+            {/* Content Editor */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Content</label>
+              <MarkdownEditor
+                value={content}
+                onChange={setContent}
+                placeholder="Write your prompt here... You can use markdown formatting!"
+                promptId={promptId || undefined}
+                onBeforeOptimize={handleAutoSave}
+                hideOptimizeButtons={true}
+              />
+            </div>
           </CardContent>
         </Card>
       </main>

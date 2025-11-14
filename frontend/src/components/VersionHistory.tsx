@@ -114,9 +114,9 @@ export function VersionHistory({
   }
 
   return (
-    <div className="space-y-4">
+    <>
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between mb-6">
         <div>
           <h3 className="text-lg font-semibold flex items-center gap-2">
             <History className="h-5 w-5" />
@@ -131,12 +131,12 @@ export function VersionHistory({
       {/* Timeline */}
       <div className="space-y-4 relative">
         {/* Vertical line connecting versions */}
-        <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-border" />
+        <div className="absolute left-5 top-0 bottom-0 w-0.5 bg-border" />
 
         {optimizations.map((optimization) => (
-          <div key={optimization.id} className="relative pl-14">
+          <div key={optimization.id} className="relative pl-12">
             {/* Timeline dot */}
-            <div className="absolute left-4 top-4 w-4 h-4 rounded-full bg-primary border-2 border-background" />
+            <div className="absolute left-3.5 top-4 w-3 h-3 rounded-full bg-primary border-2 border-background" />
 
             <VersionCard
               optimization={optimization}
@@ -147,6 +147,6 @@ export function VersionHistory({
           </div>
         ))}
       </div>
-    </div>
+    </>
   );
 }
