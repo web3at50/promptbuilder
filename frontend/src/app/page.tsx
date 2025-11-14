@@ -30,6 +30,18 @@ export default function Home() {
     }
   }, [isLoaded, user]);
 
+  // Refetch prompts when page becomes visible (handles browser back button, tab switching, etc.)
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!document.hidden && user) {
+        fetchPrompts();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, [user]);
+
   const fetchPrompts = async () => {
     try {
       const response = await fetch('/api/prompts');
