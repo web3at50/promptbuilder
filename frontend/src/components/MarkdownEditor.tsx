@@ -9,6 +9,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Loader2, Wand2 } from 'lucide-react';
 import { VALIDATION_LIMITS } from '@/lib/validation';
+import { showError, showSaveReminder } from '@/lib/notifications';
 
 interface MarkdownEditorProps {
   value: string;
@@ -69,9 +70,11 @@ export function MarkdownEditor({
 
       const { optimizedPrompt } = await response.json();
       onChange(optimizedPrompt);
+      const providerName = provider === 'claude' ? 'Claude' : 'ChatGPT';
+      showSaveReminder(`Prompt optimized with ${providerName}.`);
     } catch (error) {
       console.error('Error optimising prompt:', error);
-      alert('Failed to optimise prompt. Please try again.');
+      showError('Failed to optimise prompt. Please try again.');
     } finally {
       setIsOptimizing(false);
       setOptimizingWith(null);

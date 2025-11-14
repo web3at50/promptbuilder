@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { PromptOptimization } from '@/types';
 import { VersionCard } from './VersionCard';
 import { History, Loader2 } from 'lucide-react';
+import { showError, showSaveReminder } from '@/lib/notifications';
 
 interface VersionHistoryProps {
   promptId: string;
@@ -63,15 +64,11 @@ export function VersionHistory({
       }
 
       const data = await response.json();
-
-      // Show success message
-      alert(data.message || 'Version restored successfully!');
-
-      // Callback to refresh the parent page
+      showSaveReminder(data.message || 'Version restored successfully.');
       onRestore();
     } catch (err) {
       console.error('Error restoring version:', err);
-      alert(err instanceof Error ? err.message : 'Failed to restore version');
+      showError(err instanceof Error ? err.message : 'Failed to restore version');
     } finally {
       setRestoringId(null);
     }

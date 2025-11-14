@@ -22,6 +22,7 @@ import {
 } from '@/components/ui/select';
 import { Loader2, Globe } from 'lucide-react';
 import { VALIDATION_LIMITS } from '@/lib/validation';
+import { showError } from '@/lib/notifications';
 
 interface PublishPromptModalProps {
   open: boolean;
@@ -49,7 +50,7 @@ export function PublishPromptModal({
 
   const handlePublish = async () => {
     if (!title.trim()) {
-      alert('Please enter a title');
+      showError('Please enter a title before publishing.');
       return;
     }
 
@@ -77,7 +78,7 @@ export function PublishPromptModal({
       onOpenChange(false);
     } catch (error) {
       console.error('Error publishing prompt:', error);
-      alert(
+      showError(
         error instanceof Error
           ? error.message
           : 'Failed to publish prompt. Please try again.'

@@ -16,6 +16,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Download, Loader2, Calendar, DollarSign, Zap } from 'lucide-react';
 import { ThemeToggle } from '@/components/theme-toggle';
+import { showError, showSuccess } from '@/lib/notifications';
 
 interface UsageLog {
   created_at: string;
@@ -79,9 +80,12 @@ export default function UsageLogsPage() {
       a.click();
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
+      showSuccess('Usage logs export started', {
+        description: 'Your CSV download should begin shortly.',
+      });
     } catch (error) {
       console.error('Error exporting CSV:', error);
-      alert('Failed to export usage logs. Please try again.');
+      showError('Failed to export usage logs. Please try again.');
     } finally {
       setExporting(false);
     }

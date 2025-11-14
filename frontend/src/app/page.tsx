@@ -12,6 +12,8 @@ import { Plus, Search, Wand2, Sparkles, Save, Zap, BarChart3, Menu, X, Users } f
 import { AdminNavLink } from '@/components/AdminNavLink';
 import { toast } from 'sonner';
 import { VALIDATION_LIMITS } from '@/lib/validation';
+import { showError, showSuccess } from '@/lib/notifications';
+import { ConfirmDialog } from '@/components/ConfirmDialog';
 
 export default function Home() {
   const router = useRouter();
@@ -20,6 +22,9 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     if (isLoaded && user) {
@@ -55,27 +60,30 @@ export default function Home() {
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this prompt?')) return;
+  const handleDelete = (id: string) => {
+    setDeleteTargetId(id);
+    setDeleteDialogOpen(true);
+  };
 
+  const deletePrompt = async () => {
+    if (!deleteTargetId) return;
+    setIsDeleting(true);
     try {
-      const response = await fetch(`/api/prompts/${id}`, {
+      const response = await fetch(`/api/prompts/${deleteTargetId}`, {
         method: 'DELETE',
       });
 
       if (!response.ok) throw new Error('Failed to delete prompt');
 
-      setPrompts(prompts.filter((p) => p.id !== id));
-      toast.success('Prompt deleted', {
-        description: 'Reminder: your library is now up-to-date.',
-        className: 'bg-[var(--primary)] text-primary-foreground border border-[var(--primary)]',
-      });
+      setPrompts(prompts.filter((p) => p.id !== deleteTargetId));
+      showSuccess('Prompt deleted', { description: 'Your library is up to date.' });
     } catch (error) {
       console.error('Error deleting prompt:', error);
-      toast.error('Failed to delete prompt', {
-        description: 'Please try again in a moment.',
-        className: 'bg-destructive text-white border border-destructive/80',
-      });
+      showError('Failed to delete prompt', { description: 'Please try again in a moment.' });
+    } finally {
+      setIsDeleting(false);
+      setDeleteDialogOpen(false);
+      setDeleteTargetId(null);
     }
   };
 
@@ -624,6 +632,17 @@ export default function Home() {
           </div>
         )}
       </main>
+
+      <ConfirmDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        title="Delete prompt?"
+        description="This action cannot be undone."
+        tone="destructive"
+        confirmLabel="Delete"
+        isConfirming={isDeleting}
+        onConfirm={deletePrompt}
+      />
     </div>
   );
 }

@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -13,6 +14,8 @@ import { Copy, RotateCcw, Calendar, Hash } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { showError, showSaveReminder, showSuccess } from '@/lib/notifications';
+import { ConfirmDialog } from '@/components/ConfirmDialog';
 
 interface OriginalPromptModalProps {
   isOpen: boolean;
@@ -31,26 +34,27 @@ export function OriginalPromptModal({
   createdAt,
   onRestore,
 }: OriginalPromptModalProps) {
+  const [confirmRestoreOpen, setConfirmRestoreOpen] = useState(false);
+
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(originalPrompt);
-      // TODO: Add toast notification
-      alert('Original prompt copied to clipboard!');
+      showSuccess('Original prompt copied to clipboard.');
     } catch (error) {
       console.error('Failed to copy:', error);
-      alert('Failed to copy to clipboard');
+      showError('Failed to copy prompt to clipboard.');
     }
   };
 
   const handleRestore = () => {
-    if (
-      confirm(
-        'Are you sure you want to restore the original prompt? This will replace your current content.'
-      )
-    ) {
-      onRestore();
-      onClose();
-    }
+    setConfirmRestoreOpen(true);
+  };
+
+  const confirmRestore = () => {
+    onRestore();
+    showSaveReminder('Original prompt restored.');
+    setConfirmRestoreOpen(false);
+    onClose();
   };
 
   // Calculate character and word count
@@ -130,6 +134,16 @@ export function OriginalPromptModal({
             Restore as Current
           </Button>
         </DialogFooter>
+
+        <ConfirmDialog
+          open={confirmRestoreOpen}
+          onOpenChange={setConfirmRestoreOpen}
+          title="Restore original prompt?"
+          description="This will replace your current content with the original version."
+          tone="destructive"
+          confirmLabel="Restore"
+          onConfirm={confirmRestore}
+        />
       </DialogContent>
     </Dialog>
   );

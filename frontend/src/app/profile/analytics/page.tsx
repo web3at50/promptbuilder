@@ -10,6 +10,7 @@ import { SpendingChart } from '@/components/analytics/SpendingChart';
 import { UsageChart } from '@/components/analytics/UsageChart';
 import { TopPromptsTable } from '@/components/analytics/TopPromptsTable';
 import { InsightsCard } from '@/components/analytics/InsightsCard';
+import { showError, showSuccess } from '@/lib/notifications';
 
 interface OverviewData {
   total_prompts: number;
@@ -140,9 +141,12 @@ export default function AnalyticsPage() {
       a.click();
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
+      showSuccess('Analytics export started', {
+        description: 'Your CSV download should begin shortly.',
+      });
     } catch (error) {
       console.error('Error exporting CSV:', error);
-      alert('Failed to export analytics. Please try again.');
+      showError('Failed to export analytics. Please try again.');
     } finally {
       setExporting(false);
     }

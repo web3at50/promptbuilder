@@ -12,6 +12,7 @@ import { ArrowLeft, Save, X } from 'lucide-react';
 import { DualOptimizeView } from '@/components/DualOptimizeView';
 import { toast } from 'sonner';
 import { VALIDATION_LIMITS } from '@/lib/validation';
+import { showError, showSaveReminder, showSuccess } from '@/lib/notifications';
 
 export default function NewPromptPage() {
   const router = useRouter();
@@ -59,7 +60,7 @@ export default function NewPromptPage() {
 
     // Require title before auto-saving
     if (!title.trim() || !content.trim()) {
-      alert('Please provide a title and content before optimizing.');
+      showError('Add a title and prompt content before optimizing.');
       return undefined;
     }
 
@@ -90,7 +91,7 @@ export default function NewPromptPage() {
       return savedPrompt.id;
     } catch (error) {
       console.error('Error auto-saving prompt:', error);
-      alert('Failed to save prompt. Please try again.');
+      showError('Failed to save prompt', { description: 'Please try again.' });
       return undefined;
     }
   };
@@ -105,7 +106,7 @@ export default function NewPromptPage() {
 
   const handleSave = async () => {
     if (!title.trim() || !content.trim()) {
-      alert('Please provide both a title and content for your prompt.');
+      showError('Title and content are required before saving.');
       return;
     }
 
@@ -147,11 +148,11 @@ export default function NewPromptPage() {
         if (!response.ok) throw new Error('Failed to create prompt');
       }
 
-      toast.success('Prompt saved successfully!');
+      showSuccess('Prompt saved successfully!');
       router.push('/');
     } catch (error) {
       console.error('Error saving prompt:', error);
-      alert('Failed to save prompt. Please try again.');
+      showError('Failed to save prompt', { description: 'Please try again.' });
     } finally {
       setSaving(false);
     }
@@ -296,11 +297,7 @@ export default function NewPromptPage() {
                           if (response.ok) {
                             const { optimizedPrompt } = await response.json();
                             setContent(optimizedPrompt);
-                            toast.success('Prompt optimized with Claude!', {
-                              description: 'Prompt auto-saved. Please save to preserve your changes.',
-                              className:
-                                'bg-[var(--primary)] text-primary-foreground border border-[var(--primary)]',
-                            });
+                            showSaveReminder('Prompt optimized with Claude.');
                           } else {
                             toast.error('Failed to optimize prompt');
                           }
@@ -332,11 +329,7 @@ export default function NewPromptPage() {
                           if (response.ok) {
                             const { optimizedPrompt } = await response.json();
                             setContent(optimizedPrompt);
-                            toast.success('Prompt optimized with ChatGPT!', {
-                              description: 'Prompt auto-saved. Please save to preserve your changes.',
-                              className:
-                                'bg-[var(--primary)] text-primary-foreground border border-[var(--primary)]',
-                            });
+                            showSaveReminder('Prompt optimized with ChatGPT.');
                           } else {
                             toast.error('Failed to optimize prompt');
                           }

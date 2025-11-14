@@ -19,6 +19,8 @@ import { DualOptimizeView } from '@/components/DualOptimizeView';
 import { PublishPromptModal } from '@/components/PublishPromptModal';
 import { VALIDATION_LIMITS } from '@/lib/validation';
 import { toast } from 'sonner';
+import { showError, showSaveReminder, showSuccess } from '@/lib/notifications';
+import { ConfirmDialog } from '@/components/ConfirmDialog';
 
 export default function EditPromptPage({
   params,
@@ -46,6 +48,8 @@ export default function EditPromptPage({
   const [isPublic, setIsPublic] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_shareToken, setShareToken] = useState<string | null>(null);
+  const [showUnpublishConfirm, setShowUnpublishConfirm] = useState(false);
+  const [unpublishing, setUnpublishing] = useState(false);
 
   useEffect(() => {
     const loadPrompt = async () => {
@@ -73,7 +77,7 @@ export default function EditPromptPage({
       setShareToken(prompt.share_token || null);
     } catch (error) {
       console.error('Error fetching prompt:', error);
-      alert('Failed to load prompt. Redirecting to library.');
+      showError('Failed to load prompt', { description: 'Returning to your library.' });
       router.push('/');
     } finally {
       setLoading(false);
@@ -134,13 +138,13 @@ export default function EditPromptPage({
       }
     } catch (error) {
       console.error('Error toggling favorite:', error);
-      alert('Failed to update favorite status. Please try again.');
+      showError('Failed to update favorite status. Please try again.');
     }
   };
 
   const handleSave = async () => {
     if (!title.trim() || !content.trim() || !promptId) {
-      alert('Please provide both a title and content for your prompt.');
+      showError('Title and content are required.');
       return;
     }
 
@@ -154,10 +158,11 @@ export default function EditPromptPage({
 
       if (!response.ok) throw new Error('Failed to update prompt');
 
+      showSuccess('Prompt updated');
       router.push('/');
     } catch (error) {
       console.error('Error updating prompt:', error);
-      alert('Failed to update prompt. Please try again.');
+      showError('Failed to update prompt. Please try again.');
     } finally {
       setSaving(false);
     }
@@ -166,28 +171,37 @@ export default function EditPromptPage({
   const handlePublishSuccess = (newShareToken: string, publicUrl: string) => {
     setIsPublic(true);
     setShareToken(newShareToken);
-    alert(`Prompt published successfully! View it at: ${window.location.origin}${publicUrl}`);
+    const fullUrl = `${window.location.origin}${publicUrl}`;
+    if (navigator?.clipboard) {
+      navigator.clipboard
+        .writeText(fullUrl)
+        .then(() => {
+          showSuccess('Prompt published', { description: 'Share link copied to clipboard.' });
+        })
+        .catch(() => {
+          showSuccess('Prompt published', { description: fullUrl });
+        });
+    } else {
+      showSuccess('Prompt published', { description: fullUrl });
+    }
   };
 
   const handleUnpublish = async () => {
     if (!promptId) return;
-
-    if (!confirm('Are you sure you want to unpublish this prompt? It will be removed from the community gallery.')) {
-      return;
-    }
-
+    setUnpublishing(true);
     try {
       const response = await fetch(`/api/prompts/${promptId}/unpublish`, {
         method: 'POST',
       });
-
       if (!response.ok) throw new Error('Failed to unpublish prompt');
-
       setIsPublic(false);
-      alert('Prompt unpublished successfully!');
+      showSuccess('Prompt unpublished');
     } catch (error) {
       console.error('Error unpublishing prompt:', error);
-      alert('Failed to unpublish prompt. Please try again.');
+      showError('Failed to unpublish prompt. Please try again.');
+    } finally {
+      setUnpublishing(false);
+      setShowUnpublishConfirm(false);
     }
   };
 
@@ -233,7 +247,7 @@ export default function EditPromptPage({
               {isPublic ? (
                 <Button
                   variant="outline"
-                  onClick={handleUnpublish}
+                  onClick={() => setShowUnpublishConfirm(true)}
                   className="gap-2"
                 >
                   <XCircle className="h-4 w-4" />
@@ -292,7 +306,7 @@ export default function EditPromptPage({
               {isPublic ? (
                 <Button
                   variant="outline"
-                  onClick={handleUnpublish}
+                  onClick={() => setShowUnpublishConfirm(true)}
                   className="flex-1 gap-2 min-h-[44px]"
                 >
                   <XCircle className="h-4 w-4" />
@@ -397,15 +411,23 @@ export default function EditPromptPage({
                     <Button
                       onClick={async () => {
                         if (!promptId) return;
-                        const response = await fetch('/api/optimize', {
-                          method: 'POST',
-                          headers: { 'Content-Type': 'application/json' },
-                          body: JSON.stringify({ prompt: content, promptId }),
-                        });
-                        if (response.ok) {
-                          const { optimizedPrompt } = await response.json();
-                          setContent(optimizedPrompt);
-                          fetchPrompt(promptId);
+                        try {
+                          const response = await fetch('/api/optimize', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ prompt: content, promptId }),
+                          });
+                          if (response.ok) {
+                            const { optimizedPrompt } = await response.json();
+                            setContent(optimizedPrompt);
+                            fetchPrompt(promptId);
+                            showSaveReminder('Prompt optimized with Claude.');
+                          } else {
+                            toast.error('Failed to optimize prompt');
+                          }
+                        } catch (error) {
+                          console.error('Error optimizing:', error);
+                          toast.error('Failed to optimize prompt');
                         }
                       }}
                       variant="claude"
@@ -416,15 +438,23 @@ export default function EditPromptPage({
                     <Button
                       onClick={async () => {
                         if (!promptId) return;
-                        const response = await fetch('/api/optimize-openai', {
-                          method: 'POST',
-                          headers: { 'Content-Type': 'application/json' },
-                          body: JSON.stringify({ prompt: content, promptId }),
-                        });
-                        if (response.ok) {
-                          const { optimizedPrompt } = await response.json();
-                          setContent(optimizedPrompt);
-                          fetchPrompt(promptId);
+                        try {
+                          const response = await fetch('/api/optimize-openai', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ prompt: content, promptId }),
+                          });
+                          if (response.ok) {
+                            const { optimizedPrompt } = await response.json();
+                            setContent(optimizedPrompt);
+                            fetchPrompt(promptId);
+                            showSaveReminder('Prompt optimized with ChatGPT.');
+                          } else {
+                            toast.error('Failed to optimize prompt');
+                          }
+                        } catch (error) {
+                          console.error('Error optimizing:', error);
+                          toast.error('Failed to optimize prompt');
                         }
                       }}
                       variant="openai"
@@ -567,6 +597,17 @@ export default function EditPromptPage({
           </div>
         </div>
       )}
+
+      <ConfirmDialog
+        open={showUnpublishConfirm}
+        onOpenChange={setShowUnpublishConfirm}
+        title="Unpublish prompt?"
+        description="This prompt will be removed from the community gallery."
+        tone="destructive"
+        confirmLabel="Unpublish"
+        isConfirming={unpublishing}
+        onConfirm={handleUnpublish}
+      />
 
       {/* Publish Modal */}
       {promptId && (

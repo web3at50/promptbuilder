@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { ComparisonCard } from './ComparisonCard';
 import { GitCompare, AlertCircle } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { showError, showSaveReminder } from '@/lib/notifications';
 
 interface DualOptimizeViewProps {
   promptId: string;
@@ -155,11 +156,11 @@ export function DualOptimizeView({
         throw new Error('Failed to save selection');
       }
 
-      // Success - call onComplete with the selected content
+      showSaveReminder('Optimized version applied.');
       onComplete(selectedContent);
     } catch (error) {
       console.error('Error saving selection:', error);
-      alert('Failed to save your selection. Please try again.');
+      showError('Failed to save your selection. Please try again.');
     } finally {
       setIsConfirming(false);
     }
