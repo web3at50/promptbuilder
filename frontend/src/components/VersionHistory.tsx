@@ -129,22 +129,15 @@ export function VersionHistory({
       </div>
 
       {/* Timeline */}
-      <div className="space-y-4 relative">
-        {/* Vertical line connecting versions */}
-        <div className="absolute left-5 top-0 bottom-0 w-0.5 bg-border" />
-
+      <div className="space-y-4">
         {optimizations.map((optimization) => (
-          <div key={optimization.id} className="relative pl-12">
-            {/* Timeline dot */}
-            <div className="absolute left-3.5 top-4 w-3 h-3 rounded-full bg-primary border-2 border-background" />
-
-            <VersionCard
-              optimization={optimization}
-              isLatest={optimization.version === currentVersion}
-              onRestore={handleRestore}
-              isRestoring={restoringId === optimization.id}
-            />
-          </div>
+          <VersionCard
+            key={optimization.id}
+            optimization={optimization}
+            isLatest={optimization.version === currentVersion}
+            onRestore={handleRestore}
+            isRestoring={restoringId === optimization.id}
+          />
         ))}
       </div>
     </>
