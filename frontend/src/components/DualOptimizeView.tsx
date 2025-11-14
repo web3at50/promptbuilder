@@ -19,6 +19,7 @@ interface OptimizationResult {
   tokens_output: number;
   cost_usd: number;
   latency_ms: number;
+  model: string;
 }
 
 export function DualOptimizeView({
@@ -116,21 +117,21 @@ export function DualOptimizeView({
 
     try {
       let selectedContent: string | null = null;
-      let selectedProviderName: 'anthropic' | 'openai' | null = null;
+      let selectedModel: string | null = null;
 
       if (selectedProvider === 'claude' && claudeResult) {
         selectedContent = claudeResult.output;
-        selectedProviderName = 'anthropic';
+        selectedModel = claudeResult.model;
       } else if (selectedProvider === 'openai' && openaiResult) {
         selectedContent = openaiResult.output;
-        selectedProviderName = 'openai';
+        selectedModel = openaiResult.model;
       } else if (selectedProvider === 'neither') {
         // User wants to keep current version - just close
         onComplete(null);
         return;
       }
 
-      if (!selectedContent || !selectedProviderName) {
+      if (!selectedContent || !selectedModel) {
         console.error('No content selected');
         return;
       }
@@ -142,7 +143,7 @@ export function DualOptimizeView({
         body: JSON.stringify({
           content: selectedContent,
           optimization_count: versionNumber,
-          optimized_with: selectedProviderName,
+          optimized_with: selectedModel,
           last_optimized_at: new Date().toISOString(),
         }),
       });

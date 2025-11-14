@@ -21,11 +21,11 @@ export function OptimizationBadge({
     return null;
   }
 
-  // Determine provider from model name
+  // Determine provider from model name or provider identifier
   const getProvider = (model: string | null) => {
     if (!model) return null;
-    if (model.includes('claude')) return 'Claude';
-    if (model.includes('gpt')) return 'ChatGPT';
+    if (model.includes('claude') || model.includes('anthropic')) return 'Claude';
+    if (model.includes('gpt') || model.includes('openai')) return 'ChatGPT';
     return 'AI';
   };
 
@@ -97,8 +97,8 @@ export function DetailedOptimizationStats({
 
   const getProvider = (model: string | null) => {
     if (!model) return null;
-    if (model.includes('claude')) return 'Claude';
-    if (model.includes('gpt')) return 'ChatGPT';
+    if (model.includes('claude') || model.includes('anthropic')) return 'Claude';
+    if (model.includes('gpt') || model.includes('openai')) return 'ChatGPT';
     return 'AI';
   };
 

@@ -92,6 +92,15 @@ export async function POST(
     const nextVersion = (existingPrompt.optimization_count || 0) + 1;
     const inputText = existingPrompt.content;
 
+    // Save original_prompt if this is the first optimization
+    if (!existingPrompt.original_prompt) {
+      await supabase
+        .from('prompts')
+        .update({ original_prompt: existingPrompt.content })
+        .eq('id', promptId)
+        .eq('user_id', userId);
+    }
+
     // Initialize API clients
     const anthropic = new Anthropic({
       apiKey: process.env.ANTHROPIC_API_KEY || '',
@@ -246,6 +255,7 @@ export async function POST(
         tokens_output: claude.tokens_output,
         cost_usd: claude.cost_usd,
         latency_ms: claude.latency_ms,
+        model: claude.model,
       } : null,
       openai: openaiData ? {
         output: openaiData.output,
@@ -253,6 +263,7 @@ export async function POST(
         tokens_output: openaiData.tokens_output,
         cost_usd: openaiData.cost_usd,
         latency_ms: openaiData.latency_ms,
+        model: openaiData.model,
       } : null,
       total_time_ms: totalTime,
       errors: {
