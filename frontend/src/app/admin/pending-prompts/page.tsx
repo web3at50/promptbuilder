@@ -193,38 +193,39 @@ export default function AdminPendingPromptsPage() {
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
       <AdminNav />
 
-      <main className="container mx-auto px-4 py-8 max-w-7xl">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Content Moderation</h1>
-          <p className="text-muted-foreground">
+      <main className="container mx-auto px-4 py-6 sm:py-8 max-w-7xl">
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold mb-2">Content Moderation</h1>
+          <p className="text-sm sm:text-base text-muted-foreground">
             Review and manage community prompt submissions
           </p>
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-          <TabsList className="grid w-full grid-cols-4 max-w-2xl">
-            <TabsTrigger value="pending" className="gap-2">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 max-w-2xl h-auto">
+            <TabsTrigger value="pending" className="gap-2 text-xs sm:text-sm py-2 sm:py-1.5">
               <AlertTriangle className="h-4 w-4" />
-              Pending
+              <span className="hidden xs:inline">Pending</span>
               {counts.pending > 0 && (
-                <Badge variant="destructive" className="ml-1">
+                <Badge variant="destructive" className="ml-1 px-1.5 py-0 text-xs">
                   {counts.pending}
                 </Badge>
               )}
             </TabsTrigger>
-            <TabsTrigger value="auto_approved" className="gap-2">
+            <TabsTrigger value="auto_approved" className="gap-1 text-xs sm:text-sm py-2 sm:py-1.5">
               <CheckCircle className="h-4 w-4" />
-              Auto-Approved
-              <span className="text-xs text-muted-foreground ml-1">({counts.auto_approved})</span>
+              <span className="hidden sm:inline">Auto</span>
+              <span className="text-xs text-muted-foreground">({counts.auto_approved})</span>
             </TabsTrigger>
-            <TabsTrigger value="approved" className="gap-2">
-              Approved
-              <span className="text-xs text-muted-foreground ml-1">({counts.approved})</span>
+            <TabsTrigger value="approved" className="gap-1 text-xs sm:text-sm py-2 sm:py-1.5">
+              <span className="hidden xs:inline">Approved</span>
+              <span className="xs:hidden">✓</span>
+              <span className="text-xs text-muted-foreground">({counts.approved})</span>
             </TabsTrigger>
-            <TabsTrigger value="rejected" className="gap-2">
+            <TabsTrigger value="rejected" className="gap-1 text-xs sm:text-sm py-2 sm:py-1.5">
               <XCircle className="h-4 w-4" />
-              Rejected
-              <span className="text-xs text-muted-foreground ml-1">({counts.rejected})</span>
+              <span className="hidden xs:inline">Rejected</span>
+              <span className="text-xs text-muted-foreground">({counts.rejected})</span>
             </TabsTrigger>
           </TabsList>
 
@@ -250,87 +251,179 @@ export default function AdminPendingPromptsPage() {
                       No {status} prompts found
                     </div>
                   ) : (
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Title</TableHead>
-                          <TableHead>Submitted</TableHead>
-                          <TableHead>Flagged For</TableHead>
-                          <TableHead>Max Score</TableHead>
-                          <TableHead>Status</TableHead>
-                          <TableHead>Actions</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
+                    <>
+                      {/* Desktop Table View */}
+                      <div className="hidden md:block overflow-x-auto">
+                        <Table>
+                          <TableHeader>
+                            <TableRow>
+                              <TableHead>Title</TableHead>
+                              <TableHead>Submitted</TableHead>
+                              <TableHead>Flagged For</TableHead>
+                              <TableHead>Max Score</TableHead>
+                              <TableHead>Status</TableHead>
+                              <TableHead>Actions</TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            {prompts.map((prompt) => {
+                              const maxScore = prompt.moderation_scores
+                                ? Math.max(...Object.values(prompt.moderation_scores as Record<string, number>))
+                                : 0;
+
+                              return (
+                                <TableRow key={prompt.id}>
+                                  <TableCell className="font-medium max-w-xs truncate">
+                                    {prompt.title}
+                                  </TableCell>
+                                  <TableCell>
+                                    {new Date(prompt.published_at).toLocaleDateString()}
+                                  </TableCell>
+                                  <TableCell>
+                                    {prompt.moderation_flagged_for && prompt.moderation_flagged_for.length > 0 ? (
+                                      <div className="flex flex-wrap gap-1">
+                                        {prompt.moderation_flagged_for.map((cat) => (
+                                          <Badge key={cat} variant="outline" className="text-xs">
+                                            {cat.replace('/', ' ')}
+                                          </Badge>
+                                        ))}
+                                      </div>
+                                    ) : (
+                                      <span className="text-muted-foreground text-sm">None</span>
+                                    )}
+                                  </TableCell>
+                                  <TableCell>{getModerationScoreBadge(maxScore)}</TableCell>
+                                  <TableCell>{getStatusBadge(prompt.moderation_status)}</TableCell>
+                                  <TableCell>
+                                    <div className="flex gap-2">
+                                      <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => setSelectedPrompt(prompt)}
+                                      >
+                                        <Eye className="h-4 w-4" />
+                                      </Button>
+                                      {prompt.moderation_status === 'pending' && (
+                                        <>
+                                          <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={() => handleApprove(prompt.id)}
+                                            disabled={actionLoading}
+                                            className="text-green-600 hover:text-green-700"
+                                          >
+                                            <CheckCircle className="h-4 w-4" />
+                                          </Button>
+                                          <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={() => {
+                                              setSelectedPrompt(prompt);
+                                              setShowRejectDialog(true);
+                                            }}
+                                            disabled={actionLoading}
+                                            className="text-red-600 hover:text-red-700"
+                                          >
+                                            <XCircle className="h-4 w-4" />
+                                          </Button>
+                                        </>
+                                      )}
+                                    </div>
+                                  </TableCell>
+                                </TableRow>
+                              );
+                            })}
+                          </TableBody>
+                        </Table>
+                      </div>
+
+                      {/* Mobile Card View */}
+                      <div className="md:hidden space-y-3">
                         {prompts.map((prompt) => {
                           const maxScore = prompt.moderation_scores
                             ? Math.max(...Object.values(prompt.moderation_scores as Record<string, number>))
                             : 0;
 
                           return (
-                            <TableRow key={prompt.id}>
-                              <TableCell className="font-medium max-w-xs truncate">
-                                {prompt.title}
-                              </TableCell>
-                              <TableCell>
-                                {new Date(prompt.published_at).toLocaleDateString()}
-                              </TableCell>
-                              <TableCell>
-                                {prompt.moderation_flagged_for && prompt.moderation_flagged_for.length > 0 ? (
-                                  <div className="flex flex-wrap gap-1">
-                                    {prompt.moderation_flagged_for.map((cat) => (
-                                      <Badge key={cat} variant="outline" className="text-xs">
-                                        {cat.replace('/', ' ')}
-                                      </Badge>
-                                    ))}
+                            <Card key={prompt.id} className="overflow-hidden">
+                              <CardContent className="p-4 space-y-3">
+                                {/* Title & Status */}
+                                <div className="flex items-start justify-between gap-2">
+                                  <h3 className="font-semibold text-base leading-snug flex-1 line-clamp-2">
+                                    {prompt.title}
+                                  </h3>
+                                  {getStatusBadge(prompt.moderation_status)}
+                                </div>
+
+                                {/* Date & Score */}
+                                <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                                  <span>{new Date(prompt.published_at).toLocaleDateString()}</span>
+                                  <span>•</span>
+                                  <div className="flex items-center gap-1.5">
+                                    <span>Score:</span>
+                                    {getModerationScoreBadge(maxScore)}
                                   </div>
-                                ) : (
-                                  <span className="text-muted-foreground text-sm">None</span>
+                                </div>
+
+                                {/* Flagged For */}
+                                {prompt.moderation_flagged_for && prompt.moderation_flagged_for.length > 0 && (
+                                  <div>
+                                    <div className="text-xs text-muted-foreground mb-1.5">Flagged for:</div>
+                                    <div className="flex flex-wrap gap-1.5">
+                                      {prompt.moderation_flagged_for.map((cat) => (
+                                        <Badge key={cat} variant="outline" className="text-xs">
+                                          {cat.replace('/', ' ')}
+                                        </Badge>
+                                      ))}
+                                    </div>
+                                  </div>
                                 )}
-                              </TableCell>
-                              <TableCell>{getModerationScoreBadge(maxScore)}</TableCell>
-                              <TableCell>{getStatusBadge(prompt.moderation_status)}</TableCell>
-                              <TableCell>
-                                <div className="flex gap-2">
+
+                                {/* Actions */}
+                                <div className="flex gap-2 pt-2 border-t">
                                   <Button
-                                    variant="ghost"
+                                    variant="outline"
                                     size="sm"
                                     onClick={() => setSelectedPrompt(prompt)}
+                                    className="flex-1 gap-2 min-h-[44px]"
                                   >
                                     <Eye className="h-4 w-4" />
+                                    View
                                   </Button>
                                   {prompt.moderation_status === 'pending' && (
                                     <>
                                       <Button
-                                        variant="ghost"
+                                        variant="outline"
                                         size="sm"
                                         onClick={() => handleApprove(prompt.id)}
                                         disabled={actionLoading}
-                                        className="text-green-600 hover:text-green-700"
+                                        className="flex-1 gap-2 min-h-[44px] text-green-600 hover:text-green-700 border-green-600"
                                       >
                                         <CheckCircle className="h-4 w-4" />
+                                        Approve
                                       </Button>
                                       <Button
-                                        variant="ghost"
+                                        variant="outline"
                                         size="sm"
                                         onClick={() => {
                                           setSelectedPrompt(prompt);
                                           setShowRejectDialog(true);
                                         }}
                                         disabled={actionLoading}
-                                        className="text-red-600 hover:text-red-700"
+                                        className="flex-1 gap-2 min-h-[44px] text-red-600 hover:text-red-700 border-red-600"
                                       >
                                         <XCircle className="h-4 w-4" />
+                                        Reject
                                       </Button>
                                     </>
                                   )}
                                 </div>
-                              </TableCell>
-                            </TableRow>
+                              </CardContent>
+                            </Card>
                           );
                         })}
-                      </TableBody>
-                    </Table>
+                      </div>
+                    </>
                   )}
                 </CardContent>
               </Card>
