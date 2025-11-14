@@ -54,7 +54,15 @@ export async function PUT(
     const body = await request.json();
 
     // Only allow updating specific fields (security: prevent arbitrary field updates)
-    const { title, content, tags, favorite } = body;
+    const {
+      title,
+      content,
+      tags,
+      favorite,
+      optimization_count,
+      optimized_with,
+      last_optimized_at
+    } = body;
 
     // Validate input if fields are being updated
     const fieldsToValidate: { title?: string; content?: string; tags?: string[] } = {};
@@ -81,6 +89,11 @@ export async function PUT(
     if (content !== undefined) updateData.content = content;
     if (tags !== undefined) updateData.tags = tags;
     if (favorite !== undefined) updateData.favorite = favorite;
+
+    // Allow updating optimization metadata (for dual comparison winner selection)
+    if (optimization_count !== undefined) updateData.optimization_count = optimization_count;
+    if (optimized_with !== undefined) updateData.optimized_with = optimized_with;
+    if (last_optimized_at !== undefined) updateData.last_optimized_at = last_optimized_at;
 
     const { data, error } = await supabase
       .from('prompts')
