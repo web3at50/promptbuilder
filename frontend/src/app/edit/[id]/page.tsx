@@ -558,6 +558,7 @@ export default function EditPromptPage({
             <DualOptimizeView
               promptId={promptId}
               promptText={content}
+              currentTags={tags}
               onComplete={(selectedContent) => {
                 if (selectedContent) {
                   setContent(selectedContent);

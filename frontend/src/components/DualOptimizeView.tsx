@@ -9,6 +9,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 interface DualOptimizeViewProps {
   promptId: string;
   promptText: string;
+  currentTags: string[];
   onComplete: (selectedOutput: string | null) => void;
   onCancel: () => void;
 }
@@ -25,6 +26,7 @@ interface OptimizationResult {
 export function DualOptimizeView({
   promptId,
   promptText,
+  currentTags,
   onComplete,
   onCancel,
 }: DualOptimizeViewProps) {
@@ -142,6 +144,7 @@ export function DualOptimizeView({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           content: selectedContent,
+          tags: currentTags,
           optimization_count: versionNumber,
           optimized_with: selectedModel,
           last_optimized_at: new Date().toISOString(),
