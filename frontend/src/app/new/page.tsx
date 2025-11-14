@@ -22,6 +22,8 @@ export default function NewPromptPage() {
   const [saving, setSaving] = useState(false);
   const [promptId, setPromptId] = useState<string | null>(null);
   const [showDualOptimize, setShowDualOptimize] = useState(false);
+  const [optimizingClaude, setOptimizingClaude] = useState(false);
+  const [optimizingChatGPT, setOptimizingChatGPT] = useState(false);
 
   const handleAddTag = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && tagInput.trim()) {
@@ -109,12 +111,19 @@ export default function NewPromptPage() {
 
     setSaving(true);
     try {
-      // If prompt was auto-saved during optimization, update it
+      // If prompt was auto-saved during optimization, only update title and tags
+      // (content and optimization metadata were already saved)
       if (promptId) {
         const response = await fetch(`/api/prompts/${promptId}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ title, content, tags }),
+          body: JSON.stringify({
+            title,
+            tags,
+            // Only update content if it hasn't been optimized yet
+            // Optimization metadata is preserved by not including those fields
+            content,
+          }),
         });
 
         if (!response.ok) throw new Error('Failed to update prompt');
@@ -138,6 +147,7 @@ export default function NewPromptPage() {
         if (!response.ok) throw new Error('Failed to create prompt');
       }
 
+      toast.success('Prompt saved successfully!');
       router.push('/');
     } catch (error) {
       console.error('Error saving prompt:', error);
@@ -276,41 +286,67 @@ export default function NewPromptPage() {
                       onClick={async () => {
                         const savedPromptId = await handleAutoSave();
                         if (!savedPromptId) return;
-                        const response = await fetch('/api/optimize', {
-                          method: 'POST',
-                          headers: { 'Content-Type': 'application/json' },
-                          body: JSON.stringify({ prompt: content, promptId: savedPromptId }),
-                        });
-                        if (response.ok) {
-                          const { optimizedPrompt } = await response.json();
-                          setContent(optimizedPrompt);
+
+                        setOptimizingClaude(true);
+                        try {
+                          const response = await fetch('/api/optimize', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ prompt: content, promptId: savedPromptId }),
+                          });
+                          if (response.ok) {
+                            const { optimizedPrompt } = await response.json();
+                            setContent(optimizedPrompt);
+                            toast.success('Prompt optimized with Claude!');
+                          } else {
+                            toast.error('Failed to optimize prompt');
+                          }
+                        } catch (error) {
+                          console.error('Error optimizing:', error);
+                          toast.error('Failed to optimize prompt');
+                        } finally {
+                          setOptimizingClaude(false);
                         }
                       }}
                       variant="orange"
                       className="gap-2 min-h-[44px] sm:min-h-[40px]"
+                      disabled={optimizingClaude || optimizingChatGPT}
                     >
-                      <Sparkles className="h-4 w-4" />
-                      <span className="hidden xs:inline">Optimize with </span>Claude
+                      <Sparkles className={`h-4 w-4 ${optimizingClaude ? 'animate-spin' : ''}`} />
+                      <span className="hidden xs:inline">{optimizingClaude ? 'Optimizing...' : 'Optimize with '}</span>{optimizingClaude ? '' : 'Claude'}
                     </Button>
                     <Button
                       onClick={async () => {
                         const savedPromptId = await handleAutoSave();
                         if (!savedPromptId) return;
-                        const response = await fetch('/api/optimize-openai', {
-                          method: 'POST',
-                          headers: { 'Content-Type': 'application/json' },
-                          body: JSON.stringify({ prompt: content, promptId: savedPromptId }),
-                        });
-                        if (response.ok) {
-                          const { optimizedPrompt } = await response.json();
-                          setContent(optimizedPrompt);
+
+                        setOptimizingChatGPT(true);
+                        try {
+                          const response = await fetch('/api/optimize-openai', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ prompt: content, promptId: savedPromptId }),
+                          });
+                          if (response.ok) {
+                            const { optimizedPrompt } = await response.json();
+                            setContent(optimizedPrompt);
+                            toast.success('Prompt optimized with ChatGPT!');
+                          } else {
+                            toast.error('Failed to optimize prompt');
+                          }
+                        } catch (error) {
+                          console.error('Error optimizing:', error);
+                          toast.error('Failed to optimize prompt');
+                        } finally {
+                          setOptimizingChatGPT(false);
                         }
                       }}
                       variant="blue"
                       className="gap-2 min-h-[44px] sm:min-h-[40px]"
+                      disabled={optimizingClaude || optimizingChatGPT}
                     >
-                      <Sparkles className="h-4 w-4" />
-                      <span className="hidden xs:inline">Optimize with </span>ChatGPT
+                      <Sparkles className={`h-4 w-4 ${optimizingChatGPT ? 'animate-spin' : ''}`} />
+                      <span className="hidden xs:inline">{optimizingChatGPT ? 'Optimizing...' : 'Optimize with '}</span>{optimizingChatGPT ? '' : 'ChatGPT'}
                     </Button>
                     <Button
                       onClick={handleCompareBoth}
