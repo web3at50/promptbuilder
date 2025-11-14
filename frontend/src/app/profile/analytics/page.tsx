@@ -175,37 +175,44 @@ export default function AnalyticsPage() {
       {/* Header */}
       <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <Button variant="ghost" onClick={() => router.push('/')} className="gap-2">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
+            <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+              <Button
+                variant="ghost"
+                onClick={() => router.push('/')}
+                className="gap-2 shrink-0 min-h-[44px] sm:min-h-[40px]"
+              >
                 <ArrowLeft className="h-4 w-4" />
-                Back to Library
+                <span className="hidden xs:inline">Back to Library</span>
+                <span className="xs:hidden">Back</span>
               </Button>
-              <div className="h-6 w-px bg-border" />
-              <h1 className="text-xl font-bold">Analytics Dashboard</h1>
+              <div className="h-6 w-px bg-border hidden sm:block" />
+              <h1 className="text-lg sm:text-xl font-bold truncate">Analytics Dashboard</h1>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 w-full sm:w-auto">
               <Button
                 variant="default"
                 onClick={() => router.push('/profile/analytics/logs')}
-                className="gap-2"
+                className="gap-2 flex-1 sm:flex-initial min-h-[44px] sm:min-h-[40px]"
               >
                 <List className="h-4 w-4" />
-                View Logs
+                <span className="hidden sm:inline">View Logs</span>
+                <span className="sm:hidden">Logs</span>
               </Button>
               <Button
                 variant="outline"
                 onClick={handleExportCSV}
                 disabled={exporting}
-                className="gap-2"
+                className="gap-2 flex-1 sm:flex-initial min-h-[44px] sm:min-h-[40px]"
               >
                 {exporting ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
                 ) : (
                   <Download className="h-4 w-4" />
                 )}
-                Export CSV
+                <span className="hidden sm:inline">Export CSV</span>
+                <span className="sm:hidden">Export</span>
               </Button>
               <ThemeToggle />
             </div>
@@ -214,7 +221,7 @@ export default function AnalyticsPage() {
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-8 space-y-6 max-w-7xl">
+      <main className="container mx-auto px-4 py-6 sm:py-8 space-y-6 max-w-7xl">
         {/* Overview Cards */}
         <AnalyticsOverview data={overview} />
 

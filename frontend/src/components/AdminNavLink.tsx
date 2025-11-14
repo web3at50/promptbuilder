@@ -37,9 +37,9 @@ export function AdminNavLink({ onClick, isMobile = false }: AdminNavLinkProps) {
     <Button
       variant="ghost"
       onClick={onClick}
-      className={`gap-2 ${isMobile ? 'w-full justify-start' : ''}`}
+      className={`gap-3 ${isMobile ? 'w-full justify-start min-h-[48px] text-base' : ''}`}
     >
-      <Shield className="h-4 w-4 text-purple-500" />
+      <Shield className={`${isMobile ? 'h-5 w-5' : 'h-4 w-4'} text-purple-500`} />
       <span className="text-purple-500 font-medium">Admin</span>
     </Button>
   );

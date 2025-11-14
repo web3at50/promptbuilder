@@ -156,12 +156,19 @@ export default function Home() {
                 </nav>
               </div>
 
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 sm:gap-3">
                 <ThemeToggle />
-                <Button variant="outline" onClick={() => router.push('/login')} className="hidden sm:flex">
+                <Button
+                  variant="outline"
+                  onClick={() => router.push('/login')}
+                  className="hidden sm:flex min-h-[40px]"
+                >
                   Sign In
                 </Button>
-                <Button onClick={() => router.push('/signup')}>
+                <Button
+                  onClick={() => router.push('/signup')}
+                  className="min-h-[44px] sm:min-h-[40px] px-4 sm:px-4"
+                >
                   Sign Up
                 </Button>
               </div>
@@ -177,57 +184,66 @@ export default function Home() {
               <Sparkles className="h-4 w-4" />
               <span>Free to use with sign up</span>
             </div>
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6 leading-tight">
               Your Personal Prompt Library
             </h2>
-            <p className="text-xl text-muted-foreground mb-8">
+            <p className="text-lg sm:text-xl text-muted-foreground mb-6 sm:mb-8 leading-relaxed">
               Create, optimise, and organise your AI prompts in one place.
               Get better results from Claude, ChatGPT, and other language models.
             </p>
-            <div className="flex items-center justify-center gap-4">
-              <Button size="lg" onClick={() => router.push('/signup')} className="gap-2">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:gap-4">
+              <Button
+                size="lg"
+                onClick={() => router.push('/signup')}
+                className="gap-2 min-h-[48px] sm:min-h-[44px]"
+              >
                 <Plus className="h-5 w-5" />
                 Get Started Free
               </Button>
-              <Button size="lg" variant="outline" onClick={() => router.push('/login')}>
+              <Button
+                size="lg"
+                variant="outline"
+                onClick={() => router.push('/login')}
+                className="min-h-[48px] sm:min-h-[44px]"
+              >
                 Sign In
               </Button>
             </div>
           </div>
 
           {/* Features Grid */}
-          <div className="max-w-5xl mx-auto grid md:grid-cols-3 gap-8 mb-16">
+          <div className="max-w-5xl mx-auto grid sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8 mb-16">
             {/* Feature 1: Create & Save */}
-            <div className="flex flex-col p-8 border rounded-lg bg-card">
-              <div className="h-14 w-14 rounded-lg bg-primary/10 flex items-center justify-center mb-6">
-                <Save className="h-7 w-7 text-primary" />
+            <div className="flex flex-col p-6 sm:p-8 border rounded-lg bg-card">
+              <div className="h-12 w-12 sm:h-14 sm:w-14 rounded-lg bg-primary/10 flex items-center justify-center mb-4 sm:mb-6">
+                <Save className="h-6 w-6 sm:h-7 sm:w-7 text-primary" />
               </div>
-              <h3 className="text-2xl font-semibold mb-3">Create & Save</h3>
-              <p className="text-muted-foreground leading-relaxed">
+              <h3 className="text-xl sm:text-2xl font-semibold mb-2 sm:mb-3">Create & Save</h3>
+              <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
                 Build a library of your best prompts. Organize them with tags,
                 mark favorites, and search through your collection instantly.
               </p>
             </div>
 
             {/* Feature 2: AI Optimization */}
-            <div className="flex flex-col p-8 border rounded-lg bg-card">
-              <div className="h-14 w-14 rounded-lg bg-primary/10 flex items-center justify-center mb-6">
-                <Wand2 className="h-7 w-7 text-primary" />
+            <div className="flex flex-col p-6 sm:p-8 border rounded-lg bg-card">
+              <div className="h-12 w-12 sm:h-14 sm:w-14 rounded-lg bg-primary/10 flex items-center justify-center mb-4 sm:mb-6">
+                <Wand2 className="h-6 w-6 sm:h-7 sm:w-7 text-primary" />
               </div>
-              <h3 className="text-2xl font-semibold mb-3">AI Optimization</h3>
-              <p className="text-muted-foreground leading-relaxed">
+              <h3 className="text-xl sm:text-2xl font-semibold mb-2 sm:mb-3">AI Optimization</h3>
+              <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
                 Improve your prompts with Claude or OpenAI. Get expert suggestions
                 to make your prompts clearer, more effective, and better structured.
               </p>
             </div>
 
             {/* Feature 3: Multi-Model Support */}
-            <div className="flex flex-col p-8 border rounded-lg bg-card">
-              <div className="h-14 w-14 rounded-lg bg-primary/10 flex items-center justify-center mb-6">
-                <Zap className="h-7 w-7 text-primary" />
+            <div className="flex flex-col p-6 sm:p-8 border rounded-lg bg-card sm:col-span-2 md:col-span-1">
+              <div className="h-12 w-12 sm:h-14 sm:w-14 rounded-lg bg-primary/10 flex items-center justify-center mb-4 sm:mb-6">
+                <Zap className="h-6 w-6 sm:h-7 sm:w-7 text-primary" />
               </div>
-              <h3 className="text-2xl font-semibold mb-3">Multi-Model Support</h3>
-              <p className="text-muted-foreground leading-relaxed">
+              <h3 className="text-xl sm:text-2xl font-semibold mb-2 sm:mb-3">Multi-Model Support</h3>
+              <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
                 Optimize with Claude and OpenAI, with support for more AI models
                 coming soon. Choose the best model for your use case.
               </p>
@@ -353,7 +369,7 @@ export default function Home() {
               <Button
                 onClick={handleNewPrompt}
                 size="default"
-                className="gap-2 hidden sm:flex"
+                className="gap-2 hidden sm:flex min-h-[40px]"
               >
                 <Plus className="h-4 w-4" />
                 New Prompt
@@ -361,9 +377,9 @@ export default function Home() {
               <Button
                 onClick={handleNewPrompt}
                 size="icon"
-                className="sm:hidden"
+                className="sm:hidden min-h-[44px] min-w-[44px]"
               >
-                <Plus className="h-4 w-4" />
+                <Plus className="h-5 w-5" />
               </Button>
 
               {/* Mobile Menu Button */}
@@ -371,7 +387,7 @@ export default function Home() {
                 variant="ghost"
                 size="icon"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="md:hidden"
+                className="md:hidden min-h-[44px] min-w-[44px]"
               >
                 {mobileMenuOpen ? (
                   <X className="h-5 w-5" />
@@ -397,16 +413,16 @@ export default function Home() {
 
           {/* Mobile Navigation Menu */}
           {mobileMenuOpen && (
-            <div className="md:hidden mt-4 pb-4 space-y-2 border-t pt-4">
+            <div className="md:hidden mt-4 pb-4 space-y-2 border-t pt-4 animate-in slide-in-from-top-4 duration-200">
               <Button
                 variant="ghost"
                 onClick={() => {
                   router.push('/');
                   setMobileMenuOpen(false);
                 }}
-                className="w-full justify-start gap-2"
+                className="w-full justify-start gap-3 min-h-[48px] text-base"
               >
-                <Search className="h-4 w-4" />
+                <Search className="h-5 w-5" />
                 Library
               </Button>
               <Button
@@ -415,9 +431,9 @@ export default function Home() {
                   router.push('/community');
                   setMobileMenuOpen(false);
                 }}
-                className="w-full justify-start gap-2"
+                className="w-full justify-start gap-3 min-h-[48px] text-base"
               >
-                <Users className="h-4 w-4" />
+                <Users className="h-5 w-5" />
                 Community
               </Button>
               <Button
@@ -426,9 +442,9 @@ export default function Home() {
                   router.push('/profile/analytics');
                   setMobileMenuOpen(false);
                 }}
-                className="w-full justify-start gap-2"
+                className="w-full justify-start gap-3 min-h-[48px] text-base"
               >
-                <BarChart3 className="h-4 w-4" />
+                <BarChart3 className="h-5 w-5" />
                 Analytics
               </Button>
               <AdminNavLink
@@ -438,8 +454,9 @@ export default function Home() {
                 }}
                 isMobile={true}
               />
-              <div className="pt-2 border-t">
+              <div className="pt-3 mt-3 border-t flex items-center gap-3">
                 <UserButton afterSignOutUrl="/" />
+                <span className="text-sm text-muted-foreground">Account</span>
               </div>
             </div>
           )}
@@ -447,7 +464,7 @@ export default function Home() {
       </header>
 
       {/* Search Bar */}
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-6 sm:py-8">
         <div className="relative max-w-xl mx-auto">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
           <Input
@@ -456,7 +473,7 @@ export default function Home() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             maxLength={VALIDATION_LIMITS.SEARCH_MAX_LENGTH}
-            className="pl-10 h-12 text-base"
+            className="pl-10 h-12 text-base rounded-lg"
           />
         </div>
       </div>
@@ -482,63 +499,63 @@ export default function Home() {
               </p>
             </div>
           ) : (
-            <div className="max-w-4xl mx-auto py-12">
-              <div className="text-center mb-12">
-                <h2 className="text-3xl font-bold mb-3">Welcome to Prompt Library</h2>
-                <p className="text-lg text-muted-foreground">
+            <div className="max-w-4xl mx-auto py-8 sm:py-12">
+              <div className="text-center mb-8 sm:mb-12 px-4">
+                <h2 className="text-2xl sm:text-3xl font-bold mb-2 sm:mb-3">Welcome to Prompt Library</h2>
+                <p className="text-base sm:text-lg text-muted-foreground">
                   Save, organise, and optimise your AI prompts in one place
                 </p>
               </div>
 
-              <div className="grid md:grid-cols-3 gap-6">
+              <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
                 {/* Create a Prompt */}
-                <div className="flex flex-col p-6 border rounded-lg bg-card hover:bg-accent/50 transition-colors cursor-pointer" onClick={handleNewPrompt}>
+                <div className="flex flex-col p-5 sm:p-6 border rounded-lg bg-card hover:bg-accent/50 transition-colors cursor-pointer" onClick={handleNewPrompt}>
                   <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
                     <Plus className="h-6 w-6 text-primary" />
                   </div>
-                  <h3 className="text-xl font-semibold mb-2">Create a Prompt</h3>
-                  <p className="text-muted-foreground mb-4 flex-1">
+                  <h3 className="text-lg sm:text-xl font-semibold mb-2">Create a Prompt</h3>
+                  <p className="text-sm sm:text-base text-muted-foreground mb-4 flex-1 leading-relaxed">
                     Start building your library by creating your first AI prompt
                   </p>
-                  <Button className="w-full gap-2" onClick={(e) => { e.stopPropagation(); handleNewPrompt(); }}>
+                  <Button className="w-full gap-2 min-h-[44px]" onClick={(e) => { e.stopPropagation(); handleNewPrompt(); }}>
                     <Plus className="h-4 w-4" />
                     New Prompt
                   </Button>
                 </div>
 
                 {/* Optimize a Prompt */}
-                <div className="flex flex-col p-6 border rounded-lg bg-card hover:bg-accent/50 transition-colors cursor-pointer" onClick={handleNewPrompt}>
+                <div className="flex flex-col p-5 sm:p-6 border rounded-lg bg-card hover:bg-accent/50 transition-colors cursor-pointer" onClick={handleNewPrompt}>
                   <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
                     <Wand2 className="h-6 w-6 text-primary" />
                   </div>
-                  <h3 className="text-xl font-semibold mb-2">Optimise a Prompt</h3>
-                  <p className="text-muted-foreground mb-4 flex-1">
+                  <h3 className="text-lg sm:text-xl font-semibold mb-2">Optimise a Prompt</h3>
+                  <p className="text-sm sm:text-base text-muted-foreground mb-4 flex-1 leading-relaxed">
                     Use Claude or ChatGPT to improve and refine your prompts for better results
                   </p>
-                  <Button variant="outline" className="w-full gap-2" onClick={(e) => { e.stopPropagation(); handleNewPrompt(); }}>
+                  <Button variant="outline" className="w-full gap-2 min-h-[44px]" onClick={(e) => { e.stopPropagation(); handleNewPrompt(); }}>
                     <Wand2 className="h-4 w-4" />
                     Get Started
                   </Button>
                 </div>
 
                 {/* Search Prompts */}
-                <div className="flex flex-col p-6 border rounded-lg bg-card hover:bg-accent/50 transition-colors opacity-60">
+                <div className="flex flex-col p-5 sm:p-6 border rounded-lg bg-card hover:bg-accent/50 transition-colors opacity-60 sm:col-span-2 md:col-span-1">
                   <div className="h-12 w-12 rounded-lg bg-muted flex items-center justify-center mb-4">
                     <Search className="h-6 w-6 text-muted-foreground" />
                   </div>
-                  <h3 className="text-xl font-semibold mb-2">Search Prompts</h3>
-                  <p className="text-muted-foreground mb-4 flex-1">
+                  <h3 className="text-lg sm:text-xl font-semibold mb-2">Search Prompts</h3>
+                  <p className="text-sm sm:text-base text-muted-foreground mb-4 flex-1 leading-relaxed">
                     Quickly find any prompt by searching title, content, or tags
                   </p>
-                  <Button variant="outline" className="w-full gap-2" disabled>
+                  <Button variant="outline" className="w-full gap-2 min-h-[44px]" disabled>
                     <Search className="h-4 w-4" />
                     Create prompts first
                   </Button>
                 </div>
               </div>
 
-              <div className="mt-12 p-6 border rounded-lg bg-muted/30 text-center">
-                <p className="text-muted-foreground">
+              <div className="mt-8 sm:mt-12 p-5 sm:p-6 border rounded-lg bg-muted/30 text-center">
+                <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
                   💡 <strong>Tip:</strong> Create your first prompt, then use the optimise feature to enhance it with Claude or ChatGPT
                 </p>
               </div>

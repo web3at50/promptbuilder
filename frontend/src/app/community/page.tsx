@@ -151,29 +151,41 @@ export default function CommunityPage() {
       {/* Header */}
       <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <Button variant="ghost" onClick={() => router.push('/')} className="gap-2">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+              <Button
+                variant="ghost"
+                onClick={() => router.push('/')}
+                className="gap-2 shrink-0 min-h-[44px] sm:min-h-[40px]"
+              >
                 <ArrowLeft className="h-4 w-4" />
-                Back to Library
+                <span className="hidden xs:inline">Back to Library</span>
+                <span className="xs:hidden">Back</span>
               </Button>
-              <div className="h-6 w-px bg-border" />
-              <div>
-                <h1 className="text-xl md:text-2xl font-bold">Community Prompts</h1>
+              <div className="h-6 w-px bg-border hidden sm:block" />
+              <div className="min-w-0">
+                <h1 className="text-lg sm:text-xl md:text-2xl font-bold truncate">Community Prompts</h1>
                 <p className="text-xs md:text-sm text-muted-foreground hidden sm:block">
                   Discover and fork prompts from the community
                 </p>
               </div>
             </div>
 
-            <div className="flex items-center gap-2 md:gap-3">
+            <div className="flex items-center gap-2 shrink-0">
               <ThemeToggle />
               {!user && isLoaded && (
                 <>
-                  <Button variant="outline" onClick={() => router.push('/login')} className="hidden sm:flex">
+                  <Button
+                    variant="outline"
+                    onClick={() => router.push('/login')}
+                    className="hidden sm:flex min-h-[40px]"
+                  >
                     Sign In
                   </Button>
-                  <Button onClick={() => router.push('/signup')}>
+                  <Button
+                    onClick={() => router.push('/signup')}
+                    className="min-h-[44px] sm:min-h-[40px]"
+                  >
                     Sign Up
                   </Button>
                 </>
@@ -199,14 +211,14 @@ export default function CommunityPage() {
         </form>
 
         {/* Filters */}
-        <div className="flex flex-wrap items-center justify-center gap-3">
-          <div className="flex items-center gap-2">
+        <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center justify-center gap-3">
+          <div className="flex items-center gap-2 justify-center sm:justify-start">
             <Filter className="h-4 w-4 text-muted-foreground" />
             <span className="text-sm font-medium text-muted-foreground">Filter:</span>
           </div>
 
           <Select value={category} onValueChange={setCategory}>
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="w-full sm:w-[180px] min-h-[44px] sm:min-h-[40px]">
               <SelectValue placeholder="All Categories" />
             </SelectTrigger>
             <SelectContent>
@@ -222,7 +234,7 @@ export default function CommunityPage() {
           </Select>
 
           <Select value={sortBy} onValueChange={setSortBy}>
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="w-full sm:w-[180px] min-h-[44px] sm:min-h-[40px]">
               <SelectValue placeholder="Sort by" />
             </SelectTrigger>
             <SelectContent>
