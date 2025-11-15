@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Allow: /community
+
+Sitemap: https://www.promptbuilderai.xyz/sitemap.xml
